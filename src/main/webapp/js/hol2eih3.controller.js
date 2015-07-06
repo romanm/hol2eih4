@@ -30,11 +30,24 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 
 // 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
 hol2eih3App.controller('MovePatientsCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
+	console.log("/readMovePatients");
+	$scope.today = new Date();
+	$scope.last7day = [$scope.today];
+	for (var i = 0; i < 7; i++) {
+		$scope.last7day.push(new Date($scope.last7day[i].getTime() - (24*60*60*1000)));
+	}
+	$scope.last7day.reverse();
+
+	$scope.yyyyMMdd = function(d){
+		return moment(d).format("YYYY-MM-DD");
+	}
+
 	// 2.1  Зчитування руху хворих за останні 7 днів – readMovePatients
 	$scope.readMovePatients = function(){
 		$http({ method : 'GET', url : "/readMovePatients"
 		}).success(function(data, status, headers, config) {
 			$scope.movePatients = data;
+			console.log($scope.movePatients);
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
