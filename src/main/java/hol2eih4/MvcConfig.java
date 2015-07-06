@@ -1,4 +1,4 @@
-package hol2eih3;
+package hol2eih4;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
