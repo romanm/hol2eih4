@@ -1,20 +1,43 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Spring Security Example </title>
-    </head>
-    <body>
-        <div th:if="${param.error}">
-            Invalid username and password.
-        </div>
-        <div th:if="${param.logout}">
-            You have been logged out.
-        </div>
-        <form th:action="@{/login}" method="post">
-            <div><label> User Name : <input type="text" name="username"/> </label></div>
-            <div><label> Password: <input type="password" name="password"/> </label></div>
-            <div><input type="submit" value="Sign In"/></div>
-        </form>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="/css/lib/bootstrap.min.css"></link>
+<link rel="stylesheet" href="/css/hol2eih3.css"></link>
+<link rel='stylesheet prefetch' href='/css/lib/font-awesome.min.css'/>
+<title>Вхід</title>
+</head>
+<body>
+<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+	<div th:if="${param.error}">Неправільний користувач і пароль.</div>
+	<div th:if="${param.logout}">Ви вийшли.</div>
+	<form th:action="@{/login}" method="post">
+		<div>
+			<label> Ім’я користувача : <input type="text" name="username" />
+			</label>
+		</div>
+		<div>
+			<label> Пароль: <input type="password" name="password" />
+			</label>
+		</div>
+		<div>
+			<input type="submit" value="Увійти" />
+		</div>
+	</form>
+	</div></div></div>
+</body>
+<script src="/js/lib/jquery-2.1.4.min.js"></script>
+<script src="/js/lib/bootstrap.min.js"></script>
+
+<script src="/js/lib/angular_uk.min.js"></script>
+<script src="/js/lib/ui-bootstrap-tpls-0.13.0.min.js"></script>
+<script src='/js/lib/textAngular.min.js'></script>
+<script src='/js/lib/textAngular-sanitize.min.js'></script>
+<script src='/js/lib/textAngular-rangy.min.js'></script>
+<script src='/js/hol2eih3.declare.js'></script>
+<script src='/js/hol2eih3.controller.js'></script>
 </html>

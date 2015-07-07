@@ -3,8 +3,12 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	$scope.readMoveTodayPatients = function(){
-		console.log("/readMoveTodayPatients");
-		$http({ method : 'GET', url : "/readMoveTodayPatients"
+		var url = "/readMoveTodayPatients"
+		if(parameters.date){
+			var url = "/readMove-"+parameters.date+"-Patients"
+		}
+		console.log(url);
+		$http({ method : 'GET', url : url
 		}).success(function(data, status, headers, config) {
 			console.log(data);
 			$scope.moveTodayPatients = data;

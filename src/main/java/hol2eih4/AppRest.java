@@ -1,15 +1,16 @@
 package hol2eih4;
 
 import java.security.Principal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,17 +27,43 @@ public class AppRest {
 	public  @ResponseBody Map<String, Object> readMoveTodayPatients(Principal userPrincipal) {
 		logger.info("\n Start /readMoveTodayPatients");
 		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
-		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients();
+		DateTime today = new DateTime();
+		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(today);
 		moveTodayPatients.put("moveTodayPatientsList", moveTodayPatientsList);
-		moveTodayPatients.put("today", new Date());
+		moveTodayPatients.put("today", new DateTime().toDate());
+		return moveTodayPatients;
+	}
+	//  1.1  Зчитування надходження/виписки хворих на дату – readTodayMovePatients
+	@RequestMapping(value = "/readMove-{yyyy}-{mm}-{dd}-Patients", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readMoveyyyymmddPatients(
+			@PathVariable Integer yyyy , @PathVariable Integer mm, @PathVariable Integer dd
+			,Principal userPrincipal) {
+		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
+		DateTime dateTime = new DateTime(yyyy,mm,dd,0,0);
+		logger.info("\n Start /readMove-"
+				+ AppConfig.yyyyMMddDateFormat.format(dateTime.toDate())
+				+ "-Patients ("+dateTime+") ");
+		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
+		moveTodayPatients.put("moveTodayPatientsList", moveTodayPatientsList);
+		moveTodayPatients.put("today", dateTime.toDate());
 		return moveTodayPatients;
 	}
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
 	@RequestMapping(value = "/saveMoveTodayPatients", method = RequestMethod.POST)
 	public  @ResponseBody Map<String, Object> saveMoveTodayPatients(@RequestBody Map<String, Object> moveTodayPatients, Principal userPrincipal) {
 		logger.info("\n Start /saveMoveTodayPatients");
-		
-		appService.saveMoveTodayPatients(moveTodayPatients);
+		appService.saveMoveTodayPatients(moveTodayPatients, new DateTime());
+		return moveTodayPatients;
+	}
+	// 1.3   Запис надходження/виписки хворих на дату – saveMoveyyyymmddPatients
+	@RequestMapping(value = "/save-{yyyy}-{mm}-{dd}-Patients", method = RequestMethod.POST)
+	public  @ResponseBody Map<String, Object> save_yyyymmdd_Patients(
+			@PathVariable Integer yyyy , @PathVariable Integer mm, @PathVariable Integer dd
+			,@RequestBody Map<String, Object> moveTodayPatients, Principal userPrincipal) {
+		DateTime dateTime = new DateTime(yyyy,mm,dd,0,0);
+		logger.info("\n Start /save_yyyymmdd_Patients"+dateTime);
+		moveTodayPatients.put("today",dateTime.getMillis());
+		appService.saveMoveTodayPatients(moveTodayPatients,dateTime);
 		return moveTodayPatients;
 	}
 	// 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.

@@ -17,7 +17,9 @@ body {
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
-			<div class="navbar-header">Рух хворих за останні 7 днів</div>
+			<div class="navbar-header">
+			<a href="/"><span class="glyphicon glyphicon-home"></span></a>
+			Рух хворих за останні 7 днів</div>
 			<div class="collapse navbar-collapse navbar-right">.</div>
 		</div>
 	</nav>
@@ -29,7 +31,12 @@ body {
 				<table>
 					<tr>
 						<th>Відділення</th>
-						<th ng-repeat="d in last7day">{{d | date:' | dd MMM' }}</th>
+						<th ng-repeat="d in last7day"><span
+							ng-show="last7day.length - $index > 2"> {{d | date:' | dd MMM' }} </span> 
+							<a ng-show="last7day.length - $index == 2"
+							href="moveTodayPatients.html?date={{d | date:'yyyy-MM-dd' }}">
+								{{d | date:' | dd MMM' }} </a> <a ng-show="$last"
+							href="moveTodayPatients.html"> {{d | date:' | dd MMM' }} </a></th>
 					</tr>
 					<tr ng-repeat="departmentHol in movePatients.departments">
 						<td>{{departmentHol.DEPARTMENT_NAME}}</td>

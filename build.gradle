@@ -30,6 +30,7 @@ dependencies {
     compile("mysql:mysql-connector-java:5.1.36")
     compile("dom4j:dom4j:1.6.1")
     compile("com.h2database:h2")
+    compile("joda-time:joda-time:2.8.1")
 	
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     // tag::security[]

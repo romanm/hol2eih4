@@ -3,9 +3,6 @@ package hol2eih4;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Types;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +10,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.h2.Driver;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,31 +29,28 @@ public class AppService {
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 	
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
-	public List<Map<String, Object>> readMoveTodayPatients() {
+	public List<Map<String, Object>> readMoveTodayPatients(DateTime today) {
 		logger.debug("readMoveTodayPatients");
-		Date today = new Date();
 		String readMoveTodayPatients_Sql = "select d.DEPARTMENT_ID, d.DEPARTMENT_NAME, m.MOVEDEPARTMENTPATIENT_ID , m.MOVEDEPARTMENTPATIENT_IN, m.MOVEDEPARTMENTPATIENT_IT,MOVEDEPARTMENTPATIENT_OUT "
 				+ " from hol2.DEPARTMENT d left join "
 				+ " (select * from hol2.MOVEDEPARTMENTPATIENT m where m.MOVEDEPARTMENTPATIENT_DATE = parsedatetime( ?,'dd-MM-yyyy')) m "
 				+ " on d.DEPARTMENT_ID = m.DEPARTMENT_ID ";
-		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", ddMMyyyDateFormat.format(today)));
-		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql,ddMMyyyDateFormat.format(today));
+		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", AppConfig.ddMMyyyDateFormat.format(today.toDate())));
+		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql,AppConfig.ddMMyyyDateFormat.format(today));
 		logger.debug(""+moveTodayPatients.size());
 		return moveTodayPatients;
 	}
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
-	public void saveMoveTodayPatients(Map<String, Object> moveTodayPatients) {
+	public void saveMoveTodayPatients(Map<String, Object> moveTodayPatients, DateTime dateTime) {
 		logger.debug("saveMoveTodayPatients");
-		Long today = (Long) moveTodayPatients.get("today");
-		Date date = new Date(today);
 		List<Map<String, Object>> moveTodayPatientsList = (List) moveTodayPatients.get("moveTodayPatientsList");
 		for (Map<String, Object> map : moveTodayPatientsList) {
 			Integer mOVEDEPARTMENTPATIENT_ID = (Integer) map.get("MOVEDEPARTMENTPATIENT_ID");
 			if(mOVEDEPARTMENTPATIENT_ID == null){
-				insertMoveDepartmentPatient(map,date);
+				insertMoveDepartmentPatient(map,dateTime);
 			}else
 				if(updateMoveDepartmentPatient(map) == 0){
-					insertMoveDepartmentPatient(map,date);
+					insertMoveDepartmentPatient(map,dateTime);
 			}
 		}
 	}
@@ -71,11 +66,11 @@ public class AppService {
 		, new int[] {Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.INTEGER} );
 		return update;
 	}
-	SimpleDateFormat ddMMyyyDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-	private void insertMoveDepartmentPatient(Map<String, Object> map, Date date) {
+	
+	private void insertMoveDepartmentPatient(Map<String, Object> map, DateTime dateTime) {
 		Integer dEPARTMENT_ID = (Integer) map.get("DEPARTMENT_ID");
 		//		String mOVEDEPARTMENTPATIENT_DATE = (String) map.get("MOVEDEPARTMENTPATIENT_DATE");
-		String mOVEDEPARTMENTPATIENT_DATE = ddMMyyyDateFormat.format(date);
+		String mOVEDEPARTMENTPATIENT_DATE = AppConfig.ddMMyyyDateFormat.format(dateTime.toDate());
 		Integer mOVEDEPARTMENTPATIENT_IN = parseInt(map,"MOVEDEPARTMENTPATIENT_IN");
 		Integer mOVEDEPARTMENTPATIENT_IT = parseInt(map,"MOVEDEPARTMENTPATIENT_IT");
 		Integer mOVEDEPARTMENTPATIENT_OUT = parseInt(map,"MOVEDEPARTMENTPATIENT_OUT");
@@ -102,11 +97,9 @@ public class AppService {
 
 	//2.1  Зчитування руху хворих за останні 7 днів – readMovePatients
 	public Map<String, Object> readMovePatients() {
-		Calendar todayInstance = Calendar.getInstance();
-		todayInstance.add(Calendar.DAY_OF_MONTH, -7);
-		Date todayMinus7 = todayInstance.getTime();
+		DateTime todayMinus7 = new DateTime().minusDays(7);
 		String readMovePatients_Sql = "select * from hol2.MOVEDEPARTMENTPATIENT m where m.MOVEDEPARTMENTPATIENT_DATE >= ?";
-		List<Map<String, Object>> readMovePatients = h2JdbcTemplate.queryForList(readMovePatients_Sql,todayMinus7);
+		List<Map<String, Object>> readMovePatients = h2JdbcTemplate.queryForList(readMovePatients_Sql,todayMinus7.toDate());
 		Map<String, Object> dateDepartmentMap = convertDateDepartmentMap(readMovePatients);
 		List<Map<String, Object>> departments = readDepartments();
 		dateDepartmentMap.put("departments", departments);

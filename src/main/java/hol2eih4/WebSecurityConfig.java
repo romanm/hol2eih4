@@ -15,7 +15,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
         .csrf().disable()
             .authorizeRequests()
-                .antMatchers("/", "/home").permitAll()
+                .antMatchers("/", "/home", "/css/**", "/js/**" ).permitAll()
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
@@ -30,6 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
             .inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER");
+                .withUser("рух").password("рух").roles("USER");
+//        .withUser("user").password("password").roles("USER");
     }
 }

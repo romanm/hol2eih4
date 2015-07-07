@@ -14,7 +14,7 @@
 		</encoder>
 	</appender>
 	
-	<logger name="hol2eih3" level="DEBUG" />
+	<logger name="hol2eih4" level="DEBUG" />
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />

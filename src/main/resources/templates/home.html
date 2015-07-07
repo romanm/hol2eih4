@@ -3,13 +3,53 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-<title>Spring Security Example</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="/css/lib/bootstrap.min.css"></link>
+<link rel="stylesheet" href="/css/hol2eih3.css"></link>
+<link rel='stylesheet prefetch' href='/css/lib/font-awesome.min.css'/>
+<style type="text/css" media="screen">
+body {
+	padding-top: 10px;
+	padding-bottom: 60px;
+}
+</style>
+<title>Хмельницька обласна лікарня</title>
 </head>
 <body>
-	<h1>Welcome!</h1>
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">Хмельницька обласна лікарня</div>
+			<div class="collapse navbar-collapse navbar-right">
+				.
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Електронна історія хвороби</h1>
+				<h2>Модуль руху хворих</h2>
 
-	<p>
-		Click <a th:href="@{/hello}">here</a> to see a greeting.
-	</p>
+				<p>
+					<a th:href="@{/moveTodayPatients.html}">Запис</a>
+					поступлення/виписки хворих на сьогодні.
+				</p>
+				<p>
+					<a th:href="@{/movePatients.html}">Рух хворих </a> за останні 7
+					днів
+				</p>
+			</div>
+		</div>
+	</div>
 </body>
+<script src="/js/lib/jquery-2.1.4.min.js"></script>
+<script src="/js/lib/bootstrap.min.js"></script>
+
+<script src="/js/lib/angular_uk.min.js"></script>
+<script src="/js/lib/ui-bootstrap-tpls-0.13.0.min.js"></script>
+<script src='/js/lib/textAngular.min.js'></script>
+<script src='/js/lib/textAngular-sanitize.min.js'></script>
+<script src='/js/lib/textAngular-rangy.min.js'></script>
+<script src='/js/hol2eih3.declare.js'></script>
+<script src='/js/hol2eih3.controller.js'></script>
 </html>
