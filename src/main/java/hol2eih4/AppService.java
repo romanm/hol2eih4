@@ -13,6 +13,7 @@ import org.h2.Driver;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component("appService")
 public class AppService {
 	private static final Logger logger = LoggerFactory.getLogger(AppService.class);
+	@Autowired private WebClient webClient;
 	private JdbcTemplate h2JdbcTemplate;
 	
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
@@ -31,12 +33,12 @@ public class AppService {
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	public List<Map<String, Object>> readMoveTodayPatients(DateTime today) {
 		logger.debug("readMoveTodayPatients");
-		String readMoveTodayPatients_Sql = "select d.DEPARTMENT_ID, d.DEPARTMENT_NAME, m.MOVEDEPARTMENTPATIENT_ID , m.MOVEDEPARTMENTPATIENT_IN, m.MOVEDEPARTMENTPATIENT_IT,MOVEDEPARTMENTPATIENT_OUT "
-				+ " from hol2.DEPARTMENT d left join "
-				+ " (select * from hol2.MOVEDEPARTMENTPATIENT m where m.MOVEDEPARTMENTPATIENT_DATE = parsedatetime( ?,'dd-MM-yyyy')) m "
-				+ " on d.DEPARTMENT_ID = m.DEPARTMENT_ID ";
+		String readMoveTodayPatients_Sql = "SELECT d.department_id, d.department_name, m.movedepartmentpatient_id , m.movedepartmentpatient_in, m.movedepartmentpatient_it,movedepartmentpatient_out "
+				+ " FROM hol2.department d LEFT JOIN "
+				+ " (SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) m "
+				+ " ON d.department_id = m.department_id ";
 		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", AppConfig.ddMMyyyDateFormat.format(today.toDate())));
-		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql,AppConfig.ddMMyyyDateFormat.format(today));
+		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql,AppConfig.ddMMyyyDateFormat.format(today.toDate()));
 		logger.debug(""+moveTodayPatients.size());
 		return moveTodayPatients;
 	}
@@ -59,8 +61,8 @@ public class AppService {
 		Integer mOVEDEPARTMENTPATIENT_IT = parseInt(map,"MOVEDEPARTMENTPATIENT_IT");
 		Integer mOVEDEPARTMENTPATIENT_OUT = parseInt(map,"MOVEDEPARTMENTPATIENT_OUT");
 		Integer mOVEDEPARTMENTPATIENT_ID = (Integer) map.get("MOVEDEPARTMENTPATIENT_ID");
-		final String sql = "UPDATE hol2.MOVEDEPARTMENTPATIENT "
-				+ " SET MOVEDEPARTMENTPATIENT_IN = ?, MOVEDEPARTMENTPATIENT_IT = ?, MOVEDEPARTMENTPATIENT_OUT = ? WHERE MOVEDEPARTMENTPATIENT_ID = ?";
+		final String sql = "UPDATE hol2.movedepartmentpatient "
+				+ " SET movedepartmentpatient_in = ?, movedepartmentpatient_it = ?, movedepartmentpatient_out = ? WHERE movedepartmentpatient_id = ?";
 		int update = h2JdbcTemplate.update( sql, new Object[] {mOVEDEPARTMENTPATIENT_IN, mOVEDEPARTMENTPATIENT_IT, mOVEDEPARTMENTPATIENT_OUT
 				, mOVEDEPARTMENTPATIENT_ID}
 		, new int[] {Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.INTEGER} );
@@ -76,9 +78,9 @@ public class AppService {
 		Integer mOVEDEPARTMENTPATIENT_OUT = parseInt(map,"MOVEDEPARTMENTPATIENT_OUT");
 		if(mOVEDEPARTMENTPATIENT_IN != null || mOVEDEPARTMENTPATIENT_IT != null || mOVEDEPARTMENTPATIENT_OUT != null){
 			logger.debug(dEPARTMENT_ID+" " +mOVEDEPARTMENTPATIENT_DATE+" "+mOVEDEPARTMENTPATIENT_IN+" "+mOVEDEPARTMENTPATIENT_IT+" "+mOVEDEPARTMENTPATIENT_OUT);
-			final String sql = "INSERT INTO hol2.MOVEDEPARTMENTPATIENT (DEPARTMENT_ID, MOVEDEPARTMENTPATIENT_DATE, MOVEDEPARTMENTPATIENT_IN"
-					+ ", MOVEDEPARTMENTPATIENT_IT, MOVEDEPARTMENTPATIENT_OUT)"
-					+ " VALUES (?, parsedatetime(?,'dd-MM-yyyy'), ?, ?, ?)";
+			final String sql = "INSERT INTO hol2.movedepartmentpatient (department_id, movedepartmentpatient_date, movedepartmentpatient_in"
+					+ ", movedepartmentpatient_it, movedepartmentpatient_out)"
+					+ " VALUES (?, PARSEDATETIME(?,'dd-MM-yyyy'), ?, ?, ?)";
 			h2JdbcTemplate.update( sql, new Object[] {dEPARTMENT_ID, mOVEDEPARTMENTPATIENT_DATE
 					, mOVEDEPARTMENTPATIENT_IN, mOVEDEPARTMENTPATIENT_IT, mOVEDEPARTMENTPATIENT_OUT });
 		}
@@ -98,7 +100,7 @@ public class AppService {
 	//2.1  Зчитування руху хворих за останні 7 днів – readMovePatients
 	public Map<String, Object> readMovePatients() {
 		DateTime todayMinus7 = new DateTime().minusDays(7);
-		String readMovePatients_Sql = "select * from hol2.MOVEDEPARTMENTPATIENT m where m.MOVEDEPARTMENTPATIENT_DATE >= ?";
+		String readMovePatients_Sql = "SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date >= ?";
 		List<Map<String, Object>> readMovePatients = h2JdbcTemplate.queryForList(readMovePatients_Sql,todayMinus7.toDate());
 		Map<String, Object> dateDepartmentMap = convertDateDepartmentMap(readMovePatients);
 		List<Map<String, Object>> departments = readDepartments();
@@ -107,7 +109,7 @@ public class AppService {
 	}
 	
 	private List<Map<String, Object>> readDepartments() {
-		String departments_Sql = "select * from hol2.DEPARTMENT";
+		String departments_Sql = "SELECT * FROM hol2.department";
 		List<Map<String, Object>> departments = h2JdbcTemplate.queryForList(departments_Sql);
 		return departments;
 	}
@@ -162,7 +164,7 @@ public class AppService {
 		final List<String> sqls0 = (List<String>) ((Map) sqlVersionUpdateList.get(0)).get("sqls");
 		for (String sql : sqls0) 
 			h2JdbcTemplate.update(sql);
-		String sqlDbVersion = "select * from DBVERSION ORDER BY DBVERSION_ID DESC LIMIT 1";
+		String sqlDbVersion = "SELECT * FROM dbversion ORDER BY dbversion_id DESC LIMIT 1";
 		List<Map<String, Object>> dbVersion = h2JdbcTemplate.queryForList(sqlDbVersion);
 		logger.debug(" "+dbVersion);
 		int thisDbVersionId = dbVersion.size() == 0 ? 0:(int) dbVersion.get(0).get("DBVERSION_ID");
@@ -170,7 +172,7 @@ public class AppService {
 		for (Map map : sqlVersionUpdateList) {
 			final Integer dbVersionId = (Integer) map.get("dbVersionId");
 			if(dbVersionId > thisDbVersionId){
-				logger.debug("update DB structure to version"+dbVersionId);
+				logger.debug("UPDATE DB structure to version"+dbVersionId);
 				boolean containsKey = map.containsKey("run_method");
 				if(containsKey){
 					String runMethod = (String) map.get("run_method");
@@ -194,7 +196,7 @@ public class AppService {
 						}
 					}
 				}
-				h2JdbcTemplate.update("INSERT INTO DBVERSION (DBVERSION_ID) VALUES (?)",dbVersionId);
+				h2JdbcTemplate.update("INSERT INTO dbversion (dbversion_id) VALUES (?)",dbVersionId);
 			}
 		}
 		System.out.println("---------test------------");
