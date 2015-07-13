@@ -1265,6 +1265,9 @@
 	"dbVersionId" : 13, "sqls" : [
 "alter table hol2.MOVEDEPARTMENTPATIENT drop constraint if exists unique_date_department"
 ,"alter table hol2.MOVEDEPARTMENTPATIENT add constraint unique_date_department unique(MOVEDEPARTMENTPATIENT_DATE,DEPARTMENT_ID)"
+]},{
+	"dbVersionId" : 14, "sqls" : [
+"ALTER TABLE hol2.movedepartmentpatient ALTER COLUMN movedepartmentpatient_id DROP DEFAULT"
 ]}
 	]
 }

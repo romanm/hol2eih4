@@ -1,5 +1,11 @@
 package hol2eih4;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class AppRest {
@@ -53,6 +63,15 @@ public class AppRest {
 	public  @ResponseBody Map<String, Object> saveMoveTodayPatients(@RequestBody Map<String, Object> moveTodayPatients, Principal userPrincipal) {
 		logger.info("\n Start /saveMoveTodayPatients");
 		appService.saveMoveTodayPatients(moveTodayPatients, new DateTime());
+		HttpURLConnection postToUrl = postToUrl(moveTodayPatients,"http://localhost:8084/saveMoveTodayPatients");
+		try {
+			InputStream requestBody = postToUrl.getInputStream();
+			logger.debug(""+requestBody);
+			Map readValue = mapper.readValue(requestBody, Map.class);
+			logger.debug(""+readValue);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return moveTodayPatients;
 	}
 	// 1.3   Запис надходження/виписки хворих на дату – saveMoveyyyymmddPatients
@@ -97,4 +116,59 @@ public class AppRest {
 		Map<String, Object> readListOperationsPlan = appService.readListOperationsPlan();
 		return readListOperationsPlan;
 	}
+	
+	private Map<String, Object> getMapFromUrl(Map<String, Object> mapObject, String urlStr) {
+		try {
+			URL url = new URL(urlStr);
+			logger.debug(""+url);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			logger.debug(""+con);
+			con.setRequestMethod("GET");
+			con.setDoOutput(true);
+			con.setRequestProperty("Content-Type", "application/json"); 
+			con.setRequestProperty("charset", "utf-8");
+			mapper.writeValue(con.getOutputStream(), mapObject);
+			InputStream requestBody = con.getInputStream();
+			logger.debug(""+requestBody);
+			Map readValue = mapper.readValue(requestBody, Map.class);
+			logger.debug(""+readValue);
+			return readValue;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private HttpURLConnection postToUrl(Map<String, Object> mapObject, String url) {
+		logger.debug(url);
+		try {
+			URL obj = new URL(url);
+			logger.debug(""+obj);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			logger.debug(""+con);
+			con.setRequestMethod("POST");
+			con.setDoOutput(true);
+			con.setRequestProperty("Content-Type", "application/json"); 
+			con.setRequestProperty("charset", "utf-8");
+			logger.debug("1");
+			mapper.writeValue(con.getOutputStream(), mapObject);
+			logger.debug("2");
+			return con;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (ProtocolException e1) {
+			e1.printStackTrace();
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	ObjectMapper mapper = new ObjectMapper();
 }

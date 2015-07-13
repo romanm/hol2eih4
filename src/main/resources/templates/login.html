@@ -7,28 +7,46 @@
 <link rel="stylesheet" href="/css/lib/bootstrap.min.css"></link>
 <link rel="stylesheet" href="/css/hol2eih3.css"></link>
 <link rel='stylesheet prefetch' href='/css/lib/font-awesome.min.css'/>
+<style type="text/css" media="screen">
+	body {
+		padding-top: 20px;
+		padding-bottom: 60px;
+	}
+</style>
 <title>Вхід</title>
 </head>
 <body>
-<div class="container">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+			<a href="/"><span class="glyphicon glyphicon-home"></span></a>
+			Хмельницька обласна лікарня</div>
+			<div class="collapse navbar-collapse navbar-right">.
+			</div>
+		</div>
+	</nav>
+	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-	<div th:if="${param.error}">Неправільний користувач і пароль.</div>
-	<div th:if="${param.logout}">Ви вийшли.</div>
-	<form th:action="@{/login}" method="post">
-		<div>
-			<label> Ім’я користувача : <input type="text" name="username" />
-			</label>
+				<div th:if="${param.error}">Неправільний користувач і пароль.</div>
+				<div th:if="${param.logout}">Ви вийшли.</div>
+				<form th:action="@{/login}" method="post">
+					<div>
+						<label> Ім’я користувача : <input type="text"
+							name="username" />
+						</label>
+					</div>
+					<div>
+						<label> Пароль: <input type="password" name="password" />
+						</label>
+					</div>
+					<div>
+						<input type="submit" value="Увійти" />
+					</div>
+				</form>
+			</div>
 		</div>
-		<div>
-			<label> Пароль: <input type="password" name="password" />
-			</label>
-		</div>
-		<div>
-			<input type="submit" value="Увійти" />
-		</div>
-	</form>
-	</div></div></div>
+	</div>
 </body>
 <script src="/js/lib/jquery-2.1.4.min.js"></script>
 <script src="/js/lib/bootstrap.min.js"></script>

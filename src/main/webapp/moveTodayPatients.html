@@ -11,6 +11,9 @@ body {
 	padding-top: 10px;
 	padding-bottom: 60px;
 }
+input[type="number"] {
+	width: 60px;
+}
 </style>
 <title>Запис поступлення/виписки хворих на сьогодні</title>
 </head>
@@ -37,19 +40,34 @@ body {
 				<table>
 					<tr>
 						<th>Відділення</th>
+						<th>Ліжко на штаті</th>
+						<th>Стан на вчора</th>
 						<th>Поступило</th>
-						<th>Лежить</th>
+						<th>з інших відділень</th>
+						<th>в інші відділення</th>
 						<th>Виписано</th>
+						<th>Померло</th>
+						<th>Стан на сьогодні</th>
+						<th>м. Хмель- ницький</th>
+						<th>діти</th>
+						<th>Лежачі</th>
+						<th>Застраховані</th>
 					</tr>
 					<tr
 						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList">
 						<td>{{departmentHol.DEPARTMENT_NAME}}</td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_IN"
-							type="text" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_IT"
-							type="text" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUT"
-							type="text" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_BED" type="number" size="3"/></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_IN" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUT" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_DEAD" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT2DAY" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_SITY" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_CHILD" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_LYING" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INSURED" type="number" size="3" /></td>
 					</tr>
 				</table>
 			</div>

@@ -1,7 +1,5 @@
-//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
-hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
-
-	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
+var initController = function($scope, $http){
+	console.log("initController");
 	$scope.readMoveTodayPatients = function(){
 		var url = "/readMoveTodayPatients"
 		if(parameters.date){
@@ -16,6 +14,11 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 			$scope.error = data;
 		});
 	}
+}
+//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
+hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
+	initController($scope, $http);
+	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	$scope.readMoveTodayPatients();
 	
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
@@ -30,6 +33,12 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 		});
 	}
 
+}]);
+hol2eih3App.controller('MvPatientInWeekDayCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
+	console.log("/readMove-day-Patients");
+	initController($scope, $http);
+	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
+	$scope.readMoveTodayPatients();
 }]);
 
 // 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
