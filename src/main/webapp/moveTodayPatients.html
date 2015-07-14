@@ -36,7 +36,15 @@ input[type="number"] {
 		<div class="row">
 			<div class="col-md-12">
 				<h2>Запис поступлення/виписки хворих на сьогодні</h2>
-				{{moveTodayPatients.today | date:'dd MMM yyyy' }}
+
+				<table>
+					<tr>
+						<td>{{moveTodayPatients.today | date:'dd MMM yyyy' }}</td>
+						<td><a href="mvPatientInWeekDay.html?date={{paramDate}}"
+						class="btn btn-primary btn-sm"
+						> Перегляд данних </a></td>
+					</tr>
+				</table>
 				<table>
 					<tr>
 						<th>Відділення</th>

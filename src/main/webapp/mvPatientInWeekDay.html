@@ -26,8 +26,21 @@ body {
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-			
-			<table>
+
+				<table>
+					<tr>
+						<td>Останні сім днів</td>
+						<td ng-repeat="d in last7day"><a
+							href="mvPatientInWeekDay.html?date={{d | date:'yyyy-MM-dd' }}">
+								<b ng-show="isMyDate(d)"> {{d | date:' | dd MMM' }} </b> <span
+								ng-show="!isMyDate(d)"> {{d | date:' | dd MMM' }} </span>
+						</a></td>
+						<td><a
+							href="moveTodayPatients.html?date={{paramDate}}"
+							class="btn btn-primary btn-sm"> Редагування </a></td>
+					</tr>
+				</table>
+				<table>
 					<tr>
 						<th>Відділення</th>
 						<th>Ліжко на штаті</th>
@@ -60,7 +73,7 @@ body {
 						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_INSURED}}</td>
 					</tr>
 				</table>
-			
+
 			</div>
 		</div>
 	</div>

@@ -1,4 +1,4 @@
-var initController = function($scope, $http){
+var initController = function($scope, $http, $filter){
 	console.log("initController");
 	$scope.readMoveTodayPatients = function(){
 		var url = "/readMoveTodayPatients"
@@ -14,10 +14,32 @@ var initController = function($scope, $http){
 			$scope.error = data;
 		});
 	}
+
+	$scope.formatDateyyyyMMdd = function(d){
+		return $filter('date')( d, "yyyy-MM-dd")
+	}
+
+	$scope.isMyDate = function(d){
+		return parameters.date == $scope.formatDateyyyyMMdd(d);
+	}
+
+	
+	$scope.today = new Date();
+	console.log( $filter('date')( $scope.today, "yyyy-MM-dd"));
+	$scope.last7day = [$scope.today];
+	for (var i = 0; i < 7; i++) {
+		$scope.last7day.push(new Date($scope.last7day[i].getTime() - (24*60*60*1000)));
+	}
+	$scope.last7day.reverse();
+
+	if(parameters.date){
+		$scope.paramDate = parameters.date;
+	}
+	
 }
 //  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
-	initController($scope, $http);
+	initController($scope, $http, $filter);
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	$scope.readMoveTodayPatients();
 	
@@ -36,7 +58,7 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 }]);
 hol2eih3App.controller('MvPatientInWeekDayCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
 	console.log("/readMove-day-Patients");
-	initController($scope, $http);
+	initController($scope, $http, $filter);
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	$scope.readMoveTodayPatients();
 }]);
