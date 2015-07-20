@@ -13,7 +13,6 @@ import org.h2.Driver;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component("appService")
 public class AppService {
 	private static final Logger logger = LoggerFactory.getLogger(AppService.class);
-	@Autowired private WebClient webClient;
 	private JdbcTemplate h2JdbcTemplate;
 	
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
@@ -39,7 +37,7 @@ public class AppService {
 				+ ", m.movedepartmentpatient_patient2day , m.movedepartmentpatient_dead , m.movedepartmentpatient_indepartment "
 				+ ", m.movedepartmentpatient_outdepartment, m.movedepartmentpatient_sity , m.movedepartmentpatient_child "
 				+ ", m.movedepartmentpatient_lying, m.movedepartmentpatient_insured, m.movedepartmentpatient_id "
-				+ " FROM hol2.department d LEFT JOIN "
+				+ " FROM hol1.department d LEFT JOIN "
 				+ " (SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) m "
 				+ " ON d.department_id = m.department_id ";
 		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", AppConfig.ddMMyyyDateFormat.format(today.toDate())));
@@ -50,7 +48,7 @@ public class AppService {
 	}
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
 	public void saveMoveTodayPatients(Map<String, Object> moveTodayPatients, DateTime dateTime) {
-		logger.debug("saveMoveTodayPatients");
+		logger.debug("saveMoveTodayPatients "+dateTime);
 		List<Map<String, Object>> moveTodayPatientsList = (List) moveTodayPatients.get("moveTodayPatientsList");
 		for (Map<String, Object> map : moveTodayPatientsList) {
 			Integer mOVEDEPARTMENTPATIENT_ID = (Integer) map.get("MOVEDEPARTMENTPATIENT_ID");
@@ -192,7 +190,7 @@ public class AppService {
 	}
 	
 	private List<Map<String, Object>> readDepartments() {
-		String departments_Sql = "SELECT * FROM hol2.department";
+		String departments_Sql = "SELECT * FROM hol1.department";
 		List<Map<String, Object>> departments = h2JdbcTemplate.queryForList(departments_Sql);
 		return departments;
 	}

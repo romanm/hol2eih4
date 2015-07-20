@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 public class AppConfig {
 	public final static SimpleDateFormat yyyyMMddDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	public final static SimpleDateFormat ddMMyyyDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	public final static String hol2webHost = "http://hol.in.ua:8084";
+//	public final static String hol2webHost = "http://localhost:8084";
 	final static String jsonDbFiles	= "src/main/webapp/db/";
 	//product
 //	final static String applicationFolderPfad	= "/home/hol2/server4/hol2eih4/";

@@ -1268,6 +1268,17 @@
 ]},{
 	"dbVersionId" : 14, "sqls" : [
 "ALTER TABLE hol2.movedepartmentpatient ALTER COLUMN movedepartmentpatient_id DROP DEFAULT"
+]},{
+	"dbVersionId" : 15, "sqls" : [
+"DROP TABLE IF EXISTS hol2.movedepartmentpatient"
+,"CREATE TABLE hol2.movedepartmentpatient ( movedepartmentpatient_id INT primary key, movedepartmentpatient_date date NOT NULL, department_id SMALLINT(5) NOT NULL, movedepartmentpatient_in TINYINT(3), movedepartmentpatient_out TINYINT(3), movedepartmentpatient_it TINYINT(3), movedepartmentpatient_bed TINYINT(3), movedepartmentpatient_patient1day TINYINT(3), movedepartmentpatient_patient2day TINYINT(3), movedepartmentpatient_dead TINYINT(3), movedepartmentpatient_indepartment TINYINT(3), movedepartmentpatient_outdepartment TINYINT(3), movedepartmentpatient_sity TINYINT(3), movedepartmentpatient_child TINYINT(3), movedepartmentpatient_lying TINYINT(3), movedepartmentpatient_insured TINYINT(3))"
+,"ALTER TABLE hol2.movedepartmentpatient ADD CONSTRAINT DEPARTMENT_ID FOREIGN KEY (department_id) REFERENCES hol1.department (department_id) ON UPDATE RESTRICT ON DELETE RESTRICT"
+,"DELETE FROM hol1.department"
+,"INSERT INTO hol1.department SELECT * FROM hol2.department"
 ]}
 	]
 }
+
+
+
+

@@ -27,7 +27,7 @@ body {
 		<div class="row">
 			<div class="col-md-12">
 
-				<table>
+				<table border="1">
 					<tr>
 						<td>Останні сім днів</td>
 						<td ng-repeat="d in last7day"><a
@@ -40,12 +40,12 @@ body {
 							class="btn btn-primary btn-sm"> Редагування </a></td>
 					</tr>
 				</table>
-				<table>
-					<tr>
+				<table border="1">
+					<tr class="pm_head">
 						<th>Відділення</th>
-						<th>Ліжко на штаті</th>
-						<th>Стан на вчора</th>
-						<th>Поступило</th>
+						<th ><img alt="" src="/img/bad_is.png"> </th>
+						<th ><!-- Стан на вчора --> <img alt="" src="/img/patient_new.png"> </th>
+						<th ><!-- Поступило --> <img alt="" src="/img/patient_day1.png"> </th>
 						<th>з інших відділень</th>
 						<th>в інші відділення</th>
 						<th>Виписано</th>

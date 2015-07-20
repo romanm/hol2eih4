@@ -45,8 +45,15 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 	
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
 	$scope.saveMoveTodayPatients = function(){
-		console.log("/saveMoveTodayPatients");
-		$http({ method : 'POST', data : $scope.moveTodayPatients, url : "/saveMoveTodayPatients"
+		
+		var url = "/save-"+$scope.paramDate+"-Patients";
+		var today = new Date();
+		console.log(today.getYear()+"-"+today.getMonth()+"-"+today.getDate());
+		if(!$scope.paramDate){
+			url = "/save-"+today.getYear()+"-"+today.getMonth()+"-"+today.getDate()+"-Patients";
+		}
+		console.log(url);
+		$http({ method : 'POST', data : $scope.moveTodayPatients, url : url
 		}).success(function(data, status, headers, config){
 			console.log(data);
 			$scope.moveTodayPatients = data;

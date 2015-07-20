@@ -63,15 +63,9 @@ public class AppRest {
 	public  @ResponseBody Map<String, Object> saveMoveTodayPatients(@RequestBody Map<String, Object> moveTodayPatients, Principal userPrincipal) {
 		logger.info("\n Start /saveMoveTodayPatients");
 		appService.saveMoveTodayPatients(moveTodayPatients, new DateTime());
-		HttpURLConnection postToUrl = postToUrl(moveTodayPatients,"http://localhost:8084/saveMoveTodayPatients");
-		try {
-			InputStream requestBody = postToUrl.getInputStream();
-			logger.debug(""+requestBody);
-			Map readValue = mapper.readValue(requestBody, Map.class);
-			logger.debug(""+readValue);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String url = AppConfig.hol2webHost
+				+ "/saveMoveTodayPatients";
+		saveToHolWeb(moveTodayPatients, url);
 		return moveTodayPatients;
 	}
 	// 1.3   Запис надходження/виписки хворих на дату – saveMoveyyyymmddPatients
@@ -83,7 +77,23 @@ public class AppRest {
 		logger.info("\n Start /save_yyyymmdd_Patients"+dateTime);
 		moveTodayPatients.put("today",dateTime.getMillis());
 		appService.saveMoveTodayPatients(moveTodayPatients,dateTime);
+		String url = AppConfig.hol2webHost
+				+ "/save-"
+				+ AppConfig.yyyyMMddDateFormat.format(dateTime.toDate())
+				+ "-Patients";
+		saveToHolWeb(moveTodayPatients, url);
 		return moveTodayPatients;
+	}
+	private void saveToHolWeb(Map<String, Object> moveTodayPatients, String url) {
+		HttpURLConnection postToUrl = postToUrl(moveTodayPatients,url);
+		try {
+			InputStream requestBody = postToUrl.getInputStream();
+			logger.debug(""+requestBody);
+			Map readValue = mapper.readValue(requestBody, Map.class);
+			logger.debug(""+readValue);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	// 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
 	// 2.1  Зчитування руху хворих за останні 7 днів – readMovePatients
