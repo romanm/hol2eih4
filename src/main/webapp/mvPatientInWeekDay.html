@@ -32,8 +32,8 @@ body {
 						<td>Останні сім днів</td>
 						<td ng-repeat="d in last7day"><a
 							href="mvPatientInWeekDay.html?date={{d | date:'yyyy-MM-dd' }}">
-								<b ng-show="isMyDate(d)"> {{d | date:' | dd MMM' }} </b> <span
-								ng-show="!isMyDate(d)"> {{d | date:' | dd MMM' }} </span>
+								<b ng-show="isMyDate(d)"> {{d | date:'  dd MMM' }} </b> <span
+								ng-show="!isMyDate(d)"> {{d | date:'  dd MMM' }} </span>
 						</a></td>
 						<td><a
 							href="moveTodayPatients.html?date={{paramDate}}"
@@ -42,35 +42,39 @@ body {
 				</table>
 				<table border="1">
 					<tr class="pm_head">
-						<th>Відділення</th>
-						<th ><img alt="" src="/img/bad_is.png"> </th>
-						<th ><!-- Стан на вчора --> <img alt="" src="/img/patient_new.png"> </th>
-						<th ><!-- Поступило --> <img alt="" src="/img/patient_day1.png"> </th>
-						<th>з інших відділень</th>
-						<th>в інші відділення</th>
-						<th>Виписано</th>
-						<th>Померло</th>
-						<th>Стан на сьогодні</th>
-						<th>м. Хмель- ницький</th>
-						<th>діти</th>
-						<th>Лежачі</th>
-						<th>Застраховані</th>
+						<th rowspan="2" class="center">Відділення</th>
+						<th rowspan="2"><img alt="Розгонтуто ліжок" src="/img/bad_is.png"> </th>
+						<th rowspan="2"> <img alt="Стан на вчора" src="/img/patient_day1.png"> </th>
+						<th rowspan="2"> <img alt="Поступило" src="/img/patient_new.png"> </th>
+						<th colspan="2">переведено</th>
+						<th rowspan="2"> <img alt="Виписано" src="/img/discharged.png"> </th>
+						<th rowspan="2"> <img alt="Померло" src="/img/dead.png"> </th>
+						<th rowspan="2"> <img alt="Стан на сьогодні" src="/img/today.png"> </th>
+						<th colspan="4" class="center">з них</th>
+					</tr>
+					<tr class="pm_head">
+						<th > <img alt="з інших відділень" src="/img/from_department.png"> </th>
+						<th > <img alt="в інші відділення" src="/img/to_department.png"> </th>
+						<th > <img alt="м. Хмельницький" src="/img/city.png"> </th>
+						<th > <img alt="діти" src="/img/child.png"> </th>
+						<th > <img alt="Лежачі" src="/img/bad_patient.png"> </th>
+						<th > <img alt="Застраховані" src="/img/insurance.png"> </th>
 					</tr>
 					<tr
 						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList">
 						<td>{{departmentHol.DEPARTMENT_NAME}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_BED}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_IN}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_OUT}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_DEAD}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_PATIENT2DAY}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_SITY}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_CHILD}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_LYING}}</td>
-						<td>{{departmentHol.MOVEDEPARTMENTPATIENT_INSURED}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_BED}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_IN}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_OUT}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_DEAD}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_PATIENT2DAY}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_SITY}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CHILD}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_LYING}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_INSURED}}</td>
 					</tr>
 				</table>
 

@@ -45,7 +45,6 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 	
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
 	$scope.saveMoveTodayPatients = function(){
-		
 		var url = "/save-"+$scope.paramDate+"-Patients";
 		var today = new Date();
 		console.log(today.getYear()+"-"+today.getMonth()+"-"+today.getDate());
@@ -60,6 +59,19 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
+	}
+	$scope.calc = function(departmentHol){
+		console.log(departmentHol);
+		var sum = 0;
+		if(departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY)
+			sum = departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY;
+		if(departmentHol.MOVEDEPARTMENTPATIENT_IN)
+			sum += departmentHol.MOVEDEPARTMENTPATIENT_IN;
+		if(departmentHol.MOVEDEPARTMENTPATIENT_OUT)
+			sum -= departmentHol.MOVEDEPARTMENTPATIENT_OUT;
+		if(departmentHol.MOVEDEPARTMENTPATIENT_DEAD)
+			sum -= departmentHol.MOVEDEPARTMENTPATIENT_DEAD;
+		departmentHol.MOVEDEPARTMENTPATIENT_PATIENT2DAY = sum;
 	}
 
 }]);

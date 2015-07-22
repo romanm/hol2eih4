@@ -46,31 +46,35 @@ input[type="number"] {
 					</tr>
 				</table>
 				<table border="1">
-					<tr>
-						<th>Відділення</th>
-					<th ><img alt="" src="/img/bad_is.png"> </th>
-						<th ><!-- Стан на вчора --> <img alt="" src="/img/patient_new.png"> </th>
-						<th ><!-- Поступило --> <img alt="" src="/img/patient_day1.png"> </th>
-						<th>з інших відділень</th>
-						<th>в інші відділення</th>
-						<th>Виписано</th>
-						<th>Померло</th>
-						<th>Стан на сьогодні</th>
-						<th>м. Хмель- ницький</th>
-						<th>діти</th>
-						<th>Лежачі</th>
-						<th>Застраховані</th>
+					<tr class="pm_head">
+						<th rowspan="2" class="center">Відділення</th>
+						<th rowspan="2"><img alt="Розгонтуто ліжок" src="/img/bad_is.png"> </th>
+						<th rowspan="2"> <img alt="Стан на вчора" src="/img/patient_day1.png"> </th>
+						<th rowspan="2"> <img alt="Поступило" src="/img/patient_new.png"> </th>
+						<th colspan="2" class="center">переведено</th>
+						<th rowspan="2"> <img alt="Виписано" src="/img/discharged.png"> </th>
+						<th rowspan="2"> <img alt="Померло" src="/img/dead.png"> </th>
+						<th rowspan="2"> <img alt="Стан на сьогодні" src="/img/today.png"> </th>
+						<th colspan="4" class="center">з них</th>
+					</tr>
+					<tr class="pm_head">
+						<th > <img alt="з інших відділень" src="/img/from_department.png"> </th>
+						<th > <img alt="в інші відділення" src="/img/to_department.png"> </th>
+						<th > <img alt="м. Хмельницький" src="/img/city.png"> </th>
+						<th > <img alt="діти" src="/img/child.png"> </th>
+						<th > <img alt="Лежачі" src="/img/bad_patient.png"> </th>
+						<th > <img alt="Застраховані" src="/img/insurance.png"> </th>
 					</tr>
 					<tr
 						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList">
 						<td>{{departmentHol.DEPARTMENT_NAME}}</td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_BED" type="number" size="3"/></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_IN" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUT" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_DEAD" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY" type="number" size="3" ng-change="calc(departmentHol)" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_IN" type="number" size="3" ng-change="calc(departmentHol)"  /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT" type="number" size="3" ng-change="calc(departmentHol)"  /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT" type="number" size="3" ng-change="calc(departmentHol)"  /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUT" type="number" size="3" ng-change="calc(departmentHol)"  /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_DEAD" type="number" size="3" ng-change="calc(departmentHol)" /></td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT2DAY" type="number" size="3" /></td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_SITY" type="number" size="3" /></td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_CHILD" type="number" size="3" /></td>

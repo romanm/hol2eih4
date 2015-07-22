@@ -1275,8 +1275,11 @@
 ,"ALTER TABLE hol2.movedepartmentpatient ADD CONSTRAINT DEPARTMENT_ID FOREIGN KEY (department_id) REFERENCES hol1.department (department_id) ON UPDATE RESTRICT ON DELETE RESTRICT"
 ,"DELETE FROM hol1.department"
 ,"INSERT INTO hol1.department SELECT * FROM hol2.department"
+]},{
+	"dbVersionId" : 16, "sqls" : [
+"INSERT INTO hol2.department (department_id, department_active, department_name, department_profile_id) VALUES (30,true, 'Екстрагенітальна патологія', 2);"
 ]}
-	]
+]
 }
 
 
