@@ -32,12 +32,15 @@ body {
 						<td>Останні сім днів</td>
 						<td ng-repeat="d in last7day"><a
 							href="mvPatientInWeekDay.html?date={{d | date:'yyyy-MM-dd' }}">
-								<b ng-show="isMyDate(d)"> {{d | date:'  dd MMM' }} </b> <span
-								ng-show="!isMyDate(d)"> {{d | date:'  dd MMM' }} </span>
+								<b ng-show="isMyDate(d)"> {{d | date:' dd MMM' }} </b> <span
+								ng-show="!isMyDate(d)"> {{d | date:' dd MMM' }} </span>
 						</a></td>
-						<td><a
-							href="moveTodayPatients.html?date={{paramDate}}"
+						<td><a href="moveTodayPatients.html?date={{paramDate}}"
 							class="btn btn-primary btn-sm"> Редагування </a></td>
+						<td>&nbsp; &nbsp;</td>
+						<td><a href="/create-read-2015-01-01-excell"> <i
+								class="fa fa-file-excel-o fa-2x"></i>
+						</a></td>
 					</tr>
 				</table>
 				<table border="1">
@@ -50,7 +53,7 @@ body {
 						<th rowspan="2"> <img alt="Виписано" src="/img/discharged.png"> </th>
 						<th rowspan="2"> <img alt="Померло" src="/img/dead.png"> </th>
 						<th rowspan="2"> <img alt="Стан на сьогодні" src="/img/today.png"> </th>
-						<th colspan="4" class="center">з них</th>
+						<th colspan="5" class="center">з них</th>
 					</tr>
 					<tr class="pm_head">
 						<th > <img alt="з інших відділень" src="/img/from_department.png"> </th>
@@ -59,6 +62,7 @@ body {
 						<th > <img alt="діти" src="/img/child.png"> </th>
 						<th > <img alt="Лежачі" src="/img/bad_patient.png"> </th>
 						<th > <img alt="Застраховані" src="/img/insurance.png"> </th>
+						<th > ЧАЕС </th>
 					</tr>
 					<tr
 						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList">
@@ -75,6 +79,7 @@ body {
 						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CHILD}}</td>
 						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_LYING}}</td>
 						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_INSURED}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CAES}}</td>
 					</tr>
 				</table>
 

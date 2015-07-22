@@ -1,6 +1,8 @@
 package hol2eih4;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Types;
 import java.util.HashMap;
@@ -9,6 +11,8 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.h2.Driver;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -36,7 +40,7 @@ public class AppService {
 				+ ", m.movedepartmentpatient_it , m.movedepartmentpatient_bed , m.movedepartmentpatient_patient1day "
 				+ ", m.movedepartmentpatient_patient2day , m.movedepartmentpatient_dead , m.movedepartmentpatient_indepartment "
 				+ ", m.movedepartmentpatient_outdepartment, m.movedepartmentpatient_sity , m.movedepartmentpatient_child "
-				+ ", m.movedepartmentpatient_lying, m.movedepartmentpatient_insured, m.movedepartmentpatient_id "
+				+ ", m.movedepartmentpatient_lying, m.movedepartmentpatient_insured, m.movedepartmentpatient_caes, m.movedepartmentpatient_id "
 				+ " FROM hol2.department d LEFT JOIN "
 				+ " (SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) m "
 				+ " ON d.department_id = m.department_id "
@@ -81,6 +85,7 @@ public class AppService {
 		
 		Integer mOVEDEPARTMENTPATIENT_IN = parseInt(map,"MOVEDEPARTMENTPATIENT_IN");
 		Integer mOVEDEPARTMENTPATIENT_OUT = parseInt(map,"MOVEDEPARTMENTPATIENT_OUT");
+		Integer mOVEDEPARTMENTPATIENT_CAES = parseInt(map,"MOVEDEPARTMENTPATIENT_CAES");
 		
 		Integer mOVEDEPARTMENTPATIENT_ID = (Integer) map.get("MOVEDEPARTMENTPATIENT_ID");
 		final String sql = "UPDATE hol2.movedepartmentpatient "
@@ -89,7 +94,7 @@ public class AppService {
 				+ ", MOVEDEPARTMENTPATIENT_PATIENT2DAY  = ?, MOVEDEPARTMENTPATIENT_DEAD  = ?, MOVEDEPARTMENTPATIENT_INDEPARTMENT = ?  "
 				+ ", MOVEDEPARTMENTPATIENT_OUTDEPARTMENT = ?, MOVEDEPARTMENTPATIENT_SITY  = ?, MOVEDEPARTMENTPATIENT_CHILD = ?  "
 				+ ", MOVEDEPARTMENTPATIENT_LYING = ?, MOVEDEPARTMENTPATIENT_INSURED  = ? "
-				+ ", MOVEDEPARTMENTPATIENT_IN  = ?, MOVEDEPARTMENTPATIENT_OUT = ?  "
+				+ ", MOVEDEPARTMENTPATIENT_IN  = ?, MOVEDEPARTMENTPATIENT_OUT = ? , MOVEDEPARTMENTPATIENT_CAES = ?  "
 				+ " WHERE movedepartmentpatient_id = ?";
 logger.debug(sql);
 		int update = h2JdbcTemplate.update( sql, new Object[] {
@@ -97,14 +102,14 @@ logger.debug(sql);
 				,mOVEDEPARTMENTPATIENT_PATIENT2DAY, mOVEDEPARTMENTPATIENT_DEAD, mOVEDEPARTMENTPATIENT_INDEPARTMENT
 				,mOVEDEPARTMENTPATIENT_OUTDEPARTMENT, mOVEDEPARTMENTPATIENT_SITY, mOVEDEPARTMENTPATIENT_CHILD
 				,mOVEDEPARTMENTPATIENT_LYING, mOVEDEPARTMENTPATIENT_INSURED
-				,mOVEDEPARTMENTPATIENT_IN, mOVEDEPARTMENTPATIENT_OUT
+				,mOVEDEPARTMENTPATIENT_IN, mOVEDEPARTMENTPATIENT_OUT, mOVEDEPARTMENTPATIENT_CAES
 				, mOVEDEPARTMENTPATIENT_ID}
 		, new int[] {
 				Types.INTEGER, Types.INTEGER, Types.INTEGER
 				,Types.INTEGER, Types.INTEGER, Types.INTEGER
 				,Types.INTEGER, Types.INTEGER, Types.INTEGER
 				,Types.INTEGER, Types.INTEGER
-				,Types.INTEGER, Types.INTEGER
+				,Types.INTEGER, Types.INTEGER, Types.INTEGER
 				, Types.INTEGER
 				} );
 		return update;
@@ -133,6 +138,7 @@ logger.debug(sql);
 		
 		Integer mOVEDEPARTMENTPATIENT_IN = parseInt(map,"MOVEDEPARTMENTPATIENT_IN");
 		Integer mOVEDEPARTMENTPATIENT_OUT = parseInt(map,"MOVEDEPARTMENTPATIENT_OUT");
+		Integer mOVEDEPARTMENTPATIENT_CAES = parseInt(map,"MOVEDEPARTMENTPATIENT_CAES");
 		
 		final String sql = "INSERT INTO hol2.movedepartmentpatient ("
 				+ "department_id, movedepartmentpatient_date, MOVEDEPARTMENTPATIENT_BED"
@@ -140,14 +146,14 @@ logger.debug(sql);
 				+ ", MOVEDEPARTMENTPATIENT_PATIENT2DAY, MOVEDEPARTMENTPATIENT_DEAD, MOVEDEPARTMENTPATIENT_INDEPARTMENT "
 				+ ", MOVEDEPARTMENTPATIENT_OUTDEPARTMENT, MOVEDEPARTMENTPATIENT_SITY, MOVEDEPARTMENTPATIENT_CHILD "
 				+ ", MOVEDEPARTMENTPATIENT_LYING, MOVEDEPARTMENTPATIENT_INSURED"
-				+ ", MOVEDEPARTMENTPATIENT_IN, MOVEDEPARTMENTPATIENT_OUT, MOVEDEPARTMENTPATIENT_ID"
+				+ ", MOVEDEPARTMENTPATIENT_IN, MOVEDEPARTMENTPATIENT_OUT, MOVEDEPARTMENTPATIENT_CAES, MOVEDEPARTMENTPATIENT_ID"
 				+ ") VALUES ("
 				+ " ?, PARSEDATETIME(?,'dd-MM-yyyy'), ?"
 				+ ", ?, ?"
 				+ ", ?, ?, ?"
 				+ ", ?, ?, ?"
 				+ ", ?, ?"
-				+ ", ?, ?, ?"
+				+ ", ?, ?, ?, ?"
 				+ ")";
 		Integer mOVEDEPARTMENTPATIENT_ID_test = nextDbId();
 		logger.debug(sql
@@ -166,6 +172,7 @@ logger.debug(sql);
 				.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_INSURED)
 				.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_IN)
 				.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_OUT)
+				.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_CAES)
 				.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_ID_test)
 				);
 		logger.debug(dEPARTMENT_ID+" " +mOVEDEPARTMENTPATIENT_DATE+" "+mOVEDEPARTMENTPATIENT_IN+" "+mOVEDEPARTMENTPATIENT_IT+" "+mOVEDEPARTMENTPATIENT_OUT);
@@ -325,6 +332,25 @@ logger.debug(sql);
 		}
 //		logger.debug(" o - "+readJsonDbFile2map);
 		return readJsonDbFile2map;
+	}
+	public void createExcel() {
+		Workbook workbook = new HSSFWorkbook();
+		// Create two sheet by calling createSheet of workbook.
+		workbook.createSheet("Sheet one");
+		workbook.createSheet("Sheet two");
+		// Create a FileOutputStream by passing the excel file name.
+		FileOutputStream outputStream = null;
+		try {
+			outputStream = new FileOutputStream(AppConfig.applicationExcelFolderPfad+"excel2.xls");
+			// Write the FileOutputStream to workbook object.
+			workbook.write(outputStream);
+			// Finally close the FileOutputStream.
+			outputStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 

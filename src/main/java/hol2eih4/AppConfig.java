@@ -17,4 +17,5 @@ public class AppConfig {
 
 	//all
 	final static String applicationResourcesFolderPfad	= applicationFolderPfad+"src/main/resources/";
+	final static String applicationExcelFolderPfad	= applicationFolderPfad+"src/main/webapp/excel/";
 }

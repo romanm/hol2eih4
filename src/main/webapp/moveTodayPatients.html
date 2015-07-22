@@ -55,7 +55,7 @@ input[type="number"] {
 						<th rowspan="2"> <img alt="Виписано" src="/img/discharged.png"> </th>
 						<th rowspan="2"> <img alt="Померло" src="/img/dead.png"> </th>
 						<th rowspan="2"> <img alt="Стан на сьогодні" src="/img/today.png"> </th>
-						<th colspan="4" class="center">з них</th>
+						<th colspan="5" class="center">з них</th>
 					</tr>
 					<tr class="pm_head">
 						<th > <img alt="з інших відділень" src="/img/from_department.png"> </th>
@@ -64,6 +64,7 @@ input[type="number"] {
 						<th > <img alt="діти" src="/img/child.png"> </th>
 						<th > <img alt="Лежачі" src="/img/bad_patient.png"> </th>
 						<th > <img alt="Застраховані" src="/img/insurance.png"> </th>
+						<th > ЧАЕС </th>
 					</tr>
 					<tr
 						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList">
@@ -80,6 +81,7 @@ input[type="number"] {
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_CHILD" type="number" size="3" /></td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_LYING" type="number" size="3" /></td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INSURED" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_CAES" type="number" size="3" /></td>
 					</tr>
 				</table>
 			</div>

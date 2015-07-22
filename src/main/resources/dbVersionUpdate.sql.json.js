@@ -1278,6 +1278,12 @@
 ]},{
 	"dbVersionId" : 16, "sqls" : [
 "INSERT INTO hol2.department (department_id, department_active, department_name, department_profile_id) VALUES (30,true, 'Екстрагенітальна патологія', 2);"
+]},{
+	"dbVersionId" : 17, "sqls" : [
+"ALTER TABLE hol2.movedepartmentpatient ADD COLUMN movedepartmentpatient_caes INT"
+]},{
+	"dbVersionId" : 18, "sqls" : [
+"ALTER TABLE hol2.movedepartmentpatient ALTER COLUMN movedepartmentpatient_caes TINYINT"
 ]}
 ]
 }

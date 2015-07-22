@@ -84,6 +84,12 @@ public class AppRest {
 		saveToHolWeb(moveTodayPatients, url);
 		return moveTodayPatients;
 	}
+	@RequestMapping(value = "/create-read-{yyyy}-{mm}-{dd}-excell", method = RequestMethod.GET)
+	public String createReadExcell(Principal userPrincipal) {
+		logger.debug("/create-read-{yyyy}-{mm}-{dd}-excell");
+		appService.createExcel();
+		return "redirect: /excel/excel2.xls"; 
+	}
 	private void saveToHolWeb(Map<String, Object> moveTodayPatients, String url) {
 		HttpURLConnection postToUrl = postToUrl(moveTodayPatients,url);
 		try {
