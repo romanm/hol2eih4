@@ -84,10 +84,14 @@ public class AppRest {
 		saveToHolWeb(moveTodayPatients, url);
 		return moveTodayPatients;
 	}
-	@RequestMapping(value = "/create-read-{yyyy}-{mm}-{dd}-excell", method = RequestMethod.GET)
-	public String createReadExcell(Principal userPrincipal) {
-		logger.debug("/create-read-{yyyy}-{mm}-{dd}-excell");
-		appService.createExcel();
+	@RequestMapping(value = "/create-read-{yyyy}-{mm}-{dd}-excel", method = RequestMethod.GET)
+	public String createReadExcell(
+			@PathVariable Integer yyyy , @PathVariable Integer mm, @PathVariable Integer dd,
+			Principal userPrincipal) {
+		logger.debug("/create-read-{yyyy}-{mm}-{dd}-excel");
+		DateTime dateTime = new DateTime(yyyy,mm,dd,0,0);
+		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
+		appService.createExcel(moveTodayPatientsList);
 		return "redirect: /excel/excel2.xls"; 
 	}
 	private void saveToHolWeb(Map<String, Object> moveTodayPatients, String url) {

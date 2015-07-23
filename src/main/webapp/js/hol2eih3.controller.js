@@ -1,5 +1,6 @@
 var initController = function($scope, $http, $filter){
 	console.log("initController");
+	console.log(parameters);
 	$scope.readMoveTodayPatients = function(){
 		var url = "/readMoveTodayPatients"
 		if(parameters.date){
@@ -23,7 +24,6 @@ var initController = function($scope, $http, $filter){
 		return parameters.date == $scope.formatDateyyyyMMdd(d);
 	}
 
-	
 	$scope.today = new Date();
 	console.log( $filter('date')( $scope.today, "yyyy-MM-dd"));
 	$scope.last7day = [$scope.today];
@@ -31,6 +31,9 @@ var initController = function($scope, $http, $filter){
 		$scope.last7day.push(new Date($scope.last7day[i].getTime() - (24*60*60*1000)));
 	}
 	$scope.last7day.reverse();
+	
+	console.log(parameters);
+	console.log(parameters.date);
 
 	if(parameters.date){
 		$scope.paramDate = parameters.date;
@@ -67,6 +70,10 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 			sum = departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY;
 		if(departmentHol.MOVEDEPARTMENTPATIENT_IN)
 			sum += departmentHol.MOVEDEPARTMENTPATIENT_IN;
+		if(departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT)
+			sum += departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT;
+		if(departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT)
+			sum -= departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT;
 		if(departmentHol.MOVEDEPARTMENTPATIENT_OUT)
 			sum -= departmentHol.MOVEDEPARTMENTPATIENT_OUT;
 		if(departmentHol.MOVEDEPARTMENTPATIENT_DEAD)

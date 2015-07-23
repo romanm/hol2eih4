@@ -1,9 +1,11 @@
 package hol2eih4;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +13,11 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.h2.Driver;
 import org.joda.time.DateTime;
@@ -333,11 +339,38 @@ logger.debug(sql);
 //		logger.debug(" o - "+readJsonDbFile2map);
 		return readJsonDbFile2map;
 	}
-	public void createExcel() {
+	
+	public void createExcel(List<Map<String, Object>> moveTodayPatientsList) {
 		Workbook workbook = new HSSFWorkbook();
 		// Create two sheet by calling createSheet of workbook.
-		workbook.createSheet("Sheet one");
-		workbook.createSheet("Sheet two");
+		Sheet sheet = workbook.createSheet("Місяць");
+		int startRow = 4;
+		for (int i = 0; i < moveTodayPatientsList.size(); i++) {
+			Map<String, Object> map = moveTodayPatientsList.get(i);
+			String departmentName = (String) map.get("DEPARTMENT_NAME");
+			// Create a row and put some cells in it.
+			Row row = sheet.createRow(i + startRow);
+			Cell cell = row.createCell(0);
+			cell.setCellValue(departmentName);
+		}
+		saveExcel(workbook);
+		HSSFWorkbook readExcel = readExcel();
+		logger.debug(""+readExcel.getNumberOfSheets());
+		HSSFSheet sheet1 = readExcel.getSheetAt(0);
+		logger.debug(""+readExcel.getSheetName(0));
+	}
+
+	private HSSFWorkbook readExcel() {
+		try {
+			InputStream inputStream = new FileInputStream(
+					AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
+			return new HSSFWorkbook(inputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	private void saveExcel(Workbook workbook) {
 		// Create a FileOutputStream by passing the excel file name.
 		FileOutputStream outputStream = null;
 		try {
@@ -352,6 +385,7 @@ logger.debug(sql);
 			e.printStackTrace();
 		}
 	}
+	
 	
 
 }
