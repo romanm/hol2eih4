@@ -69,7 +69,7 @@ input[type="number"] {
 					<tr
 						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList">
 						<td>{{departmentHol.DEPARTMENT_NAME}}</td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_BED" type="number" size="3"/></td>
+						<td>{{departmentHol.DEPARTMENT_BED}}</td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY" type="number" size="3" ng-change="calc(departmentHol)" /></td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_IN" type="number" size="3" ng-change="calc(departmentHol)"  /></td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT" type="number" size="3" ng-change="calc(departmentHol)"  /></td>

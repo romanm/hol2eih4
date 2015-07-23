@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.h2.Driver;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class AppService {
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	public List<Map<String, Object>> readMoveTodayPatients(DateTime today) {
 		logger.debug("readMoveTodayPatients");
-		String readMoveTodayPatients_Sql = "SELECT d.department_name, d.department_id "
+		String readMoveTodayPatients_Sql = "SELECT d.department_name, d.department_bed, d.department_id "
 				+ ", m.movedepartmentpatient_date, m.movedepartmentpatient_in , m.movedepartmentpatient_out "
 				+ ", m.movedepartmentpatient_it , m.movedepartmentpatient_bed , m.movedepartmentpatient_patient1day "
 				+ ", m.movedepartmentpatient_patient2day , m.movedepartmentpatient_dead , m.movedepartmentpatient_indepartment "
@@ -50,8 +51,8 @@ public class AppService {
 				+ " FROM hol2.department d LEFT JOIN "
 				+ " (SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) m "
 				+ " ON d.department_id = m.department_id "
-				+ "where d.DEPARTMENT_ACTIVE"
-				+ "";
+				+ " WHERE d.department_sort IS NOT NULL "
+				+ " ORDER BY department_sort";
 		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", AppConfig.ddMMyyyDateFormat.format(today.toDate())));
 		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql,AppConfig.ddMMyyyDateFormat.format(today.toDate()));
 		logger.debug(""+moveTodayPatients.size());
@@ -161,7 +162,7 @@ logger.debug(sql);
 				+ ", ?, ?"
 				+ ", ?, ?, ?, ?"
 				+ ")";
-		Integer mOVEDEPARTMENTPATIENT_ID_test = nextDbId();
+		Integer mOVEDEPARTMENTPATIENT_ID_test = 0;
 		logger.debug(sql
 				.replaceFirst("\\?", ""+dEPARTMENT_ID)
 				.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_DATE)
@@ -195,7 +196,7 @@ logger.debug(sql);
 					, mOVEDEPARTMENTPATIENT_PATIENT2DAY, mOVEDEPARTMENTPATIENT_DEAD, mOVEDEPARTMENTPATIENT_INDEPARTMENT 
 					, mOVEDEPARTMENTPATIENT_OUTDEPARTMENT, mOVEDEPARTMENTPATIENT_SITY, mOVEDEPARTMENTPATIENT_CHILD 
 					, mOVEDEPARTMENTPATIENT_LYING, mOVEDEPARTMENTPATIENT_INSURED
-					, mOVEDEPARTMENTPATIENT_IN, mOVEDEPARTMENTPATIENT_OUT, mOVEDEPARTMENTPATIENT_ID
+					, mOVEDEPARTMENTPATIENT_IN, mOVEDEPARTMENTPATIENT_OUT, mOVEDEPARTMENTPATIENT_CAES, mOVEDEPARTMENTPATIENT_ID
 			});
 		}
 	}
@@ -209,7 +210,7 @@ logger.debug(sql);
 			value = (Integer) valueOnject;
 		else
 			if(valueOnject != null)
-				value = Integer.parseInt((String) valueOnject);
+				value = Integer.parseInt(""+valueOnject);
 		return value;
 	}
 	// 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
@@ -318,7 +319,7 @@ logger.debug(sql);
 //		logger.debug(""+readMovePatients);
 		System.out.println("----------test-----------");
 	}
-	
+
 	final String fileNameDbVersionUpdate = AppConfig.applicationResourcesFolderPfad + "dbVersionUpdate.sql.json.js";
 	private Map<String, Object> readJsonDbFile2map(String fileNameJsonDb) {
 		logger.debug(fileNameJsonDb);
@@ -339,8 +340,73 @@ logger.debug(sql);
 //		logger.debug(" o - "+readJsonDbFile2map);
 		return readJsonDbFile2map;
 	}
-	
+
 	public void createExcel(List<Map<String, Object>> moveTodayPatientsList) {
+//		testExcel(moveTodayPatientsList);
+		HSSFWorkbook pyx2015 = readExcel();
+		logger.debug(""+pyx2015.getNumberOfSheets());
+		logger.debug(""+pyx2015.getSheetName(0));
+		HSSFSheet sheet1 = pyx2015.getSheetAt(0);
+		Integer rowNr = findFirstDepartmentRow(sheet1);
+		logger.debug(""+rowNr);
+		String stringCellValue = sheet1.getRow(rowNr).getCell(0).getStringCellValue();
+		logger.debug(""+stringCellValue);
+		for (Map<String, Object> map : moveTodayPatientsList) {
+			setRCIntegerValue(sheet1,rowNr,1,parseInt(map, "DEPARTMENT_BED"));
+			Integer parseInt = parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT1DAY");
+			logger.debug(""+parseInt);
+			setRCIntegerValue(sheet1,rowNr,2,parseInt);
+			rowNr++;
+		}
+		saveExcel(pyx2015,AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
+	}
+
+	private void setRCIntegerValue(HSSFSheet sheet1, Integer rowIndex, int cellIndex, Integer value) {
+		if(value != null){
+			sheet1.getRow(rowIndex).getCell(cellIndex).setCellValue(value);
+		}
+	}
+
+	private Integer findFirstDepartmentRow(HSSFSheet sheet1) {
+		for (Row row : sheet1) {
+			Cell cell = row.getCell(0);
+			if(cell != null){
+				String stringCellValue = cell.getStringCellValue();
+				if("Хірургія".equals(stringCellValue)){
+					int rowNum = row.getRowNum();
+					return rowNum;
+				}
+			}
+		}
+		return null;
+	}
+	private HSSFWorkbook readExcel() {
+		try {
+			InputStream inputStream = new FileInputStream(
+					AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
+			return new HSSFWorkbook(inputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	private void saveExcel(Workbook workbook, String fileName) {
+		// Create a FileOutputStream by passing the excel file name.
+		FileOutputStream outputStream = null;
+		try {
+			outputStream = new FileOutputStream(fileName);
+			// Write the FileOutputStream to workbook object.
+			workbook.write(outputStream);
+			// Finally close the FileOutputStream.
+			outputStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void testExcel(List<Map<String, Object>> moveTodayPatientsList) {
 		Workbook workbook = new HSSFWorkbook();
 		// Create two sheet by calling createSheet of workbook.
 		Sheet sheet = workbook.createSheet("Місяць");
@@ -353,39 +419,7 @@ logger.debug(sql);
 			Cell cell = row.createCell(0);
 			cell.setCellValue(departmentName);
 		}
-		saveExcel(workbook);
-		HSSFWorkbook readExcel = readExcel();
-		logger.debug(""+readExcel.getNumberOfSheets());
-		HSSFSheet sheet1 = readExcel.getSheetAt(0);
-		logger.debug(""+readExcel.getSheetName(0));
+		saveExcel(workbook,AppConfig.applicationExcelFolderPfad+"excel2.xls");
 	}
-
-	private HSSFWorkbook readExcel() {
-		try {
-			InputStream inputStream = new FileInputStream(
-					AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
-			return new HSSFWorkbook(inputStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	private void saveExcel(Workbook workbook) {
-		// Create a FileOutputStream by passing the excel file name.
-		FileOutputStream outputStream = null;
-		try {
-			outputStream = new FileOutputStream(AppConfig.applicationExcelFolderPfad+"excel2.xls");
-			// Write the FileOutputStream to workbook object.
-			workbook.write(outputStream);
-			// Finally close the FileOutputStream.
-			outputStream.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
 
 }

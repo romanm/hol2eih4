@@ -1284,6 +1284,35 @@
 ]},{
 	"dbVersionId" : 18, "sqls" : [
 "ALTER TABLE hol2.movedepartmentpatient ALTER COLUMN movedepartmentpatient_caes TINYINT"
+]},{
+	"dbVersionId" : 19, "sqls" : [
+"ALTER TABLE hol2.department ADD COLUMN department_bed TINYINT"
+,"ALTER TABLE hol2.department ADD COLUMN department_sort TINYINT"
+]},{
+	"dbVersionId" : 23, "sqls" : [
+"UPDATE hol2.department SET department_sort = 1, department_bed=68 WHERE department_id=27"
+,"UPDATE hol2.department SET department_sort = 2, department_bed=32 WHERE department_id=24"
+,"UPDATE hol2.department SET department_sort = 3, department_bed=60 WHERE department_id=15"
+,"UPDATE hol2.department SET department_sort = 4, department_bed=32 WHERE department_id=12"
+,"UPDATE hol2.department SET department_sort = 5, department_bed=21 WHERE department_id=25"
+,"UPDATE hol2.department SET department_sort = 6, department_bed=28 WHERE department_id=21"
+,"UPDATE hol2.department SET department_sort = 7, department_bed=61 WHERE department_id=11"
+,"UPDATE hol2.department SET department_sort = 8, department_bed=18 WHERE department_id=28"
+,"UPDATE hol2.department SET department_sort = 9, department_bed=34 WHERE department_id=8"
+,"UPDATE hol2.department SET department_sort = 10, department_bed=43 WHERE department_id=16"
+,"UPDATE hol2.department SET department_sort = 11, department_bed=36 WHERE department_id=13"
+,"UPDATE hol2.department SET department_sort = 12, department_bed=32 WHERE department_id=3"
+,"UPDATE hol2.department SET department_sort = 13, department_bed=53 WHERE department_id=23"
+,"UPDATE hol2.department SET department_sort = 14, department_bed=37 WHERE department_id=4"
+,"UPDATE hol2.department SET department_sort = 15, department_bed=25 WHERE department_id=14"
+,"UPDATE hol2.department SET department_sort = 16, department_bed=28 WHERE department_id=20"
+,"UPDATE hol2.department SET department_sort = 17, department_bed=43 WHERE department_id=26"
+,"UPDATE hol2.department SET department_sort = 18, department_bed=17 WHERE department_id=2"
+,"UPDATE hol2.department SET department_sort = 19, department_bed=11 WHERE department_id=22"
+,"UPDATE hol2.department SET department_sort = 20, department_bed=5 WHERE department_id=5"
+,"UPDATE hol2.department SET department_sort = 21, department_bed=33 WHERE department_id=9"
+,"UPDATE hol2.department SET department_sort = 22, department_bed=56, department_active=true WHERE department_id=7"
+,"DELETE FROM hol2.department WHERE department_id=30"
 ]}
 ]
 }
