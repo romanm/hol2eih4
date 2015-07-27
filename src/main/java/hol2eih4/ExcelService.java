@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -19,7 +20,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -32,6 +32,7 @@ public class ExcelService {
 	public void createExcel(List<Map<String, Object>> moveTodayPatientsList, DateTime dateTime) {
 //		testExcel(moveTodayPatientsList);
 		HSSFWorkbook pyx2015 = readExcel();
+		getDateCellStyle(pyx2015);
 		logger.debug(""+pyx2015.getNumberOfSheets());
 		logger.debug(""+pyx2015.getSheet("month template").getSheetName());
 		HSSFSheet monthSheet = getMonthSheet(pyx2015, dateTime);
@@ -93,12 +94,10 @@ public class ExcelService {
 			DateTime minDate = dateTime.dayOfMonth().withMinimumValue();
 			DateTime maxDate = dateTime.dayOfMonth().withMaximumValue();
 			
-			logger.debug("-------------"+minDate+" :: "+maxDate);
 			int row = 1;
 
 			while (minDate.monthOfYear().get() == maxDate.monthOfYear().get()) {
-				System.out.println("-------------"+minDate+" :: "+maxDate);
-				HSSFCell createCell = monthSheet.createRow(row++).createCell(1);
+				HSSFCell createCell = monthSheet.createRow(row++).createCell(0);
 				createCell.setCellStyle(getDateCellStyle(pyx2015));
 				createCell.setCellFormula("DATE("
 						+ minDate.getYear()
@@ -108,20 +107,48 @@ public class ExcelService {
 						+ minDate.getDayOfMonth()
 						+ ")");
 				minDate = minDate.plusDays(1);
+				row++;
 			}
-			logger.debug("-------------"+minDate+" :: "+maxDate);
 		}
+		//active day
+		
+		HSSFCell dateCell = getDateCell(dateTime.dayOfMonth().get(), monthSheet);
+		logger.debug(""+dateCell.getRowIndex());
+		dateCell.setAsActiveCell();
+		HSSFCell nextDateCell = getDateCell(dateTime.dayOfMonth().get()+1, monthSheet);
+		HSSFSheet sheet = dateCell.getSheet();
+		sheet.shiftRows(dateCell.getRowIndex() + 1, dateCell.getSheet().getLastRowNum(), 31);
 		return monthSheet;
+	}
+
+	private HSSFCell getDateCell(int dayToSeek, HSSFSheet monthSheet) {
+		for (int i = monthSheet.getFirstRowNum(); i < monthSheet.getLastRowNum(); i++) {
+			HSSFRow row = monthSheet.getRow(i);
+			if(row == null)
+				continue;
+			HSSFCell cell = row.getCell(0);
+			if(HSSFDateUtil.isCellDateFormatted(cell)){
+				String cellFormula = cell.getCellFormula();
+				String dayStr = cellFormula.split(",")[2].replace(")", "");
+				int day = Integer.parseInt(dayStr);
+				if(day == dayToSeek){
+					return cell;
+				}
+			}
+		}
+		return null;
 	}
 
 	HSSFCellStyle dateCellStyle = null;
 	CreationHelper createHelper = null;
 	private HSSFCellStyle getDateCellStyle(HSSFWorkbook pyx2015) {
+		if(dateCellStyle == null)
+		{
 			createHelper = pyx2015.getCreationHelper();
 			dateCellStyle = pyx2015.createCellStyle();
 			dateCellStyle.setDataFormat(
 					createHelper.createDataFormat().getFormat("dd.mm.yyyy"));
-			logger.debug(""+dateCellStyle);
+		}
 		return dateCellStyle;
 	}
 
