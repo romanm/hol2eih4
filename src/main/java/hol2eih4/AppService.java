@@ -1,11 +1,7 @@
 package hol2eih4;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +10,8 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.h2.Driver;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -339,87 +331,6 @@ logger.debug(sql);
 		}
 //		logger.debug(" o - "+readJsonDbFile2map);
 		return readJsonDbFile2map;
-	}
-
-	public void createExcel(List<Map<String, Object>> moveTodayPatientsList) {
-//		testExcel(moveTodayPatientsList);
-		HSSFWorkbook pyx2015 = readExcel();
-		logger.debug(""+pyx2015.getNumberOfSheets());
-		logger.debug(""+pyx2015.getSheetName(0));
-		HSSFSheet sheet1 = pyx2015.getSheetAt(0);
-		Integer rowNr = findFirstDepartmentRow(sheet1);
-		logger.debug(""+rowNr);
-		String stringCellValue = sheet1.getRow(rowNr).getCell(0).getStringCellValue();
-		logger.debug(""+stringCellValue);
-		for (Map<String, Object> map : moveTodayPatientsList) {
-			setRCIntegerValue(sheet1,rowNr,1,parseInt(map, "DEPARTMENT_BED"));
-			Integer parseInt = parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT1DAY");
-			logger.debug(""+parseInt);
-			setRCIntegerValue(sheet1,rowNr,2,parseInt);
-			rowNr++;
-		}
-		saveExcel(pyx2015,AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
-	}
-
-	private void setRCIntegerValue(HSSFSheet sheet1, Integer rowIndex, int cellIndex, Integer value) {
-		if(value != null){
-			sheet1.getRow(rowIndex).getCell(cellIndex).setCellValue(value);
-		}
-	}
-
-	private Integer findFirstDepartmentRow(HSSFSheet sheet1) {
-		for (Row row : sheet1) {
-			Cell cell = row.getCell(0);
-			if(cell != null){
-				String stringCellValue = cell.getStringCellValue();
-				if("Хірургія".equals(stringCellValue)){
-					int rowNum = row.getRowNum();
-					return rowNum;
-				}
-			}
-		}
-		return null;
-	}
-	private HSSFWorkbook readExcel() {
-		try {
-			InputStream inputStream = new FileInputStream(
-					AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
-			return new HSSFWorkbook(inputStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	private void saveExcel(Workbook workbook, String fileName) {
-		// Create a FileOutputStream by passing the excel file name.
-		FileOutputStream outputStream = null;
-		try {
-			outputStream = new FileOutputStream(fileName);
-			// Write the FileOutputStream to workbook object.
-			workbook.write(outputStream);
-			// Finally close the FileOutputStream.
-			outputStream.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void testExcel(List<Map<String, Object>> moveTodayPatientsList) {
-		Workbook workbook = new HSSFWorkbook();
-		// Create two sheet by calling createSheet of workbook.
-		Sheet sheet = workbook.createSheet("Місяць");
-		int startRow = 4;
-		for (int i = 0; i < moveTodayPatientsList.size(); i++) {
-			Map<String, Object> map = moveTodayPatientsList.get(i);
-			String departmentName = (String) map.get("DEPARTMENT_NAME");
-			// Create a row and put some cells in it.
-			Row row = sheet.createRow(i + startRow);
-			Cell cell = row.createCell(0);
-			cell.setCellValue(departmentName);
-		}
-		saveExcel(workbook,AppConfig.applicationExcelFolderPfad+"excel2.xls");
 	}
 
 }

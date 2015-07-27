@@ -31,6 +31,7 @@ public class AppRest {
 	private static final Logger logger = LoggerFactory.getLogger(AppRest.class);
 //	@Autowired private Hol1DbService hol1DbService;
 	@Autowired private AppService appService;
+	@Autowired private ExcelService excelService;
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	@RequestMapping(value = "/readMoveTodayPatients", method = RequestMethod.GET)
@@ -91,7 +92,7 @@ public class AppRest {
 		logger.debug("/create-read-{yyyy}-{mm}-{dd}-excel");
 		DateTime dateTime = new DateTime(yyyy,mm,dd,0,0);
 		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
-		appService.createExcel(moveTodayPatientsList);
+		excelService.createExcel(moveTodayPatientsList, dateTime);
 		return "redirect: /excel/pyx2015.xls"; 
 	}
 	private void saveToHolWeb(Map<String, Object> moveTodayPatients, String url) {
