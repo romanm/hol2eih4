@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,41 +29,45 @@ import org.springframework.stereotype.Component;
 public class ExcelService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExcelService.class);
+		String monthTemplateName = "month_template";
+	
+	HSSFSheet monthTemplateSheet;
 	
 	public void createExcel(List<Map<String, Object>> moveTodayPatientsList, DateTime dateTime) {
 //		testExcel(moveTodayPatientsList);
 		HSSFWorkbook pyx2015 = readExcel();
-		getDateCellStyle(pyx2015);
+		createHelper = pyx2015.getCreationHelper();
+		dateCellStyle = pyx2015.createCellStyle();
+		dateCellStyle.setDataFormat(
+				createHelper.createDataFormat().getFormat("dd.mm.yyyy"));
+
 		logger.debug(""+pyx2015.getNumberOfSheets());
-		logger.debug(""+pyx2015.getSheet("month template").getSheetName());
+		logger.debug(""+pyx2015.getSheet(monthTemplateName).getSheetName());
 		HSSFSheet monthSheet = getMonthSheet(pyx2015, dateTime);
-		HSSFSheet sheet1 = pyx2015.getSheet("month template");
-		Integer rowNr = findFirstDepartmentRow(sheet1);
-		logger.debug(""+rowNr);
-		String stringCellValue = sheet1.getRow(rowNr).getCell(0).getStringCellValue();
-		logger.debug(""+stringCellValue);
+		monthTemplateSheet = pyx2015.getSheet(monthTemplateName);
+		Integer rowNr = findFirstDepartmentRow(monthTemplateSheet);
+		String stringCellValue = monthTemplateSheet.getRow(rowNr).getCell(0).getStringCellValue();
 		for (Map<String, Object> map : moveTodayPatientsList) {
-			setRCIntegerValue(sheet1,rowNr,1,parseInt(map, "DEPARTMENT_BED"));
-			setRCIntegerValue(sheet1,rowNr,2,parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT1DAY"));
-			setRCIntegerValue(sheet1,rowNr,3,parseInt(map, "MOVEDEPARTMENTPATIENT_IN"));
-			setRCIntegerValue(sheet1,rowNr,4,parseInt(map, "MOVEDEPARTMENTPATIENT_INDEPARTMENT"));
-			setRCIntegerValue(sheet1,rowNr,6,parseInt(map, "MOVEDEPARTMENTPATIENT_OUTDEPARTMENT"));
-			setRCIntegerValue(sheet1,rowNr,8,parseInt(map, "MOVEDEPARTMENTPATIENT_OUT"));
-			setRCIntegerValue(sheet1,rowNr,9,parseInt(map, "MOVEDEPARTMENTPATIENT_DEAD"));
-			setRCIntegerValue(sheet1,rowNr,14,parseInt(map, "MOVEDEPARTMENTPATIENT_SITY"));
-			setRCIntegerValue(sheet1,rowNr,15,parseInt(map, "MOVEDEPARTMENTPATIENT_LYING"));
-			setRCIntegerValue(sheet1,rowNr,16,parseInt(map, "MOVEDEPARTMENTPATIENT_CHILD"));
-			setRCIntegerValue(sheet1,rowNr,17,parseInt(map, "MOVEDEPARTMENTPATIENT_INSURED"));
-			setRCIntegerValue(sheet1,rowNr,18,parseInt(map, "MOVEDEPARTMENTPATIENT_CAES"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,1,parseInt(map, "DEPARTMENT_BED"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,2,parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT1DAY"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,3,parseInt(map, "MOVEDEPARTMENTPATIENT_IN"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,4,parseInt(map, "MOVEDEPARTMENTPATIENT_INDEPARTMENT"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,6,parseInt(map, "MOVEDEPARTMENTPATIENT_OUTDEPARTMENT"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,8,parseInt(map, "MOVEDEPARTMENTPATIENT_OUT"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,9,parseInt(map, "MOVEDEPARTMENTPATIENT_DEAD"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,14,parseInt(map, "MOVEDEPARTMENTPATIENT_SITY"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,15,parseInt(map, "MOVEDEPARTMENTPATIENT_LYING"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,16,parseInt(map, "MOVEDEPARTMENTPATIENT_CHILD"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,17,parseInt(map, "MOVEDEPARTMENTPATIENT_INSURED"));
+			setRCIntegerValue(monthTemplateSheet,rowNr,18,parseInt(map, "MOVEDEPARTMENTPATIENT_CAES"));
 			rowNr++;
 		}
 		saveExcel(pyx2015,AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
-		findDate(sheet1);
+		findDate(monthTemplateSheet);
 	}
 
 	private HSSFSheet getMonthSheet(HSSFWorkbook pyx2015, DateTime dateTime) {
 		int monthOfYear = dateTime.getMonthOfYear();
-		logger.debug(""+monthOfYear);
 		HSSFSheet monthSheet = null;
 		int monthSheetNr = 0;
 		int indexOfScheet = 0;
@@ -84,7 +89,7 @@ public class ExcelService {
 		{
 			monthSheet = pyx2015.createSheet((monthOfYear<10?"0":"")+monthOfYear);
 			int numberOfSheets = pyx2015.getNumberOfSheets();
-			pyx2015.setSheetOrder("month template", numberOfSheets - 1);
+			pyx2015.setSheetOrder(monthTemplateName, numberOfSheets - 1);
 			pyx2015.setActiveSheet(numberOfSheets - 2);
 		}
 		//init month in new sheet
@@ -93,12 +98,12 @@ public class ExcelService {
 		{
 			DateTime minDate = dateTime.dayOfMonth().withMinimumValue();
 			DateTime maxDate = dateTime.dayOfMonth().withMaximumValue();
-			
+
 			int row = 1;
 
 			while (minDate.monthOfYear().get() == maxDate.monthOfYear().get()) {
 				HSSFCell createCell = monthSheet.createRow(row++).createCell(0);
-				createCell.setCellStyle(getDateCellStyle(pyx2015));
+				createCell.setCellStyle(dateCellStyle);
 				createCell.setCellFormula("DATE("
 						+ minDate.getYear()
 						+ ","
@@ -112,13 +117,59 @@ public class ExcelService {
 		}
 		//active day
 		
+		logger.debug(""+dateTime);
 		HSSFCell dateCell = getDateCell(dateTime.dayOfMonth().get(), monthSheet);
 		logger.debug(""+dateCell.getRowIndex());
 		dateCell.setAsActiveCell();
 		HSSFCell nextDateCell = getDateCell(dateTime.dayOfMonth().get()+1, monthSheet);
-		HSSFSheet sheet = dateCell.getSheet();
-		sheet.shiftRows(dateCell.getRowIndex() + 1, dateCell.getSheet().getLastRowNum(), 31);
+		if(nextDateCell.getRowIndex()-dateCell.getRowIndex() < 31)
+		{
+			monthSheet.shiftRows(dateCell.getRowIndex() + 1, dateCell.getSheet().getLastRowNum(), 31);
+		}
+		HSSFCell monthTemplateDateCell = pyx2015.getSheet(monthTemplateName).getRow(1).getCell(0);
+		copyWithStyle(getCell(monthTemplateDateCell, 1, 0), initCell(dateCell, 1, 0));
+		int addRowShift = 3;
+		for (int i = 0; i < 23; i++) {
+			copyWithStyle(getCell(monthTemplateDateCell, addRowShift + i, 0), initCell(dateCell, addRowShift + i, 0));
+		}
+		int addColShift = 1;
+		for (int i = 0; i < 18; i++) {
+//			copyValue(getCell(monthTemplateDateCell, 1, addColShift + i), initCell(dateCell, 1, addColShift + i));
+			copyWithStyle(getCell(monthTemplateDateCell, 1, addColShift + i), initCell(dateCell, 1, addColShift + i));
+		}
+		dateCell.getSheet().autoSizeColumn(dateCell.getColumnIndex());
+		dateCell.getSheet().autoSizeColumn(dateCell.getColumnIndex());
+		dateCell.getSheet().getRow(dateCell.getRowIndex()+1).setHeight((short)1400);
 		return monthSheet;
+	}
+
+	private void copyWithStyle(HSSFCell sourceCell, HSSFCell destinationCell) {
+		copyValue(sourceCell, destinationCell);
+		destinationCell.setCellStyle(sourceCell.getCellStyle());
+	}
+
+	private void copyValue(HSSFCell sourceCell, HSSFCell destinationCell) {
+		switch(sourceCell.getCellType()) {
+		case HSSFCell.CELL_TYPE_STRING:
+			destinationCell.setCellValue(sourceCell.getStringCellValue());
+			break;
+		}
+	}
+
+	private HSSFCell getCell(HSSFCell startCell, int rowSkip, int columnSkip) {
+		HSSFRow row = startCell.getSheet().getRow(startCell.getRowIndex() + rowSkip);
+		HSSFCell destinationCell = row.getCell(startCell.getColumnIndex() + columnSkip);
+		return destinationCell;
+	}
+
+	private HSSFCell initCell(HSSFCell startCell, int rowSkip, int columnSkip) {
+		HSSFRow row = startCell.getSheet().getRow(startCell.getRowIndex() + rowSkip);
+		if(row == null)
+			row = startCell.getSheet().createRow(startCell.getRowIndex() + rowSkip);
+		HSSFCell destinationCell = row.getCell(startCell.getColumnIndex() + columnSkip);
+		if(destinationCell == null)
+			destinationCell = row.createCell(startCell.getColumnIndex() + columnSkip);
+		return destinationCell;
 	}
 
 	private HSSFCell getDateCell(int dayToSeek, HSSFSheet monthSheet) {
@@ -127,6 +178,8 @@ public class ExcelService {
 			if(row == null)
 				continue;
 			HSSFCell cell = row.getCell(0);
+			if(cell == null) continue;
+			if(cell.getCellType() == HSSFCell.CELL_TYPE_STRING) continue;
 			if(HSSFDateUtil.isCellDateFormatted(cell)){
 				String cellFormula = cell.getCellFormula();
 				String dayStr = cellFormula.split(",")[2].replace(")", "");
@@ -141,16 +194,6 @@ public class ExcelService {
 
 	HSSFCellStyle dateCellStyle = null;
 	CreationHelper createHelper = null;
-	private HSSFCellStyle getDateCellStyle(HSSFWorkbook pyx2015) {
-		if(dateCellStyle == null)
-		{
-			createHelper = pyx2015.getCreationHelper();
-			dateCellStyle = pyx2015.createCellStyle();
-			dateCellStyle.setDataFormat(
-					createHelper.createDataFormat().getFormat("dd.mm.yyyy"));
-		}
-		return dateCellStyle;
-	}
 
 	private void findDate(HSSFSheet sheet1) {
 		for (Row row : sheet1) {
@@ -214,7 +257,6 @@ public class ExcelService {
 		for (Row row : sheet1) {
 			Cell cell = row.getCell(0);
 			if(cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING){
-				logger.debug(row.getRowNum()+"/"+cell.getCellType());
 				String stringCellValue = cell.getStringCellValue();
 				if("Хірургія".equals(stringCellValue)){
 					int rowNum = row.getRowNum();
@@ -240,4 +282,5 @@ public class ExcelService {
 		}
 		saveExcel(workbook,AppConfig.applicationExcelFolderPfad+"excel2.xls");
 	}
+
 }

@@ -1180,7 +1180,7 @@
 ,"insert into hol1.operation values (994,66,'020031','Лямiнектомiя, видалення кили мiжхребцевого диску',0)"
 ,"insert into hol1.operation values (995,66,'020032','Лямiнектомiя, усунення компресiї спинного мозку',0)"
 ,"insert into hol1.operation values (996,66,'020041','Лямiнектомiя, заднiй спондiлодез',0)"
-,"insert into hol1.operation values (997,66,'020081','Гемiлямiнектомiя, видалення кили мiжхребцевого диску',0)"
+,"insert into hol1.operation values (997,66,'020081','Гемiлямiнектомiя, ви8.0.23.jaдалення кили мiжхребцевого диску',0)"
 ,"insert into hol1.operation values (998,66,'020101','Видалення спинномозкової кили',0)"
 ,"insert into hol1.operation values (999,66,'020151','Видалення кили мiжхребцевого диску iнтралямiнарним доступом',0)"
 ,"insert into hol1.operation values (1000,66,'020201','Декомпресійна трепанацiя черепа при закритiй черепно-мозковій травмі',0)"
@@ -1313,10 +1313,38 @@
 ,"UPDATE hol2.department SET department_sort = 21, department_bed=33 WHERE department_id=9"
 ,"UPDATE hol2.department SET department_sort = 22, department_bed=56, department_active=true WHERE department_id=7"
 ,"DELETE FROM hol2.department WHERE department_id=30"
+]},{
+	"dbVersionId" : 24, "sqls" : [
+"SELECT CONCAT( 'DELETE FROM hol2.movedepartmentpatient WHERE movedepartmentpatient_id = ' , m2.movedepartmentpatient_id) sql_update, TRUE sql_repetable FROM( SELECT m1.department_id, MAX(movedepartmentpatient_id) movedepartmentpatient_id , movedepartmentpatient_date FROM hol2.movedepartmentpatient m1 GROUP BY m1.department_id, m1.MOVEDEPARTMENTPATIENT_DATE) m1 LEFT JOIN hol2.movedepartmentpatient m2 ON m1.department_id=m2.department_id AND m1.movedepartmentpatient_date = m2.movedepartmentpatient_date AND m1.MOVEDEPARTMENTPATIENT_id != m2.movedepartmentpatient_id WHERE m2.department_id is not null"
+]},{
+	"dbVersionId" : 25, "sqls" : [
+"ALTER TABLE hol2.movedepartmentpatient DROP CONSTRAINT IF EXISTS unique_date_department"
+,"ALTER TABLE hol2.movedepartmentpatient ADD CONSTRAINT unique_date_department UNIQUE(movedepartmentpatient_date,department_id)"
+]},{
+	"dbVersionId" : 28, "sqls" : [
+"UPDATE hol2.department SET department_sort = 1, department_bed=60 WHERE department_id=27"
+,"UPDATE hol2.department SET department_sort = 2, department_bed=30 WHERE department_id=24"
+,"UPDATE hol2.department SET department_sort = 3, department_bed=60 WHERE department_id=15"
+,"UPDATE hol2.department SET department_sort = 4, department_bed=35 WHERE department_id=12"
+,"UPDATE hol2.department SET department_sort = 5, department_bed=25 WHERE department_id=25"
+,"UPDATE hol2.department SET department_sort = 6, department_bed=35 WHERE department_id=21"
+,"UPDATE hol2.department SET department_sort = 7, department_bed=60 WHERE department_id=11"
+,"UPDATE hol2.department SET department_sort = 8, department_bed=30 WHERE department_id=28"
+,"UPDATE hol2.department SET department_sort = 9, department_bed=35 WHERE department_id=8"
+,"UPDATE hol2.department SET department_sort = 10, department_bed=50 WHERE department_id=16"
+,"UPDATE hol2.department SET department_sort = 11, department_bed=40 WHERE department_id=13"
+,"UPDATE hol2.department SET department_sort = 12, department_bed=35 WHERE department_id=3"
+,"UPDATE hol2.department SET department_sort = 13, department_bed=50 WHERE department_id=23"
+,"UPDATE hol2.department SET department_sort = 14, department_bed=40 WHERE department_id=4"
+,"UPDATE hol2.department SET department_sort = 15, department_bed=25 WHERE department_id=14"
+,"UPDATE hol2.department SET department_sort = 16, department_bed=35 WHERE department_id=20"
+,"UPDATE hol2.department SET department_sort = 17, department_bed=50 WHERE department_id=26"
+,"UPDATE hol2.department SET department_sort = 18, department_bed=20 WHERE department_id=2"
+,"UPDATE hol2.department SET department_sort = 19, department_bed=12 WHERE department_id=22"
+,"UPDATE hol2.department SET department_sort = 20, department_bed=6 WHERE department_id=5"
+,"UPDATE hol2.department SET department_sort = 21, department_bed=40 WHERE department_id=9"
+,"UPDATE hol2.department SET department_sort = 22, department_bed=70 WHERE department_id=7"
 ]}
 ]
 }
-
-
-
 

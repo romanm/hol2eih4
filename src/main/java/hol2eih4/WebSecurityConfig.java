@@ -18,9 +18,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/home", "/css/**"
                 		, "/js/**" 
                 		, "/img/**" 
-                		, "/create-read-2015-07-21-excel" 
-                		, "/readMove-2015-07-21-Patients" 
-                		, "/mvPatientInWeekDay.html" 
+//                		, "/create-read-2015-07-21-excel" 
+//                		, "/readMove-2015-07-21-Patients" 
+//                		, "/mvPatientInWeekDay.html"
                 		).permitAll()
                 .anyRequest().authenticated()
                 .and()

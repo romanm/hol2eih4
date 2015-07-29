@@ -9,9 +9,6 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.h2.Driver;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -28,6 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AppService {
 	private static final Logger logger = LoggerFactory.getLogger(AppService.class);
 	private JdbcTemplate h2JdbcTemplate;
+	private int cnt_repetable;
+	private int cnt_update;
 	
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 	
@@ -291,12 +290,10 @@ logger.debug(sql);
 					for (String sql : sqls) {
 						if(sql.indexOf("sql_update")>0){
 							System.out.println(sql);
-							List<Map<String, Object>> sqlUpdateList = h2JdbcTemplate.queryForList(sql);
-							for (Map<String, Object> sqlToUpdateMap : sqlUpdateList) {
-								String sqlToUpdate = (String) sqlToUpdateMap.get("sql_update");
-								System.out.println(sqlToUpdate);
-								h2JdbcTemplate.update(sqlToUpdate);
-							}
+							cnt_repetable = 0;
+							cnt_update = 0;
+							sqlUpdate(sql);
+							logger.debug("cnt_update = "+cnt_update+" / cnt_repetable = "+cnt_repetable);
 						}else{
 							logger.debug(sql);
 							h2JdbcTemplate.update(sql);
@@ -310,6 +307,24 @@ logger.debug(sql);
 //		Map<String, Object> readMovePatients = readMovePatients();
 //		logger.debug(""+readMovePatients);
 		System.out.println("----------test-----------");
+	}
+	private void sqlUpdate(String sql) {
+		List<Map<String, Object>> sqlUpdateList = h2JdbcTemplate.queryForList(sql);
+		cnt_update += sqlUpdateList.size();
+		if(sqlUpdateList.size()>0)
+		{
+			for (Map<String, Object> sqlToUpdateMap : sqlUpdateList) {
+				String sqlToUpdate = (String) sqlToUpdateMap.get("sql_update");
+				System.out.println(sqlToUpdate);
+				h2JdbcTemplate.update(sqlToUpdate);
+			}
+			System.out.println("cnt_update = "+cnt_update);
+			if(sql.indexOf("sql_repetable")>0){
+				cnt_repetable++;
+				System.out.println("cnt_repetable = "+cnt_repetable);
+				sqlUpdate(sql);
+			}
+		}
 	}
 
 	final String fileNameDbVersionUpdate = AppConfig.applicationResourcesFolderPfad + "dbVersionUpdate.sql.json.js";
