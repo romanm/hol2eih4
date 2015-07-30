@@ -93,7 +93,7 @@ public class AppRest {
 		DateTime dateTime = new DateTime(yyyy,mm,dd,0,0);
 		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
 		excelService.createExcel(moveTodayPatientsList, dateTime);
-		return "redirect: /excel/pyx2015.xls"; 
+		return "redirect: excel/pyx2015.xls"; 
 	}
 	private void saveToHolWeb(Map<String, Object> moveTodayPatients, String url) {
 		HttpURLConnection postToUrl = postToUrl(moveTodayPatients,url);

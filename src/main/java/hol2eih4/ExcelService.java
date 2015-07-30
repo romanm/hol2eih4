@@ -1,10 +1,13 @@
 package hol2eih4;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +50,15 @@ public class ExcelService {
 		Integer rowNr = findFirstDepartmentRow(monthTemplateSheet);
 		rowNr = setPatientMovesDate(moveTodayPatientsList, monthTemplateSheet, rowNr);
 		saveExcel(pyx2015, AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
+
+		try {
+			Files.copy(new File(AppConfig.applicationExcelFolderPfad+"pyx2015.xls").toPath()
+			, new File(AppConfig.innerExcelFolderPfad+"pyx2015.xls").toPath()
+			, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		findDate(monthTemplateSheet);
 	}
 
@@ -119,7 +131,7 @@ public class ExcelService {
 			}
 		}
 		//active day
-		
+
 		logger.debug(""+dateTime);
 		HSSFCell dateCell = getDateCell(dateTime.dayOfMonth().get(), monthSheet);
 		logger.debug(""+dateCell.getRowIndex());
@@ -131,18 +143,21 @@ public class ExcelService {
 		}
 		HSSFCell monthTemplateDateCell = pyx2015.getSheet(monthTemplateName).getRow(1).getCell(0);
 		copyWithStyle(getCell(monthTemplateDateCell, 1, 0), initCell(dateCell, 1, 0));
-		int addRowShift = 3;
-		for (int i = 0; i < 23; i++) {
-			copyWithStyle(getCell(monthTemplateDateCell, addRowShift + i, 0), initCell(dateCell, addRowShift + i, 0));
+		int rowShift1Department = 3;
+		int departmentCount = 23;
+		for (int i = 0; i < departmentCount; i++) {
+			copyWithStyle(getCell(monthTemplateDateCell, rowShift1Department + i, 0), initCell(dateCell, rowShift1Department + i, 0));
 		}
 		int addColShift = 1;
+		int rowSkipSumme = departmentCount+2;
 		for (int i = 0; i < 18; i++) {
 //			copyValue(getCell(monthTemplateDateCell, 1, addColShift + i), initCell(dateCell, 1, addColShift + i));
 			copyWithStyle(getCell(monthTemplateDateCell, 1, addColShift + i), initCell(dateCell, 1, addColShift + i));
+			copyWithStyle(getCell(monthTemplateDateCell, rowSkipSumme, addColShift + i), initCell(dateCell, rowSkipSumme, addColShift + i));
 		}
 		dateCell.getSheet().autoSizeColumn(dateCell.getColumnIndex());
 		dateCell.getSheet().getRow(dateCell.getRowIndex()+1).setHeight((short)1400);
-		setPatientMovesDate(moveTodayPatientsList, dateCell.getSheet(), dateCell.getRowIndex() + addRowShift);
+		setPatientMovesDate(moveTodayPatientsList, dateCell.getSheet(), dateCell.getRowIndex() + rowShift1Department);
 		return monthSheet;
 	}
 
@@ -155,6 +170,9 @@ public class ExcelService {
 		switch(sourceCell.getCellType()) {
 		case HSSFCell.CELL_TYPE_STRING:
 			destinationCell.setCellValue(sourceCell.getStringCellValue());
+			break;
+		case HSSFCell.CELL_TYPE_FORMULA:
+			destinationCell.setCellFormula(sourceCell.getCellFormula());
 			break;
 		}
 	}
@@ -227,7 +245,7 @@ public class ExcelService {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void setRCIntegerValue(HSSFSheet sheet1, Integer rownum, int cellnum, Integer value) {
 		if(value != null){
 			HSSFRow row = sheet1.getRow(rownum);
