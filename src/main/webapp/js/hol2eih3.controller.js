@@ -27,9 +27,13 @@ var initController = function($scope, $http, $filter){
 	$scope.summ = function(fieldName){
 		var summ = 0;
 		if($scope.moveTodayPatients)
-		angular.forEach($scope.moveTodayPatients.moveTodayPatientsList, function(department, key) {
-			summ += department[fieldName];
-		});
+			angular.forEach($scope.moveTodayPatients.moveTodayPatientsList, function(department, key) {
+				if(department.DEPARTMENT_ID != 5
+				&& department.DEPARTMENT_ID != 22
+				){
+					summ += department[fieldName];
+				}
+			});
 		return summ;
 	}
 

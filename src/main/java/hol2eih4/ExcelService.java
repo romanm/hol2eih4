@@ -19,7 +19,6 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellReference;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,30 +42,34 @@ public class ExcelService {
 
 		logger.debug(""+pyx2015.getNumberOfSheets());
 		logger.debug(""+pyx2015.getSheet(monthTemplateName).getSheetName());
-		HSSFSheet monthSheet = getMonthSheet(pyx2015, dateTime);
+		buildMonthSheet(pyx2015, dateTime, moveTodayPatientsList);
 		monthTemplateSheet = pyx2015.getSheet(monthTemplateName);
 		Integer rowNr = findFirstDepartmentRow(monthTemplateSheet);
-		String stringCellValue = monthTemplateSheet.getRow(rowNr).getCell(0).getStringCellValue();
-		for (Map<String, Object> map : moveTodayPatientsList) {
-			setRCIntegerValue(monthTemplateSheet,rowNr,1,parseInt(map, "DEPARTMENT_BED"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,2,parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT1DAY"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,3,parseInt(map, "MOVEDEPARTMENTPATIENT_IN"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,4,parseInt(map, "MOVEDEPARTMENTPATIENT_INDEPARTMENT"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,6,parseInt(map, "MOVEDEPARTMENTPATIENT_OUTDEPARTMENT"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,8,parseInt(map, "MOVEDEPARTMENTPATIENT_OUT"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,9,parseInt(map, "MOVEDEPARTMENTPATIENT_DEAD"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,14,parseInt(map, "MOVEDEPARTMENTPATIENT_SITY"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,15,parseInt(map, "MOVEDEPARTMENTPATIENT_LYING"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,16,parseInt(map, "MOVEDEPARTMENTPATIENT_CHILD"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,17,parseInt(map, "MOVEDEPARTMENTPATIENT_INSURED"));
-			setRCIntegerValue(monthTemplateSheet,rowNr,18,parseInt(map, "MOVEDEPARTMENTPATIENT_CAES"));
-			rowNr++;
-		}
-		saveExcel(pyx2015,AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
+		rowNr = setPatientMovesDate(moveTodayPatientsList, monthTemplateSheet, rowNr);
+		saveExcel(pyx2015, AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
 		findDate(monthTemplateSheet);
 	}
 
-	private HSSFSheet getMonthSheet(HSSFWorkbook pyx2015, DateTime dateTime) {
+	private Integer setPatientMovesDate(List<Map<String, Object>> moveTodayPatientsList, HSSFSheet sheet, Integer rowNr) {
+		for (Map<String, Object> map : moveTodayPatientsList) {
+			setRCIntegerValue(sheet,rowNr,1,parseInt(map, "DEPARTMENT_BED"));
+			setRCIntegerValue(sheet,rowNr,2,parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT1DAY"));
+			setRCIntegerValue(sheet,rowNr,3,parseInt(map, "MOVEDEPARTMENTPATIENT_IN"));
+			setRCIntegerValue(sheet,rowNr,4,parseInt(map, "MOVEDEPARTMENTPATIENT_INDEPARTMENT"));
+			setRCIntegerValue(sheet,rowNr,6,parseInt(map, "MOVEDEPARTMENTPATIENT_OUTDEPARTMENT"));
+			setRCIntegerValue(sheet,rowNr,8,parseInt(map, "MOVEDEPARTMENTPATIENT_OUT"));
+			setRCIntegerValue(sheet,rowNr,9,parseInt(map, "MOVEDEPARTMENTPATIENT_DEAD"));
+			setRCIntegerValue(sheet,rowNr,14,parseInt(map, "MOVEDEPARTMENTPATIENT_SITY"));
+			setRCIntegerValue(sheet,rowNr,15,parseInt(map, "MOVEDEPARTMENTPATIENT_LYING"));
+			setRCIntegerValue(sheet,rowNr,16,parseInt(map, "MOVEDEPARTMENTPATIENT_CHILD"));
+			setRCIntegerValue(sheet,rowNr,17,parseInt(map, "MOVEDEPARTMENTPATIENT_INSURED"));
+			setRCIntegerValue(sheet,rowNr,18,parseInt(map, "MOVEDEPARTMENTPATIENT_CAES"));
+			rowNr++;
+		}
+		return rowNr;
+	}
+
+	private HSSFSheet buildMonthSheet(HSSFWorkbook pyx2015, DateTime dateTime, List<Map<String, Object>> moveTodayPatientsList) {
 		int monthOfYear = dateTime.getMonthOfYear();
 		HSSFSheet monthSheet = null;
 		int monthSheetNr = 0;
@@ -138,8 +141,8 @@ public class ExcelService {
 			copyWithStyle(getCell(monthTemplateDateCell, 1, addColShift + i), initCell(dateCell, 1, addColShift + i));
 		}
 		dateCell.getSheet().autoSizeColumn(dateCell.getColumnIndex());
-		dateCell.getSheet().autoSizeColumn(dateCell.getColumnIndex());
 		dateCell.getSheet().getRow(dateCell.getRowIndex()+1).setHeight((short)1400);
+		setPatientMovesDate(moveTodayPatientsList, dateCell.getSheet(), dateCell.getRowIndex() + addRowShift);
 		return monthSheet;
 	}
 
@@ -225,9 +228,15 @@ public class ExcelService {
 		}
 	}
 	
-	private void setRCIntegerValue(HSSFSheet sheet1, Integer rowIndex, int cellIndex, Integer value) {
+	private void setRCIntegerValue(HSSFSheet sheet1, Integer rownum, int cellnum, Integer value) {
 		if(value != null){
-			sheet1.getRow(rowIndex).getCell(cellIndex).setCellValue(value);
+			HSSFRow row = sheet1.getRow(rownum);
+			if(row == null)
+				row = sheet1.createRow(rownum);
+			HSSFCell cell = row.getCell(cellnum);
+			if(cell == null)
+				cell = row.createCell(cellnum);
+			cell.setCellValue(value);
 		}
 	}
 
