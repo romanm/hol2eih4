@@ -23,8 +23,17 @@ var initController = function($scope, $http, $filter){
 	$scope.isMyDate = function(d){
 		return parameters.date == $scope.formatDateyyyyMMdd(d);
 	}
-
+	
 	$scope.summ = function(fieldName){
+		var summ = 0;
+		if($scope.moveTodayPatients)
+			angular.forEach($scope.moveTodayPatients.moveTodayPatientsList, function(department, key) {
+				summ += department[fieldName];
+			});
+		return summ;
+	}
+
+	$scope.summMinusDR = function(fieldName){
 		var summ = 0;
 		if($scope.moveTodayPatients)
 			angular.forEach($scope.moveTodayPatients.moveTodayPatientsList, function(department, key) {
