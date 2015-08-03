@@ -31,8 +31,37 @@ public class AppService {
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 	
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
-	public List<Map<String, Object>> readMoveTodayPatients(DateTime today) {
-		logger.debug("readMoveTodayPatients");
+	public List<Map<String, Object>> readMoveTodayPatients(DateTime thisDay) {
+		logger.debug("readMoveTodayPatients - "+thisDay);
+		initPatient1day(thisDay);
+		List<Map<String, Object>> moveTodayPatients = queryDayPatient(thisDay);
+		logger.debug(""+moveTodayPatients.size());
+		logger.debug(""+moveTodayPatients.get(0));
+		return moveTodayPatients;
+	}
+	private void initPatient1day( DateTime thisDay) {
+		String thisDayStr = AppConfig.ddMMyyyDateFormat.format(thisDay.toDate());
+		String sqlCountDay = " SELECT count(*) FROM hol2.movedepartmentpatient "
+				+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy') ";
+		Integer countDay = h2JdbcTemplate.queryForObject( sqlCountDay, Integer.class, new Object[] {thisDayStr});
+		logger.debug(countDay +"  --  "+sqlCountDay.replace("\\?", "'"+thisDayStr+"'"));
+		if(countDay == 0)
+		{
+			DateTime beforeDay = thisDay.minusDays(1);
+			String beforeDayStr = AppConfig.ddMMyyyDateFormat.format(beforeDay.toDate());
+			String sql = "INSERT INTO hol2.movedepartmentpatient "
+			+ " (department_id, movedepartmentpatient_date, movedepartmentpatient_patient1day, movedepartmentpatient_id) "
+			+ " SELECT department_id, PARSEDATETIME( ?,'dd-MM-yyyy'), movedepartmentpatient_patient2day, NEXTVAL('dbid')"
+			+ " FROM hol2.movedepartmentpatient WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')";
+			logger.debug(sql
+					.replaceFirst("\\?", "'"+thisDayStr+"'")
+					.replaceFirst("\\?", "'"+beforeDayStr+"'")
+					);
+			h2JdbcTemplate.update( sql, new Object[] {thisDayStr,beforeDayStr});
+		}
+	}
+	
+	private List<Map<String, Object>> queryDayPatient(DateTime today) {
 		String readMoveTodayPatients_Sql = "SELECT d.department_name, d.department_bed, d.department_id "
 				+ ", m.movedepartmentpatient_date, m.movedepartmentpatient_in , m.movedepartmentpatient_out "
 				+ ", m.movedepartmentpatient_it , m.movedepartmentpatient_bed , m.movedepartmentpatient_patient1day "
@@ -43,11 +72,9 @@ public class AppService {
 				+ " (SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) m "
 				+ " ON d.department_id = m.department_id "
 				+ " WHERE d.department_sort IS NOT NULL "
-				+ " ORDER BY department_sort";
-		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", AppConfig.ddMMyyyDateFormat.format(today.toDate())));
+				+ " ORDER BY department_sort ";
+		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", "'"+AppConfig.ddMMyyyDateFormat.format(today.toDate())+"'" ));
 		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql,AppConfig.ddMMyyyDateFormat.format(today.toDate()));
-		logger.debug(""+moveTodayPatients.size());
-		logger.debug(""+moveTodayPatients.get(0));
 		return moveTodayPatients;
 	}
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
@@ -112,7 +139,7 @@ logger.debug(sql);
 				} );
 		return update;
 	}
-	
+
 	private void insertMoveDepartmentPatient(Map<String, Object> map, DateTime dateTime) {
 		logger.debug("insertMoveDepartmentPatient");
 		Integer dEPARTMENT_ID = (Integer) map.get("DEPARTMENT_ID");
