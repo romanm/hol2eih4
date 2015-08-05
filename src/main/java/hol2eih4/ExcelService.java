@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ public class ExcelService {
 		buildMonthSheet(pyx2015, dateTime, moveTodayPatientsList);
 		monthTemplateSheet = pyx2015.getSheet(monthTemplateName);
 		Integer rowNr = findFirstDepartmentRow(monthTemplateSheet);
-		rowNr = setPatientMovesDate(moveTodayPatientsList, monthTemplateSheet, rowNr);
+//		rowNr = setPatientMovesDate(moveTodayPatientsList, monthTemplateSheet, rowNr);
 		saveExcel(pyx2015, AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
 
 		try {
@@ -71,6 +72,7 @@ public class ExcelService {
 			setRCIntegerValue(sheet,rowNr,6,parseInt(map, "MOVEDEPARTMENTPATIENT_OUTDEPARTMENT"));
 			setRCIntegerValue(sheet,rowNr,8,parseInt(map, "MOVEDEPARTMENTPATIENT_OUT"));
 			setRCIntegerValue(sheet,rowNr,9,parseInt(map, "MOVEDEPARTMENTPATIENT_DEAD"));
+			setRCIntegerValue(sheet,rowNr,10,parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT2DAY"));
 			setRCIntegerValue(sheet,rowNr,14,parseInt(map, "MOVEDEPARTMENTPATIENT_SITY"));
 			setRCIntegerValue(sheet,rowNr,15,parseInt(map, "MOVEDEPARTMENTPATIENT_LYING"));
 			setRCIntegerValue(sheet,rowNr,16,parseInt(map, "MOVEDEPARTMENTPATIENT_CHILD"));
@@ -144,21 +146,45 @@ public class ExcelService {
 		HSSFCell monthTemplateDateCell = pyx2015.getSheet(monthTemplateName).getRow(1).getCell(0);
 		copyWithStyle(getCell(monthTemplateDateCell, 1, 0), initCell(dateCell, 1, 0));
 		int rowShift1Department = 3;
-		int departmentCount = 23;
-		for (int i = 0; i < departmentCount; i++) {
+		int departmentCount = 22;
+		for (int i = 0; i < departmentCount+1; i++) {
+			//department names
 			copyWithStyle(getCell(monthTemplateDateCell, rowShift1Department + i, 0), initCell(dateCell, rowShift1Department + i, 0));
 		}
 		int addColShift = 1;
-		int rowSkipSumme = departmentCount+2;
+		int rowSkipSumme = departmentCount+3;
 		for (int i = 0; i < 18; i++) {
 //			copyValue(getCell(monthTemplateDateCell, 1, addColShift + i), initCell(dateCell, 1, addColShift + i));
+//			//head
 			copyWithStyle(getCell(monthTemplateDateCell, 1, addColShift + i), initCell(dateCell, 1, addColShift + i));
+			//summe formula
 			copyWithStyle(getCell(monthTemplateDateCell, rowSkipSumme, addColShift + i), initCell(dateCell, rowSkipSumme, addColShift + i));
+			addDaySum(dateCell, departmentCount, rowSkipSumme, addColShift + i);
 		}
+		HSSFCell day1SumCell = initCell(dateCell, rowSkipSumme, addColShift);
+		String cellFormula = day1SumCell.getCellFormula();
+		logger.debug(cellFormula);
+		CellRangeAddress cellRangeAddress = new CellRangeAddress(day1SumCell.getRowIndex()-4, day1SumCell.getRowIndex()-3
+				, day1SumCell.getColumnIndex(), day1SumCell.getColumnIndex());
+		logger.debug(cellRangeAddress.formatAsString());
+		day1SumCell.setCellFormula(cellFormula+" - SUM("
+				+ cellRangeAddress.formatAsString()
+				+ ")");
+
 		dateCell.getSheet().autoSizeColumn(dateCell.getColumnIndex());
 		dateCell.getSheet().getRow(dateCell.getRowIndex()+1).setHeight((short)1400);
 		setPatientMovesDate(moveTodayPatientsList, dateCell.getSheet(), dateCell.getRowIndex() + rowShift1Department);
 		return monthSheet;
+	}
+
+	private void addDaySum(HSSFCell dateCell, int departmentCount, int rowSkipSumme, int columnSkip) {
+		HSSFCell day1SumCell = initCell(dateCell, rowSkipSumme, columnSkip);
+		CellRangeAddress cellRangeAddress = new CellRangeAddress(day1SumCell.getRowIndex()-departmentCount, day1SumCell.getRowIndex()-1
+				, day1SumCell.getColumnIndex(), day1SumCell.getColumnIndex());
+		logger.debug(cellRangeAddress.formatAsString());
+		day1SumCell.setCellFormula("SUM("
+				+ cellRangeAddress.formatAsString()
+				+ ")");
 	}
 
 	private void copyWithStyle(HSSFCell sourceCell, HSSFCell destinationCell) {
