@@ -7,9 +7,11 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -96,7 +98,11 @@ public class AppRest {
 		return "redirect: excel/pyx2015.xls"; 
 	}
 	private void saveToHolWeb(Map<String, Object> moveTodayPatients, String url) {
+		
+//		Map<String, Object> moveTodayPatients2 = copyPart(moveTodayPatients);
+		
 		HttpURLConnection postToUrl = postToUrl(moveTodayPatients,url);
+		
 		try {
 			InputStream requestBody = postToUrl.getInputStream();
 			logger.debug(""+requestBody);
@@ -105,6 +111,29 @@ public class AppRest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	private Map<String, Object> copyPart(Map<String, Object> moveTodayPatients) {
+		Map<String, Object> moveTodayPatients2 = new HashMap<String,Object>();
+		Set<String> keySet = moveTodayPatients.keySet();
+		for (String string : keySet) {
+			Object object = moveTodayPatients.get(string);
+			if(string.equals("moveTodayPatientsList"))
+			{
+				List l2 = new ArrayList<>();
+				List l = (List) object;
+				int size = l.size();
+				logger.debug(""+size);
+				for (int i = 0; i < 12; i++) {
+					Object object2 = l.get(i);
+					l2.add(object2);
+				}
+				moveTodayPatients2.put(string, l2);
+			}else{
+				moveTodayPatients2.put(string, object);
+			}
+		}
+		logger.debug(moveTodayPatients2.toString());
+		return moveTodayPatients2;
 	}
 	// 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
 	// 2.1  Зчитування руху хворих за останні 7 днів – readMovePatients
@@ -166,14 +195,13 @@ public class AppRest {
 		logger.debug(url);
 		try {
 			URL obj = new URL(url);
-			logger.debug(""+obj);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 			logger.debug(""+con);
 			con.setRequestMethod("POST");
 			con.setDoOutput(true);
 			con.setRequestProperty("Content-Type", "application/json"); 
 			con.setRequestProperty("charset", "utf-8");
-			logger.debug("1");
+			logger.debug(" mapObject = " + mapObject);
 			mapper.writeValue(con.getOutputStream(), mapObject);
 			logger.debug("2");
 			return con;
