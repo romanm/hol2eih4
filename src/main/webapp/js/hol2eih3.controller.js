@@ -1,6 +1,23 @@
 var initController = function($scope, $http, $filter){
 	console.log("initController");
 	console.log(parameters);
+	$scope.inputType = "text";
+	console.log($scope.inputType);
+	initDocCookie($scope);
+	
+	$scope.setDocCookie = function(cname, cvalue){
+		$scope.docCooke[cname] = cvalue;
+		console.log($scope.docCooke);
+		var ckeys = Object.keys($scope.docCooke);
+		var dc = "";
+		for(var i=0; i<ckeys.length; i++) {
+			dc += (dc.length>0?"; ":"") + ckeys[i] + "=" + $scope.docCooke[ckeys[i]];
+		}
+		document.cookie = dc;
+		console.log(document.cookie);
+	}
+	$scope.setDocCookie("inputType", $scope.inputType);
+	
 	$scope.readMoveTodayPatients = function(){
 		var url = "/readMoveTodayPatients"
 		if(parameters.date){
@@ -28,7 +45,7 @@ var initController = function($scope, $http, $filter){
 		var summ = 0;
 		if($scope.moveTodayPatients)
 			angular.forEach($scope.moveTodayPatients.moveTodayPatientsList, function(department, key) {
-				summ += department[fieldName];
+				summ += department[fieldName]/1;
 			});
 		return summ;
 	}
@@ -89,17 +106,17 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 		console.log(departmentHol);
 		var sum = 0;
 		if(departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY)
-			sum = departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY;
+			sum = departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY/1;
 		if(departmentHol.MOVEDEPARTMENTPATIENT_IN)
-			sum += departmentHol.MOVEDEPARTMENTPATIENT_IN;
+			sum += departmentHol.MOVEDEPARTMENTPATIENT_IN/1;
 		if(departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT)
-			sum += departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT;
+			sum += departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT/1;
 		if(departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT)
-			sum -= departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT;
+			sum -= departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT/1;
 		if(departmentHol.MOVEDEPARTMENTPATIENT_OUT)
-			sum -= departmentHol.MOVEDEPARTMENTPATIENT_OUT;
+			sum -= departmentHol.MOVEDEPARTMENTPATIENT_OUT/1;
 		if(departmentHol.MOVEDEPARTMENTPATIENT_DEAD)
-			sum -= departmentHol.MOVEDEPARTMENTPATIENT_DEAD;
+			sum -= departmentHol.MOVEDEPARTMENTPATIENT_DEAD/1;
 		departmentHol.MOVEDEPARTMENTPATIENT_PATIENT2DAY = sum;
 	}
 

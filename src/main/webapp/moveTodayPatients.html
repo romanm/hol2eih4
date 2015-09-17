@@ -35,14 +35,23 @@ input[type="number"] {
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
+			docCooke
+			{{docCooke}}
 				<h2>Запис поступлення/виписки хворих на сьогодні</h2>
 
 				<table>
 					<tr>
 						<td>{{moveTodayPatients.today | date:'dd MMM yyyy' }}</td>
 						<td><a href="mvPatientInWeekDay.html?date={{paramDate}}"
-						class="btn btn-primary btn-sm"
-						> Перегляд данних </a></td>
+							class="btn btn-primary btn-sm"> Перегляд данних </a> ,
+							поле ввода даних <label> <input type="radio"
+								ng-model="inputType"
+								ng-click="setDocCookie('inputType', 'number')" value="number">
+								з кнопками
+						</label> / <label> <input type="radio" ng-model="inputType"
+								ng-click="setDocCookie('inputType', 'text')" value="text">
+								без
+						</label></td>
 					</tr>
 				</table>
 				<table border="1">
@@ -70,18 +79,35 @@ input[type="number"] {
 						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList">
 						<td>{{departmentHol.DEPARTMENT_NAME}}</td>
 						<td>{{departmentHol.DEPARTMENT_BED}}</td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY" type="number" size="3" ng-change="calc(departmentHol)" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_IN" type="number" size="3" ng-change="calc(departmentHol)"  /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT" type="number" size="3" ng-change="calc(departmentHol)"  /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT" type="number" size="3" ng-change="calc(departmentHol)"  /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUT" type="number" size="3" ng-change="calc(departmentHol)"  /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_DEAD" type="number" size="3" ng-change="calc(departmentHol)" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT2DAY" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_SITY" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_CHILD" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_LYING" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INSURED" type="number" size="3" /></td>
-						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_CAES" type="number" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY" type="{{inputType}}" size="3" ng-change="calc(departmentHol)" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_IN" type="{{inputType}}" size="3" ng-change="calc(departmentHol)"  /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT" type="{{inputType}}" size="3" ng-change="calc(departmentHol)"  /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT" type="{{inputType}}" size="3" ng-change="calc(departmentHol)"  /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_OUT" type="{{inputType}}" size="3" ng-change="calc(departmentHol)"  /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_DEAD" type="{{inputType}}" size="3" ng-change="calc(departmentHol)" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT2DAY" type="{{inputType}}" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_SITY" type="{{inputType}}" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_CHILD" type="{{inputType}}" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_LYING" type="{{inputType}}" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_INSURED" type="{{inputType}}" size="3" /></td>
+						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_CAES" type="{{inputType}}" size="3" /></td>
+					</tr>
+					<tr>
+						<th>ВСЬОГО</th>
+						<th class="center">{{summMinusDR('DEPARTMENT_BED')}}
+						</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_PATIENT1DAY')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_IN')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_INDEPARTMENT')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_OUTDEPARTMENT')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_OUT')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_DEAD')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_PATIENT2DAY')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_SITY')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_CHILD')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_LYING')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_INSURED')}}</th>
+						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_CAES')}}</th>
 					</tr>
 				</table>
 			</div>
