@@ -49,6 +49,7 @@ public class ExcelService {
 		buildMonthSheet(pyx2015, dateTime, moveTodayPatientsList);
 		monthTemplateSheet = pyx2015.getSheet(monthTemplateName);
 		Integer rowNr = findFirstDepartmentRow(monthTemplateSheet);
+		logger.debug("rowNr = "+rowNr);
 //		rowNr = setPatientMovesDate(moveTodayPatientsList, monthTemplateSheet, rowNr);
 		saveExcel(pyx2015, AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
 
@@ -109,6 +110,10 @@ public class ExcelService {
 			pyx2015.setSheetOrder(monthTemplateName, numberOfSheets - 1);
 			pyx2015.setActiveSheet(numberOfSheets - 2);
 		}
+		
+		logger.debug(monthSheet.getFirstRowNum()+"/"+monthSheet.getLastRowNum());
+//		if(true) return monthSheet;
+
 		//init month in new sheet
 		int lastRowNum = monthSheet.getLastRowNum();
 		if(lastRowNum == 0)

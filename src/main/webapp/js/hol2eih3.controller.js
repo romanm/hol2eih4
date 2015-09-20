@@ -3,7 +3,7 @@ var initController = function($scope, $http, $filter){
 	console.log(parameters);
 	$scope.inputType = "text";
 	console.log($scope.inputType);
-	initDocCookie($scope);
+//	initDocCookie($scope);
 	
 	$scope.setDocCookie = function(cname, cvalue){
 		$scope.docCooke[cname] = cvalue;
@@ -16,7 +16,7 @@ var initController = function($scope, $http, $filter){
 		document.cookie = dc;
 		console.log(document.cookie);
 	}
-	$scope.setDocCookie("inputType", $scope.inputType);
+//	$scope.setDocCookie("inputType", $scope.inputType);
 	
 	$scope.readMoveTodayPatients = function(){
 		var url = "/readMoveTodayPatients"
@@ -40,7 +40,7 @@ var initController = function($scope, $http, $filter){
 	$scope.isMyDate = function(d){
 		return parameters.date == $scope.formatDateyyyyMMdd(d);
 	}
-	
+
 	$scope.summ = function(fieldName){
 		var summ = 0;
 		if($scope.moveTodayPatients)

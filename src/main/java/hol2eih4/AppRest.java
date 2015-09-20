@@ -33,7 +33,7 @@ public class AppRest {
 	private static final Logger logger = LoggerFactory.getLogger(AppRest.class);
 //	@Autowired private Hol1DbService hol1DbService;
 	@Autowired private AppService appService;
-	@Autowired private ExcelService excelService;
+	@Autowired private ExcelService2 excelService;
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	@RequestMapping(value = "/readMoveTodayPatients", method = RequestMethod.GET)
