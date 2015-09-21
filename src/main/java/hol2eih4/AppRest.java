@@ -93,8 +93,7 @@ public class AppRest {
 			Principal userPrincipal) {
 		logger.debug("/create-read-{yyyy}-{mm}-{dd}-excel");
 		DateTime dateTime = new DateTime(yyyy,mm,dd,0,0);
-		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
-		excelService.createExcel(moveTodayPatientsList, dateTime);
+		excelService.createExcel(dateTime);
 		return "redirect:excel/" + AppConfig.excelFileName; 
 	}
 	private void saveToHolWeb(Map<String, Object> moveTodayPatients, String url) {

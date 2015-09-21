@@ -61,6 +61,13 @@ public class AppService {
 		}
 	}
 	
+	String sqlDayMoveDepartmiententPat = "SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')";
+	Integer countDayPatient(DateTime dayDate) {
+		String countMoveDayPatients_Sql = "SELECT count(*) FROM ( "+ sqlDayMoveDepartmiententPat+")";
+		Integer countDayPatient = h2JdbcTemplate.queryForObject(countMoveDayPatients_Sql
+				, new Object[]{AppConfig.ddMMyyyDateFormat.format(dayDate.toDate())}, Integer.class);
+		return countDayPatient;
+	}
 	private List<Map<String, Object>> queryDayPatient(DateTime today) {
 		String readMoveTodayPatients_Sql = "SELECT d.department_name, d.department_bed, d.department_id "
 				+ ", m.movedepartmentpatient_date, m.movedepartmentpatient_in , m.movedepartmentpatient_out "
@@ -69,7 +76,9 @@ public class AppService {
 				+ ", m.movedepartmentpatient_outdepartment, m.movedepartmentpatient_sity , m.movedepartmentpatient_child "
 				+ ", m.movedepartmentpatient_lying, m.movedepartmentpatient_insured, m.movedepartmentpatient_caes, m.movedepartmentpatient_id "
 				+ " FROM hol2.department d LEFT JOIN "
-				+ " (SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) m "
+				+ " ("
+				+ sqlDayMoveDepartmiententPat
+				+ ") m "
 				+ " ON d.department_id = m.department_id "
 				+ " WHERE d.department_sort IS NOT NULL "
 				+ " ORDER BY department_sort ";
