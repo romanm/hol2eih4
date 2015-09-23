@@ -14,8 +14,6 @@ import java.util.Map;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellValue;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -32,8 +30,6 @@ public class ExcelService2 {
 	
 	public void createExcel(DateTime dateTime) {
 		HSSFWorkbook pyx2015 = readExcel();
-		FormulaEvaluator evaluator = pyx2015.getCreationHelper().createFormulaEvaluator();
-
 		int monthOfYear = dateTime.getMonthOfYear();
 		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
 		Cell cellSumDay = getCellSumDay(pyx2015, dateTime);
@@ -44,7 +40,9 @@ public class ExcelService2 {
 			Integer countDayPatient = appService.countDayPatient(minusDays);
 			cellSumDay = getCellSumDay(pyx2015, minusDays);
 			Cell cellSumDepartmentIn = cellSumDay.getSheet().getRow(cellSumDay.getRowIndex()).getCell(3);
-			double numberValueSumDepartmentIn = evaluator.evaluate(cellSumDepartmentIn).getNumberValue();
+			double numberValueSumDepartmentIn = cellSumDepartmentIn.getSheet().getWorkbook()
+					.getCreationHelper().createFormulaEvaluator()
+					.evaluate(cellSumDepartmentIn).getNumberValue();
 			if(!(numberValueSumDepartmentIn > 0)&& countDayPatient > 0){
 				moveTodayPatientsList = appService.readMoveTodayPatients(minusDays);
 				setPatientMovesDate(moveTodayPatientsList, cellSumDay);
@@ -57,7 +55,7 @@ public class ExcelService2 {
 			Integer countDayPatient = appService.countDayPatient(plusDays);
 			cellSumDay = getCellSumDay(pyx2015, plusDays);
 			Cell cellSumDepartmentIn = cellSumDay.getSheet().getRow(cellSumDay.getRowIndex()).getCell(3);
-			double numberValueSumDepartmentIn = evaluator.evaluate(cellSumDepartmentIn).getNumberValue();
+			double numberValueSumDepartmentIn = pyx2015.getCreationHelper().createFormulaEvaluator().evaluate(cellSumDepartmentIn).getNumberValue();
 			if(!(numberValueSumDepartmentIn > 0) && countDayPatient > 0){
 				moveTodayPatientsList = appService.readMoveTodayPatients(plusDays);
 				setPatientMovesDate(moveTodayPatientsList, cellSumDay);
@@ -75,8 +73,14 @@ public class ExcelService2 {
 	}
 	private void setPatientMovesDate(List<Map<String, Object>> moveTodayPatientsList, Cell cellSumDay ) {
 		Sheet sheet = cellSumDay.getSheet();
-		int rowNr = getFirstDepartmentRowFromCellSumDay(cellSumDay);
+		int month = (int) sheet.getWorkbook()
+				.getCreationHelper().createFormulaEvaluator()
+				.evaluate(cellSumDay).getNumberValue();
+		int rowNr = getFirstDepartmentRowFromCellSumDay(cellSumDay) - 1;
 		for (Map<String, Object> map : moveTodayPatientsList) {
+			if(month == 1){
+				Cell setRCIntegerValue = setRCIntegerValue(sheet,rowNr,2,parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT1DAY"));
+			}
 			setRCIntegerValue(sheet,rowNr,3,parseInt(map, "MOVEDEPARTMENTPATIENT_IN"));
 			setRCIntegerValue(sheet,rowNr,4,parseInt(map, "MOVEDEPARTMENTPATIENT_INDEPARTMENT"));
 			setRCIntegerValue(sheet,rowNr,6,parseInt(map, "MOVEDEPARTMENTPATIENT_OUTDEPARTMENT"));
@@ -128,14 +132,23 @@ public class ExcelService2 {
 	}
 	
 	private Cell setRCIntegerValue(Sheet sheet1, Integer rownum, int cellnum, Integer value) {
-		if(value != null){
+//		if(value != null){
+		if(true){
 			Row row = sheet1.getRow(rownum);
 			if(row == null)
 				row = sheet1.createRow(rownum);
 			Cell cell = row.getCell(cellnum);
+			
 			if(cell == null)
 				cell = row.createCell(cellnum);
-			cell.setCellValue(value);
+			if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
+				cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+			}
+			if(value == null){
+				cell.setCellValue((String)null);
+			}else{
+				cell.setCellValue(value);
+			}
 			return cell;
 		}
 		return null;

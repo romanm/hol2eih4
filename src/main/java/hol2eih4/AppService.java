@@ -35,8 +35,6 @@ public class AppService {
 		logger.debug("readMoveTodayPatients - "+thisDay);
 		initPatient1day(thisDay);
 		List<Map<String, Object>> moveTodayPatients = queryDayPatient(thisDay);
-		logger.debug(""+moveTodayPatients.size());
-		logger.debug(""+moveTodayPatients.get(0));
 		return moveTodayPatients;
 	}
 	private void initPatient1day( DateTime thisDay) {
@@ -236,7 +234,7 @@ logger.debug(sql);
 		if(valueOnject instanceof Integer)
 			value = (Integer) valueOnject;
 		else
-			if(valueOnject != null)
+			if(valueOnject != null && !"".equals(valueOnject))
 				value = Integer.parseInt(""+valueOnject);
 		return value;
 	}
