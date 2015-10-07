@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="hol2eih3App" ng-controller="MvPatientInWeekDayCtrl" ng-cloak
-	class="ng-cloak">
+<html ng-app="hol2eih3App" ng-controller="MvPatientInWeekDayCtrl" ng-cloak class="ng-cloak">
 <head>
 <meta charset="utf-8" />
 <link rel="stylesheet" href="/css/lib/bootstrap.min.css"></link>
@@ -10,6 +9,33 @@
 body {
 	padding-top: 30px;
 	padding-bottom: 60px;
+}
+table.year tr td {
+	border: 1px solid #DDD;
+	text-align: center;
+}
+td.satsanday {
+	/*
+	color: darkgray;
+	color: cadetblue;
+	color: chocolate;
+	background-color: aliceblue;
+	background-color: azure;
+	*/
+	background-color: honeydew;
+}
+.satsanday a{
+/*
+	color: darkgray;
+	color: cadetblue;
+	color: chocolate;
+	color: coral;
+*/
+}
+.param-date {
+	font-weight: bold;
+	text-decoration: underline;
+	background-color: aqua;
 }
 </style>
 <title>Рух хворих за останні 7 днів</title>
@@ -26,28 +52,46 @@ body {
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-
-				<table border="1">
+				<table class="table table-bordered">
 					<tr>
-						<td>Останні сім днів</td>
-						<td ng-repeat="d in last7day"><a
-							href="mvPatientInWeekDay.html?date={{d | date:'yyyy-MM-dd' }}">
-								<b ng-show="isMyDate(d)"> {{d | date:' dd MMM' }} </b> <span
-								ng-show="!isMyDate(d)"> {{d | date:' dd MMM' }} </span>
-						</a></td>
+						<td><h4><b><u>{{moveTodayPatients.today | date:'dd MMMM yyyy'}}</u></i></b>
+						<small>{{moveTodayPatients.today | date:'EEEE'}}</small>
+						</h4></td>
 						<td><a href="moveTodayPatients.html?date={{paramDate}}"
 							class="btn btn-primary btn-sm"> Редагування </a></td>
-						<td>&nbsp; &nbsp;
-						
-						{{paramDate}}
-						
-						</td>
 						<td><a href="/create-read-{{paramDate}}-excel"> <i
 								class="fa fa-file-excel-o fa-2x"></i>
 						</a></td>
 					</tr>
 				</table>
-				<table border="1">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-3">
+			<!-- 
+				<table border="1" width="100%">
+			 -->
+				<table class="year">
+					<tr>
+						<th ng-repeat="m in [1,2,3,4,5,6,7,8,9,10,11,12]">{{m}}</th>
+					</tr>
+					<tr
+						ng-repeat="d in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]">
+						<td ng-repeat="m in [1,2,3,4,5,6,7,8,9,10,11,12]"
+							data-ng-class="{'param-date': isParamDate(m,d), 'satsanday': satSanDay(m,d)}"><a
+							title="{{formatDateyyyyMMdd(monthDayDate(m,d))}}"
+							ng-if="passedDays(m,d)"
+							href="/mvPatientInWeekDay.html?date={{formatDateyyyyMMdd(monthDayDate(m,d))}}">
+								{{monthDay(m,d)}} </a> <span ng-if="!passedDays(m,d)">
+								{{monthDay(m,d)}} </span></td>
+					</tr>
+					<tr>
+						<th ng-repeat="m in [1,2,3,4,5,6,7,8,9,10,11,12]">{{m}}</th>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-9">
+				<table class="table table-bordered">
 					<tr class="pm_head">
 						<th rowspan="2" class="center">Відділення</th>
 						<th rowspan="2"><img alt="Розгонтуто ліжок" src="/img/bad_is.png"> </th>

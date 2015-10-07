@@ -10,13 +10,13 @@ public class AppConfig {
 //	public final static String hol2webHost = "http://localhost:8084";
 	final static String jsonDbFiles	= "src/main/webapp/db/";
 	//product
-//	final static String applicationFolderPfad	= "/home/hol2/server4/hol2eih4/";
-//	final static String urlDb = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";
-//	final static String applicationExcelFolderPfad	= "/home/hol2/db-h2/excel/";
-	//development
+	final static String applicationFolderPfad	= "/home/hol2/server4/hol2eih4/";
 	final static String urlDb = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";
-	final static String applicationFolderPfad = "/home/roman/algoritmed.com/development/hol2eih4/";
-	final static String applicationExcelFolderPfad = "/home/roman/algoritmed.com/h2-server/db-hol2-eih/";
+	final static String applicationExcelFolderPfad	= "/home/hol2/db-h2/excel/";
+	//development
+//	final static String urlDb = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";
+//	final static String applicationFolderPfad = "/home/roman/algoritmed.com/development/hol2eih4/";
+//	final static String applicationExcelFolderPfad = "/home/roman/algoritmed.com/h2-server/db-hol2-eih/";
 
 	//all
 	final static String excelFileName = "pyx-2015-v.2.xls";

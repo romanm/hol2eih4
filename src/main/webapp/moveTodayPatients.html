@@ -15,7 +15,7 @@ input[type="number"] {
 	width: 60px;
 }
 </style>
-<title>Запис поступлення/виписки хворих на сьогодні</title>
+<title>Запис поступлення/виписки хворих</title>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -39,12 +39,21 @@ input[type="number"] {
 			{{docCooke}}
 				<h2>Запис поступлення/виписки хворих на сьогодні</h2>
 
+<!-- 
 				<table>
+ -->
+				<table class="table table-bordered">
 					<tr>
-						<td>{{moveTodayPatients.today | date:'dd MMM yyyy' }}</td>
-						<td><a href="mvPatientInWeekDay.html?date={{paramDate}}"
-							class="btn btn-primary btn-sm"> Перегляд данних </a> ,
-							поле ввода даних <label> <input type="radio"
+						<td><h4><b><u>{{moveTodayPatients.today | date:'dd MMMM yyyy'}}</u></i></b>
+						<small>{{moveTodayPatients.today | date:'EEEE'}}</small>
+						</h4></td>
+						<td>
+							<button type="button" class="btn btn-primary btn-sm"
+								data-ng-click="saveMoveTodayPatients()" data-toggle="modal">
+								<span class="glyphicon glyphicon-floppy-disk"></span> Запис
+							</button>
+						</td>
+						<td>поле ввода даних <label> <input type="radio"
 								ng-model="inputType"
 								ng-click="setDocCookie('inputType', 'number')" value="number">
 								з кнопками
@@ -52,9 +61,14 @@ input[type="number"] {
 								ng-click="setDocCookie('inputType', 'text')" value="text">
 								без
 						</label></td>
+						<td>Перейти на сторінку <a href="mvPatientInWeekDay.html?date={{paramDate}}"
+							class="btn btn-primary btn-sm"> Перегляд данних </a></td>
 					</tr>
 				</table>
+				<!-- 
 				<table border="1">
+				 -->
+				<table class="table table-bordered">
 					<tr class="pm_head">
 						<th rowspan="2" class="center">Відділення</th>
 						<th rowspan="2"><img alt="Розгонтуто ліжок" src="/img/bad_is.png"> </th>

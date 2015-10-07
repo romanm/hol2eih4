@@ -75,8 +75,12 @@ var initController = function($scope, $http, $filter){
 	console.log(parameters.date);
 
 	if(parameters.date){
+		console.log(parameters.date);
 		$scope.paramDate = parameters.date;
+	}else{
+		$scope.paramDate = $filter('date')(new Date(), "yyyy-MM-dd");
 	}
+	$scope.paramDateDate = new Date(Date.parse($scope.paramDate));
 	
 }
 //  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
@@ -126,6 +130,30 @@ hol2eih3App.controller('MvPatientInWeekDayCtrl', [ '$scope', '$http', '$filter',
 	initController($scope, $http, $filter);
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	$scope.readMoveTodayPatients();
+	$scope.isParamDate = function(month, day){
+		if($scope.paramDateDate.getDate() == day){
+			if(month == $scope.paramDateDate.getMonth() + 1){
+				return true;
+			}
+		}
+		return false;
+	}
+	$scope.monthDayDate = function(month, day){
+		return new Date(new Date().getFullYear(), month - 1, day);
+	}
+	$scope.passedDays = function(m,d){
+		return new Date() > $scope.monthDayDate(m,d);
+	}
+	$scope.satSanDay = function(m,d){
+		return $scope.monthDayDate(m,d).getDay() == 6 || $scope.monthDayDate(m,d).getDay() == 0;
+	}
+	$scope.monthDay = function(m,d){
+		var dt = new Date(new Date().getFullYear(), m, 0).getDate();
+		if(d>dt){
+			return;
+		}
+		return d;
+	}
 }]);
 
 // 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
