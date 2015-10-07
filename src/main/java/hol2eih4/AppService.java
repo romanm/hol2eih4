@@ -87,6 +87,7 @@ public class AppService {
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
 	public void saveMoveTodayPatients(Map<String, Object> moveTodayPatients, DateTime dateTime) {
 		logger.debug("saveMoveTodayPatients "+dateTime);
+		System.out.println("------------------------saveMoveTodayPatients-----------------------------------------------------");
 		List<Map<String, Object>> moveTodayPatientsList = (List) moveTodayPatients.get("moveTodayPatientsList");
 		for (Map<String, Object> map : moveTodayPatientsList) {
 			Integer mOVEDEPARTMENTPATIENT_ID = (Integer) map.get("MOVEDEPARTMENTPATIENT_ID");

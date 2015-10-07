@@ -29,6 +29,7 @@ public class ExcelService2 {
 	@Autowired private AppService appService;
 	
 	public void createExcel(DateTime dateTime) {
+		logger.debug("--------createExcel-----------------------------------------------");
 		HSSFWorkbook pyx2015 = readExcel();
 		int monthOfYear = dateTime.getMonthOfYear();
 		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
@@ -63,7 +64,10 @@ public class ExcelService2 {
 			plusDays = plusDays.plusDays(1);
 		}
 		
-		saveExcel(pyx2015, AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName);
+		String fileName = AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName;
+		logger.debug("--------fileName-----------------------------------");
+		logger.debug(fileName);
+		saveExcel(pyx2015, fileName);
 		makeBackup();
 	}
 	private int getFirstDepartmentRowFromCellSumDay(Cell cellSumDay) {
@@ -73,15 +77,22 @@ public class ExcelService2 {
 	}
 	private void setPatientMovesDate(List<Map<String, Object>> moveTodayPatientsList, Cell cellSumDay ) {
 		Sheet sheet = cellSumDay.getSheet();
+		logger.debug("--------------------------------------------");
+		logger.debug(sheet.getSheetName());
 		int month = (int) sheet.getWorkbook()
 				.getCreationHelper().createFormulaEvaluator()
 				.evaluate(cellSumDay).getNumberValue();
+		logger.debug(""+cellSumDay.getRowIndex()+"/"+cellSumDay.getColumnIndex());
+		logger.debug(""+month);
 		int rowNr = getFirstDepartmentRowFromCellSumDay(cellSumDay) - 1;
+		logger.debug("--------------------------------------------");
 		for (Map<String, Object> map : moveTodayPatientsList) {
 			if(month == 1){
 				Cell setRCIntegerValue = setRCIntegerValue(sheet,rowNr,2,parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT1DAY"));
 			}
-			setRCIntegerValue(sheet,rowNr,3,parseInt(map, "MOVEDEPARTMENTPATIENT_IN"));
+			Integer parseInt = parseInt(map, "MOVEDEPARTMENTPATIENT_IN");
+			logger.debug(""+parseInt);
+			setRCIntegerValue(sheet,rowNr,3,parseInt);
 			setRCIntegerValue(sheet,rowNr,4,parseInt(map, "MOVEDEPARTMENTPATIENT_INDEPARTMENT"));
 			setRCIntegerValue(sheet,rowNr,6,parseInt(map, "MOVEDEPARTMENTPATIENT_OUTDEPARTMENT"));
 			setRCIntegerValue(sheet,rowNr,8,parseInt(map, "MOVEDEPARTMENTPATIENT_OUT"));
@@ -185,8 +196,11 @@ public class ExcelService2 {
 	private HSSFWorkbook readExcel() {
 		try {
 			
+			String string = AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName;
+			logger.debug("------------readExcel--------------------------");
+			logger.debug(string);
 			InputStream inputStream = new FileInputStream(
-					AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName);
+					string);
 			return new HSSFWorkbook(inputStream);
 		} catch (IOException e) {
 			e.printStackTrace();
