@@ -22,7 +22,8 @@ input[type="number"] {
 		<div class="container">
 			<div class="navbar-header">
 				<a href="/"><span class="glyphicon glyphicon-home"></span></a> Запис
-				поступлення/виписки хворих на сьогодні
+				поступлення/виписки хворих на {{paramDateDate | date:'dd MMMM
+				yyyy'}} <small> {{paramDateDate | date:'(EEEE)'}} </small>
 			</div>
 			<div class="collapse navbar-collapse navbar-right">
 				<button type="button" class="btn btn-primary btn-sm"
@@ -35,18 +36,19 @@ input[type="number"] {
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-			docCooke
-			{{docCooke}}
-				<h2>Запис поступлення/виписки хворих на сьогодні</h2>
+				<h2>Запис поступлення/виписки хворих</h2>
 
 <!-- 
 				<table>
  -->
 				<table class="table table-bordered">
 					<tr>
-						<td><h4><b><u>{{moveTodayPatients.today | date:'dd MMMM yyyy'}}</u></i></b>
-						<small>{{moveTodayPatients.today | date:'EEEE'}}</small>
-						</h4></td>
+						<td><a data-toggle="modal" data-target="#myModal">
+								<h4>
+									<b><u>{{paramDateDate | date:'dd MMMM yyyy'}}</u></i></b>
+									<small>{{paramDateDate | date:'EEEE'}}</small>
+								</h4>
+						</a></td>
 						<td>
 							<button type="button" class="btn btn-primary btn-sm"
 								data-ng-click="saveMoveTodayPatients()" data-toggle="modal">
@@ -65,6 +67,41 @@ input[type="number"] {
 							class="btn btn-primary btn-sm"> Перегляд данних </a></td>
 					</tr>
 				</table>
+				
+				 <!-- Modal -->
+				<div class="modal fade" id="myModal" role="dialog">
+					<div class="modal-dialog">
+
+						<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title">День до / день після </h4>
+							</div>
+							<div class="modal-body">
+								<p>
+									<h1><a
+										href="/moveTodayPatients.html?date={{addDay(paramDateDate, -1) | date:'yyyy-MM-dd'}}">
+										&lt;</a> 
+										<b><u>{{paramDateDate | date:'dd MMMM yyyy'}}</u></i></b> 
+									<small>{{paramDateDate |date:'EEEE'}}</small> 
+									<a
+										href="/moveTodayPatients.html?date={{addDay(paramDateDate, 1) | date:'yyyy-MM-dd'}}">&gt;
+									</a></h1>
+								</p>
+								<div class="alert alert-danger">
+									<strong>Пам'ятка! </strong> Перед переходом записати поточні данні.
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">Закрити</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
 				<!-- 
 				<table border="1">
 				 -->

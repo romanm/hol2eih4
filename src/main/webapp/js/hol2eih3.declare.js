@@ -8,17 +8,3 @@ if(window.location.search){
 		parameters[par[0]] = par[1];
 	});
 }
-console.log(parameters);
-
-var initDocCookie = function($scope){
-	console.log(document.cookie);
-	$scope.docCooke = {};
-	var docCooke = document.cookie.split(";");
-	console.log(docCooke);
-	for(var i=0; i<docCooke.length; i++) {
-		var c = docCooke[i].split("=");
-		$scope.docCooke[c[0].trim()] = c[1].trim();
-	}
-	console.log($scope.docCooke);
-	$scope.inputType = $scope.docCooke.inputType;
-}

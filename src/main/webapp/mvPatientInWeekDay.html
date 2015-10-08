@@ -35,7 +35,10 @@ td.satsanday {
 .param-date {
 	font-weight: bold;
 	text-decoration: underline;
+	background-color: coral !important;
+	/*
 	background-color: aqua;
+	*/
 }
 </style>
 <title>Рух хворих за останні 7 днів</title>
@@ -45,7 +48,7 @@ td.satsanday {
 		<div class="container">
 			<div class="navbar-header">
 			<a href="/"><span class="glyphicon glyphicon-home"></span></a>
-			Рух хворих за останні 7 днів</div>
+			Рух хворих за {{moveTodayPatients.today | date:'dd MMMM yyyy EEEE'}}</div>
 			<div class="collapse navbar-collapse navbar-right">.</div>
 		</div>
 	</nav>
@@ -55,7 +58,11 @@ td.satsanday {
 				<table class="table table-bordered">
 					<tr>
 						<td><h4><b><u>{{moveTodayPatients.today | date:'dd MMMM yyyy'}}</u></i></b>
-						<small>{{moveTodayPatients.today | date:'EEEE'}}</small>
+						<small>{{moveTodayPatients.today | date:'EEEE'}}.
+						<b>
+						Рух хворих Хмельницька обласна лікарня.
+						</b>
+						</small>
 						</h4></td>
 						<td><a href="moveTodayPatients.html?date={{paramDate}}"
 							class="btn btn-primary btn-sm"> Редагування </a></td>

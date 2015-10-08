@@ -5,19 +5,6 @@ var initController = function($scope, $http, $filter){
 	console.log($scope.inputType);
 //	initDocCookie($scope);
 	
-	$scope.setDocCookie = function(cname, cvalue){
-		$scope.docCooke[cname] = cvalue;
-		console.log($scope.docCooke);
-		var ckeys = Object.keys($scope.docCooke);
-		var dc = "";
-		for(var i=0; i<ckeys.length; i++) {
-			dc += (dc.length>0?"; ":"") + ckeys[i] + "=" + $scope.docCooke[ckeys[i]];
-		}
-		document.cookie = dc;
-		console.log(document.cookie);
-	}
-//	$scope.setDocCookie("inputType", $scope.inputType);
-	
 	$scope.readMoveTodayPatients = function(){
 		var url = "/readMoveTodayPatients"
 		if(parameters.date){
@@ -64,24 +51,25 @@ var initController = function($scope, $http, $filter){
 	}
 
 	$scope.today = new Date();
-	console.log( $filter('date')( $scope.today, "yyyy-MM-dd"));
 	$scope.last7day = [$scope.today];
 	for (var i = 0; i < 7; i++) {
 		$scope.last7day.push(new Date($scope.last7day[i].getTime() - (24*60*60*1000)));
 	}
 	$scope.last7day.reverse();
 	
-	console.log(parameters);
-	console.log(parameters.date);
 
 	if(parameters.date){
-		console.log(parameters.date);
 		$scope.paramDate = parameters.date;
 	}else{
 		$scope.paramDate = $filter('date')(new Date(), "yyyy-MM-dd");
 	}
 	$scope.paramDateDate = new Date(Date.parse($scope.paramDate));
-	
+	$scope.addDay = function(date, day){
+		var dateOffset = (24*60*60*1000) * day; //5 days
+		var myDate = new Date();
+		myDate.setTime(date.getTime() + dateOffset);
+		return myDate;
+	}
 }
 //  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
@@ -93,9 +81,9 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 	$scope.saveMoveTodayPatients = function(){
 		var url = "/save-"+$scope.paramDate+"-Patients";
 		var today = new Date();
-		console.log(today.getYear()+"-"+today.getMonth()+"-"+today.getDate());
+		console.log(today.getFullYear()+"-"+today.getMonth()+"-"+today.getDate());
 		if(!$scope.paramDate){
-			url = "/save-"+today.getYear()+"-"+today.getMonth()+"-"+today.getDate()+"-Patients";
+			url = "/save-"+today.getFullYear()+"-"+today.getMonth()+"-"+today.getDate()+"-Patients";
 		}
 		console.log(url);
 		$http({ method : 'POST', data : $scope.moveTodayPatients, url : url

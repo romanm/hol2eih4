@@ -43,10 +43,10 @@ public class AppService {
 				+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy') ";
 		Integer countDay = h2JdbcTemplate.queryForObject( sqlCountDay, Integer.class, new Object[] {thisDayStr});
 		logger.debug(countDay +"  --  "+sqlCountDay.replace("\\?", "'"+thisDayStr+"'"));
+		DateTime beforeDay = thisDay.minusDays(1);
+		String beforeDayStr = AppConfig.ddMMyyyDateFormat.format(beforeDay.toDate());
 		if(countDay == 0)
-		{
-			DateTime beforeDay = thisDay.minusDays(1);
-			String beforeDayStr = AppConfig.ddMMyyyDateFormat.format(beforeDay.toDate());
+		{//first init new day
 			String sql = "INSERT INTO hol2.movedepartmentpatient "
 			+ " (department_id, movedepartmentpatient_date, movedepartmentpatient_patient1day, movedepartmentpatient_id) "
 			+ " SELECT department_id, PARSEDATETIME( ?,'dd-MM-yyyy'), movedepartmentpatient_patient2day, NEXTVAL('dbid')"
@@ -56,6 +56,31 @@ public class AppService {
 					.replaceFirst("\\?", "'"+beforeDayStr+"'")
 					);
 			h2JdbcTemplate.update( sql, new Object[] {thisDayStr,beforeDayStr});
+		}else
+		{//update day from previous day
+			//this day start with equals previous day?
+			String sql = "SELECT s1.sum=s2.sum ask FROM "
+					+ "(SELECT sum(MOVEDEPARTMENTPATIENT_PATIENT1DAY) sum FROM hol2.movedepartmentpatient "
+					+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) AS s1,"
+					+ "(SELECT sum(MOVEDEPARTMENTPATIENT_PATIENT1DAY) sum FROM hol2.movedepartmentpatient "
+					+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) AS s2";
+			Boolean same = h2JdbcTemplate.queryForObject( sql, Boolean.class, new Object[] {beforeDayStr, thisDayStr});
+			if(same!=null && !same)
+			{//no
+			//update day from previous day
+				String sql2 = "SELECT concat('UPDATE hol2.movedepartmentpatient SET MOVEDEPARTMENTPATIENT_PATIENT1DAY =',d1.d2"
+						+ " ,' WHERE movedepartmentpatient_id=',movedepartmentpatient_id) u FROM ("
+						+ " SELECT department_id did1, movedepartmentpatient_patient2day d2  FROM hol2.movedepartmentpatient "
+						+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) d1,"
+						+ " (SELECT movedepartmentpatient_id, department_id did2, movedepartmentpatient_patient1day d1  FROM hol2.movedepartmentpatient "
+						+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) d2 "
+						+ " WHERE did1 = did2 and d1.d2 != d2.d1";
+				for (Map<String, Object> map : h2JdbcTemplate.queryForList(sql2,new Object[] {beforeDayStr, thisDayStr})) {
+					String updateSql = (String) map.get("u");
+					logger.debug(""+updateSql);
+					h2JdbcTemplate.execute(updateSql);
+				}
+			}
 		}
 	}
 	
