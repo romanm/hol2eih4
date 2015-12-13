@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellReference;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +46,9 @@ public class ExcelService2 {
 					.getCreationHelper().createFormulaEvaluator()
 					.evaluate(cellSumDepartmentIn).getNumberValue();
 			if(!(numberValueSumDepartmentIn > 0)&& countDayPatient > 0){
+			}
 				moveTodayPatientsList = appService.readMoveTodayPatients(minusDays);
 				setPatientMovesDate(moveTodayPatientsList, cellSumDay);
-			}
 			minusDays = minusDays.minusDays(1);
 		}
 
@@ -58,9 +59,9 @@ public class ExcelService2 {
 			Cell cellSumDepartmentIn = cellSumDay.getSheet().getRow(cellSumDay.getRowIndex()).getCell(3);
 			double numberValueSumDepartmentIn = pyx2015.getCreationHelper().createFormulaEvaluator().evaluate(cellSumDepartmentIn).getNumberValue();
 			if(!(numberValueSumDepartmentIn > 0) && countDayPatient > 0){
+			}
 				moveTodayPatientsList = appService.readMoveTodayPatients(plusDays);
 				setPatientMovesDate(moveTodayPatientsList, cellSumDay);
-			}
 			plusDays = plusDays.plusDays(1);
 		}
 		
@@ -79,19 +80,19 @@ public class ExcelService2 {
 		Sheet sheet = cellSumDay.getSheet();
 		logger.debug("--------------------------------------------");
 		logger.debug(sheet.getSheetName());
-		int month = (int) sheet.getWorkbook()
+		int dayOfMonth = (int) sheet.getWorkbook()
 				.getCreationHelper().createFormulaEvaluator()
 				.evaluate(cellSumDay).getNumberValue();
-		logger.debug(""+cellSumDay.getRowIndex()+"/"+cellSumDay.getColumnIndex());
-		logger.debug(""+month);
+		CellReference cellReference = new CellReference(cellSumDay);
+		logger.debug(""+cellSumDay.getRowIndex()+"/"+cellSumDay.getColumnIndex()+"/"+cellReference);
+		logger.debug(""+dayOfMonth);
 		int rowNr = getFirstDepartmentRowFromCellSumDay(cellSumDay) - 1;
 		logger.debug("--------------------------------------------");
 		for (Map<String, Object> map : moveTodayPatientsList) {
-			if(month == 1){
+			if(dayOfMonth == 1){//first month day
 				Cell setRCIntegerValue = setRCIntegerValue(sheet,rowNr,2,parseInt(map, "MOVEDEPARTMENTPATIENT_PATIENT1DAY"));
 			}
 			Integer parseInt = parseInt(map, "MOVEDEPARTMENTPATIENT_IN");
-			logger.debug(""+parseInt);
 			setRCIntegerValue(sheet,rowNr,3,parseInt);
 			setRCIntegerValue(sheet,rowNr,4,parseInt(map, "MOVEDEPARTMENTPATIENT_INDEPARTMENT"));
 			setRCIntegerValue(sheet,rowNr,6,parseInt(map, "MOVEDEPARTMENTPATIENT_OUTDEPARTMENT"));
