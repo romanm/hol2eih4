@@ -26,19 +26,9 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 
-configurations.all {
-    resolutionStrategy {
-        eachDependency {
-            if (it.requested.group == 'org.apache.tomcat.embed') {
-                it.useVersion '8.0.26'
-            }
-        }
-    }
-}
 
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
-	compile("org.apache.tomcat:tomcat-dbcp:8.0.26")
     compile("org.springframework:spring-jdbc")
     compile("mysql:mysql-connector-java:5.1.36")
     compile("dom4j:dom4j:1.6.1")
