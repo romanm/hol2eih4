@@ -46,26 +46,27 @@ public class FileUploadRest {
 
 		copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.excelFileName
 				, AppConfig.applicationExcelFolderPfad+"backup/"+ backupFileName);
-		
-		if(!AppConfig.excelFileName.equals(fileName))
-			return "Ім’я файла не відповідає дійсності";
-		
-		if (!file.isEmpty()) {
-			try {
-				byte[] bytes = file.getBytes();
-				BufferedOutputStream stream = 
-						new BufferedOutputStream(new FileOutputStream(
-								new File(AppConfig.applicationExcelFolderPfad + AppConfig.excelFileName)));
-				stream.write(bytes);
-				stream.close();
-				copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.excelFileName
-						, AppConfig.innerExcelFolderPfad + AppConfig.excelFileName);
-				return "You successfully uploaded " + fileName + "!";
-			} catch (Exception e) {
-				return "You failed to upload " + fileName + " => " + e.getMessage();
+
+		if (fileName.indexOf(AppConfig.excelFileName) > 0) {
+			if (!file.isEmpty()) {
+				try {
+					byte[] bytes = file.getBytes();
+					BufferedOutputStream stream = 
+							new BufferedOutputStream(new FileOutputStream(
+									new File(AppConfig.applicationExcelFolderPfad + AppConfig.excelFileName)));
+					stream.write(bytes);
+					stream.close();
+					copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.excelFileName
+							, AppConfig.innerExcelFolderPfad + AppConfig.excelFileName);
+					return "You successfully uploaded " + fileName + "!";
+				} catch (Exception e) {
+					return "You failed to upload " + fileName + " => " + e.getMessage();
+				}
+			} else {
+				return "You failed to upload " + fileName + " because the file was empty.";
 			}
-		} else {
-			return "You failed to upload " + fileName + " because the file was empty.";
+		}else{
+			return "Ім’я файла не відповідає дійсності";
 		}
 	}
 	
