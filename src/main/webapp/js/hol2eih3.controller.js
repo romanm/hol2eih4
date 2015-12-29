@@ -86,6 +86,7 @@ hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filte
 			url = "/save-"+today.getFullYear()+"-"+today.getMonth()+"-"+today.getDate()+"-Patients";
 		}
 		console.log(url);
+		console.log($scope.moveTodayPatients);
 		$http({ method : 'POST', data : $scope.moveTodayPatients, url : url
 		}).success(function(data, status, headers, config){
 			console.log(data);

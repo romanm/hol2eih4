@@ -84,7 +84,7 @@ public class AppRest {
 				+ "/save-"
 				+ AppConfig.yyyyMMddDateFormat.format(dateTime.toDate())
 				+ "-Patients";
-		saveToHolWeb(moveTodayPatients, url);
+//		saveToHolWeb(moveTodayPatients, url);
 		return moveTodayPatients;
 	}
 	@RequestMapping(value = "/create-read-{yyyy}-{mm}-{dd}-excel", method = RequestMethod.GET)
@@ -101,6 +101,7 @@ public class AppRest {
 //		Map<String, Object> moveTodayPatients2 = copyPart(moveTodayPatients);
 		
 		HttpURLConnection postToUrl = postToUrl(moveTodayPatients,url);
+		logger.debug(""+postToUrl);
 		
 		try {
 			InputStream requestBody = postToUrl.getInputStream();

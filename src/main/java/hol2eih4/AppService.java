@@ -57,7 +57,10 @@ public class AppService {
 					);
 			h2JdbcTemplate.update( sql, new Object[] {thisDayStr,beforeDayStr});
 		}else
-		{//update day from previous day
+		{
+			if(false)//Не дає можливість справити помилку.
+				return;
+			//update day from previous day
 			//this day start with equals previous day?
 			String sql = "SELECT s1.sum=s2.sum ask FROM "
 					+ "(SELECT sum(MOVEDEPARTMENTPATIENT_PATIENT1DAY) sum FROM hol2.movedepartmentpatient "
@@ -84,7 +87,8 @@ public class AppService {
 		}
 	}
 	
-	String sqlDayMoveDepartmiententPat = "SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')";
+	String sqlDayMoveDepartmiententPat = 
+			"SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')";
 	Integer countDayPatient(DateTime dayDate) {
 		String countMoveDayPatients_Sql = "SELECT count(*) FROM ( "+ sqlDayMoveDepartmiententPat+")";
 		Integer countDayPatient = h2JdbcTemplate.queryForObject(countMoveDayPatients_Sql
@@ -106,7 +110,8 @@ public class AppService {
 				+ " WHERE d.department_sort IS NOT NULL "
 				+ " ORDER BY department_sort ";
 		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", "'"+AppConfig.ddMMyyyDateFormat.format(today.toDate())+"'" ));
-		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql,AppConfig.ddMMyyyDateFormat.format(today.toDate()));
+		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql
+				,AppConfig.ddMMyyyDateFormat.format(today.toDate()));
 		return moveTodayPatients;
 	}
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
@@ -123,9 +128,16 @@ public class AppService {
 					insertMoveDepartmentPatient(map,dateTime);
 			}
 		}
+		testCommit();
+	}
+	private void testCommit() {
+		List<Map<String, Object>> queryForList = h2JdbcTemplate.queryForList(
+				"SELECT * FROM hol2.movedepartmentpatient  WHERE movedepartmentpatient_id = 8491"
+				);
+		logger.debug("queryForList = \n "+queryForList);
 	}
 	private int updateMoveDepartmentPatient(Map<String, Object> map) {
-		logger.debug("updateMoveDepartmentPatient");
+		logger.debug(""+map);
 		Integer mOVEDEPARTMENTPATIENT_IT = parseInt(map,"MOVEDEPARTMENTPATIENT_IT");
 		Integer mOVEDEPARTMENTPATIENT_BED = parseInt(map,"MOVEDEPARTMENTPATIENT_BED");
 		Integer mOVEDEPARTMENTPATIENT_PATIENT1DAY = parseInt(map,"MOVEDEPARTMENTPATIENT_PATIENT1DAY");
@@ -148,13 +160,40 @@ public class AppService {
 		Integer mOVEDEPARTMENTPATIENT_ID = (Integer) map.get("MOVEDEPARTMENTPATIENT_ID");
 		final String sql = "UPDATE hol2.movedepartmentpatient "
 				+ " SET "
-				+ " MOVEDEPARTMENTPATIENT_IT  = ?, MOVEDEPARTMENTPATIENT_BED  = ?, MOVEDEPARTMENTPATIENT_PATIENT1DAY = ?  "
-				+ ", MOVEDEPARTMENTPATIENT_PATIENT2DAY  = ?, MOVEDEPARTMENTPATIENT_DEAD  = ?, MOVEDEPARTMENTPATIENT_INDEPARTMENT = ?  "
+				+ " MOVEDEPARTMENTPATIENT_IT = ?, MOVEDEPARTMENTPATIENT_BED  = ?, MOVEDEPARTMENTPATIENT_PATIENT1DAY = ?  "
+				+ ", MOVEDEPARTMENTPATIENT_PATIENT2DAY  = ?, MOVEDEPARTMENTPATIENT_DEAD  = ?, MOVEDEPARTMENTPATIENT_INDEPARTMENT = ? "
 				+ ", MOVEDEPARTMENTPATIENT_OUTDEPARTMENT = ?, MOVEDEPARTMENTPATIENT_SITY  = ?, MOVEDEPARTMENTPATIENT_CHILD = ?  "
 				+ ", MOVEDEPARTMENTPATIENT_LYING = ?, MOVEDEPARTMENTPATIENT_INSURED  = ? "
 				+ ", MOVEDEPARTMENTPATIENT_IN  = ?, MOVEDEPARTMENTPATIENT_OUT = ? , MOVEDEPARTMENTPATIENT_CAES = ?  "
 				+ " WHERE movedepartmentpatient_id = ?";
-logger.debug(sql);
+		String sql2 = sql
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_IT)
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_BED)
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_PATIENT1DAY)
+		
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_PATIENT2DAY)
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_DEAD)
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_INDEPARTMENT)
+		
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_OUTDEPARTMENT)
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_SITY)
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_CHILD)
+		
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_LYING)
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_INSURED)
+		
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_IN)
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_OUT)
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_CAES)
+		
+		.replaceFirst("\\?", ""+mOVEDEPARTMENTPATIENT_ID);
+		logger.debug(sql2);
+		/*
+		int update = h2JdbcTemplate.update( sql2);
+		logger.debug(""+update);
+
+		return update;
+ * */
 		int update = h2JdbcTemplate.update( sql, new Object[] {
 				mOVEDEPARTMENTPATIENT_IT, mOVEDEPARTMENTPATIENT_BED, mOVEDEPARTMENTPATIENT_PATIENT1DAY
 				,mOVEDEPARTMENTPATIENT_PATIENT2DAY, mOVEDEPARTMENTPATIENT_DEAD, mOVEDEPARTMENTPATIENT_INDEPARTMENT
@@ -162,13 +201,13 @@ logger.debug(sql);
 				,mOVEDEPARTMENTPATIENT_LYING, mOVEDEPARTMENTPATIENT_INSURED
 				,mOVEDEPARTMENTPATIENT_IN, mOVEDEPARTMENTPATIENT_OUT, mOVEDEPARTMENTPATIENT_CAES
 				, mOVEDEPARTMENTPATIENT_ID}
-		, new int[] {
-				Types.INTEGER, Types.INTEGER, Types.INTEGER
-				,Types.INTEGER, Types.INTEGER, Types.INTEGER
-				,Types.INTEGER, Types.INTEGER, Types.INTEGER
-				,Types.INTEGER, Types.INTEGER
-				,Types.INTEGER, Types.INTEGER, Types.INTEGER
-				, Types.INTEGER
+		, new int[] { 
+Types.INTEGER, Types.INTEGER, Types.INTEGER,
+Types.INTEGER, Types.INTEGER,Types.INTEGER,
+Types.INTEGER, Types.INTEGER, Types.INTEGER,
+Types.INTEGER, Types.INTEGER, Types.INTEGER,
+Types.INTEGER, Types.INTEGER,
+Types.INTEGER
 				} );
 		return update;
 	}
@@ -256,12 +295,12 @@ logger.debug(sql);
 	}
 	private Integer parseInt(Map<String, Object> map, String key) {
 		Integer value = null;
-		Object valueOnject = map.get(key);
-		if(valueOnject instanceof Integer)
-			value = (Integer) valueOnject;
+		Object valueObject = map.get(key);
+		if(valueObject instanceof Integer)
+			value = (Integer) valueObject;
 		else
-			if(valueOnject != null && !"".equals(valueOnject))
-				value = Integer.parseInt(""+valueOnject);
+			if(valueObject != null && !"".equals(valueObject))
+				value = Integer.parseInt(""+valueObject);
 		return value;
 	}
 	// 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
@@ -363,10 +402,8 @@ logger.debug(sql);
 				h2JdbcTemplate.update("INSERT INTO dbversion (dbversion_id) VALUES (?)",dbVersionId);
 			}
 		}
-		System.out.println("---------test------------");
 //		Map<String, Object> readMovePatients = readMovePatients();
 //		logger.debug(""+readMovePatients);
-		System.out.println("----------test-----------");
 	}
 	private void sqlUpdate(String sql) {
 		List<Map<String, Object>> sqlUpdateList = h2JdbcTemplate.queryForList(sql);
