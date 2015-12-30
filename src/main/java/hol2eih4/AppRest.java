@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +88,15 @@ public class AppRest {
 				+ "-Patients";
 //		saveToHolWeb(moveTodayPatients, url);
 		return moveTodayPatients;
+	}
+	@RequestMapping(value = "/init-excel", method = RequestMethod.GET)
+	public void initExcell(HttpServletResponse response){
+		try {
+			excelService.initExcel(response);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	@RequestMapping(value = "/create-read-{yyyy}-{mm}-{dd}-excel", method = RequestMethod.GET)
 	public String createReadExcell(

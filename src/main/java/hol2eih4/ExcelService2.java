@@ -11,6 +11,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -29,9 +33,52 @@ public class ExcelService2 {
 	private static final Logger logger = LoggerFactory.getLogger(ExcelService2.class);
 	@Autowired private AppService appService;
 	
+	public void initExcel(HttpServletResponse response) throws IOException {
+		logger.debug("--------initExcel-----------------------------------------------");
+		String fileName = "pyx-2016-v.2.pattern.xls";
+		String fileName2 = "pyx-2016-v.2.pattern2.xls";
+		String filePath = AppConfig.applicationExcelFolderPfad+fileName;
+		responseStrings(response, filePath);
+		HSSFWorkbook pyxPattern = readExcel(filePath);
+		for (String m : urkMonthNames) {
+			if(m.length()<2)
+				continue;
+			HSSFSheet monthSheet = pyxPattern.getSheet(m);
+			logger.debug(m+" "+monthSheet);
+			responseStrings(response, ""+monthSheet);
+			for (Row row : monthSheet) {
+				Cell cell = row.getCell(22);
+				if(cell != null && cell.getCellType() == Cell.CELL_TYPE_FORMULA){
+					Double numericCellValue = cell.getNumericCellValue();
+					int intValue = numericCellValue.intValue();
+					int rowIndex = cell.getRowIndex();
+					String string = "d "+intValue+"/"+rowIndex;
+					logger.debug(string);
+					responseStrings(response, string);
+					int rowData = rowIndex-1;
+					for (int r = 1; r <= 22; r++) {
+						for (int c = 3; c <= 18; c++) {
+							if(c==10) continue;
+							HSSFRow row2 = monthSheet.getRow(rowIndex-r);
+							HSSFCell cell2 = row2.getCell(c);
+							cell2.setCellValue("");
+//							row2.removeCell(cell2);
+						}
+					}
+					
+				}
+			}
+		}
+		logger.debug(""+pyxPattern);
+		saveExcel(pyxPattern, AppConfig.applicationExcelFolderPfad+fileName2);
+	}
+	private void responseStrings(HttpServletResponse response, String string) throws IOException {
+		response.getOutputStream().write(string.getBytes());
+		response.getOutputStream().write("\n".getBytes());
+	}
 	public void createExcel(DateTime dateTime) {
 		logger.debug("--------createExcel-----------------------------------------------");
-		HSSFWorkbook pyx2015 = readExcel();
+		HSSFWorkbook pyx2015 = readExcel(AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName);
 		int monthOfYear = dateTime.getMonthOfYear();
 		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
 		Cell cellSumDay = getCellSumDay(pyx2015, dateTime);
@@ -128,6 +175,7 @@ public class ExcelService2 {
 	}
 	
 	private void saveExcel(Workbook workbook, String fileName) {
+		logger.debug(fileName);
 		// Create a FileOutputStream by passing the excel file name.
 		FileOutputStream outputStream = null;
 		try {
@@ -194,14 +242,14 @@ public class ExcelService2 {
 		}
 	}
 	
-	private HSSFWorkbook readExcel() {
+	private HSSFWorkbook readExcel(String filePath) {
 		try {
 			
-			String string = AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName;
+//			String filePath = AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName;
 			logger.debug("------------readExcel--------------------------");
-			logger.debug(string);
+			logger.debug(filePath);
 			InputStream inputStream = new FileInputStream(
-					string);
+					filePath);
 			return new HSSFWorkbook(inputStream);
 		} catch (IOException e) {
 			e.printStackTrace();
