@@ -60,23 +60,30 @@ td.satsanday {
 			-->
 				<table class="table-bordered" width="100%">
 					<tr>
-						<td><h4><b><u>{{moveTodayPatients.today | date:'dd MMMM yyyy'}}</u></i></b>
-						<small>{{moveTodayPatients.today | date:'EEEE'}}.
-						<b>
-						Рух хворих Хмельницька обласна лікарня.
-						</b>
-						</small>
-						</h4></td>
+						<td><h4>
+								<b><u>{{moveTodayPatients.today | date:'dd MMMM yyyy'}}</u></i></b>
+								<small>{{moveTodayPatients.today | date:'EEEE'}}. <b>
+										Рух хворих Хмельницька обласна лікарня. </b>
+								</small>
+							</h4></td>
 						<td><a href="moveTodayPatients.html?date={{paramDate}}"
 							class="btn btn-primary btn-sm"> Редагування </a></td>
-						<td>
-						З записом даних за місяць
-						<a href="/create-read-{{paramDate}}-excel"> <i
+						<td>З записом даних за місяць <a
+							href="/create-read-{{paramDate}}-excel"> <i
 								class="fa fa-file-excel-o fa-2x"></i>
 						</a></td>
+						<!--
 						<td><a href="/excel/pyx-2015-v.2.xls"> <i
+						<a href="/excel/{{excelFileName}}"> <i
 								class="fa fa-file-excel-o fa-2x"></i>
-						</a></td>
+						</a>
+						-->
+						<td>
+						<a href="/file-excel-{{2016}}"> <i
+								class="fa fa-file-excel-o fa-2x"></i>
+						</a>
+						
+						</td>
 						<td><a href="uploadExcel.html"> Зберегти Excel на сайті.
 						</a></td>
 					</tr>
@@ -95,7 +102,8 @@ td.satsanday {
 					<tr
 						ng-repeat="d in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]">
 						<td ng-repeat="m in [1,2,3,4,5,6,7,8,9,10,11,12]"
-							data-ng-class="{'param-date': isParamDate(m,d), 'satsanday': satSanDay(m,d)}"><a
+							data-ng-class="{'param-date': isParamDate(m,d), 'satsanday': satSanDay(m,d)}">
+							<a
 							title="{{formatDateyyyyMMdd(monthDayDate(m,d))}}"
 							ng-if="passedDays(m,d)"
 							href="/mvPatientInWeekDay.html?date={{formatDateyyyyMMdd(monthDayDate(m,d))}}">
@@ -171,7 +179,11 @@ td.satsanday {
 </body>
 <script src="/js/lib/jquery-2.1.4.min.js"></script>
 <script src="/js/lib/bootstrap.min.js"></script>
+<!-- 
 <script src="/js/lib/angular_uk.min.js"></script>
+ -->
+<script src="/js/lib/angular.min.js"></script>
+<script src="/js/lib/angular-cookies.min.js"></script>
 <script src="/js/lib/ui-bootstrap-tpls-0.13.0.min.js"></script>
 <script src='/js/lib/textAngular.min.js'></script>
 <script src='/js/lib/textAngular-sanitize.min.js'></script>

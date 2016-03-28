@@ -1,9 +1,15 @@
-var initController = function($scope, $http, $filter){
+var initController = function($scope, $http, $filter, $cookies){
 	console.log("initController");
 	console.log(parameters);
 	$scope.inputType = "text";
 	console.log($scope.inputType);
 //	initDocCookie($scope);
+	
+	initDateVariables = function(){
+		var today = new Date($scope.moveTodayPatients.today);
+		$cookies.put('year', today.getFullYear());
+		$scope.excelFileName = "pyx-" +today.getFullYear() + "-v.2.xls";
+	}
 	
 	$scope.readMoveTodayPatients = function(){
 		var url = "/readMoveTodayPatients"
@@ -13,8 +19,8 @@ var initController = function($scope, $http, $filter){
 		console.log(url);
 		$http({ method : 'GET', url : url
 		}).success(function(data, status, headers, config) {
-			console.log(data);
 			$scope.moveTodayPatients = data;
+			initDateVariables();
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
@@ -63,7 +69,9 @@ var initController = function($scope, $http, $filter){
 	}else{
 		$scope.paramDate = $filter('date')(new Date(), "yyyy-MM-dd");
 	}
+	console.log("------------------");
 	$scope.paramDateDate = new Date(Date.parse($scope.paramDate));
+	console.log($scope.paramDateDate);
 	$scope.addDay = function(date, day){
 		var dateOffset = (24*60*60*1000) * day; //5 days
 		var myDate = new Date();
@@ -72,8 +80,9 @@ var initController = function($scope, $http, $filter){
 	}
 }
 //  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
-hol2eih3App.controller('SaveCopeTodayPatientsCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
-	initController($scope, $http, $filter);
+hol2eih3App.controller('SaveCopeTodayPatientsCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+	initController($scope, $http, $filter, $cookies);
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	$scope.readMoveTodayPatients();
 	
@@ -158,13 +167,41 @@ fileUploadApp.controller('fileUploadCtrl', ['$scope', 'Upload', '$timeout', '$ht
 		});
 	}
 
-
-
 }]);
-hol2eih3App.controller('MvPatientInWeekDayCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
+
+hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+                                                       , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+	console.log("DepartmentMonthMovementH2Ctrl");
+	var url = "/r/readBedDayH2-2-2";
+	$http({ method : 'GET', url : url
+	}).success(function(data, status, headers, config) {
+		$scope.bedDay = data;
+		console.log($scope.bedDay);
+//			initDateVariables();
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+}]);
+
+hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+	console.log("DepartmentMonthMovementCtrl");
+	var url = "/r/readBedDayMySql-2";
+		$http({ method : 'GET', url : url
+		}).success(function(data, status, headers, config) {
+			$scope.bedDay = data;
+			console.log($scope.bedDay);
+//			initDateVariables();
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+}]);
+
+hol2eih3App.controller('MvPatientInWeekDayCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 	console.log("/readMove-day-Patients");
-	initController($scope, $http, $filter);
-	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
+	initController($scope, $http, $filter, $cookies);
+	// 1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	$scope.readMoveTodayPatients();
 	$scope.isParamDate = function(month, day){
 		if($scope.paramDateDate.getDate() == day){
@@ -175,7 +212,9 @@ hol2eih3App.controller('MvPatientInWeekDayCtrl', [ '$scope', '$http', '$filter',
 		return false;
 	}
 	$scope.monthDayDate = function(month, day){
-		return new Date(new Date().getFullYear(), month - 1, day);
+		var d2 = new Date($cookies.get('year'), month - 1, day);
+		return d2;
+//		return new Date(new Date().getFullYear(), month - 1, day);
 	}
 	$scope.passedDays = function(m,d){
 		return new Date() > $scope.monthDayDate(m,d);

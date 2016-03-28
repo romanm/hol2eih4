@@ -39,25 +39,24 @@ public class FileUploadRest {
 		File dm = openCreateFolder(dbFileViewDir);
 		logger.debug(""+dm);
 		logger.debug(""+file);
-		logger.debug(""+fileName);
-		logger.debug(""+AppConfig.excelFileName);
-		String backupFileName = backupFileName(AppConfig.excelFileName);
+		logger.debug(""+fileName+" / "+AppConfig.getExcelfilename()+" / "+fileName.indexOf(AppConfig.getExcelfilename()));
+		String backupFileName = backupFileName(AppConfig.getExcelfilename());
 		logger.debug(backupFileName);
 
-		copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.excelFileName
+		copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.getExcelfilename()
 				, AppConfig.applicationExcelFolderPfad+"backup/"+ backupFileName);
 
-		if (fileName.indexOf(AppConfig.excelFileName) > 0) {
+		if (fileName.indexOf(AppConfig.getExcelfilename()) >= 0) {
 			if (!file.isEmpty()) {
 				try {
 					byte[] bytes = file.getBytes();
 					BufferedOutputStream stream = 
 							new BufferedOutputStream(new FileOutputStream(
-									new File(AppConfig.applicationExcelFolderPfad + AppConfig.excelFileName)));
+									new File(AppConfig.applicationExcelFolderPfad + AppConfig.getExcelfilename())));
 					stream.write(bytes);
 					stream.close();
-					copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.excelFileName
-							, AppConfig.innerExcelFolderPfad + AppConfig.excelFileName);
+					copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.getExcelfilename()
+							, AppConfig.innerExcelFolderPfad + AppConfig.getExcelfilename());
 					return "You successfully uploaded " + fileName + "!";
 				} catch (Exception e) {
 					return "You failed to upload " + fileName + " => " + e.getMessage();

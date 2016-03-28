@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
-import org.h2.Driver;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,19 +23,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component("appService")
 public class AppService {
 	private static final Logger logger = LoggerFactory.getLogger(AppService.class);
-	private JdbcTemplate h2JdbcTemplate;
+	private JdbcTemplate h2JdbcTemplate, mySqlJdbcTemplate;
 	private int cnt_repetable;
 	private int cnt_update;
 	
-	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
+	public List<Map<String, Object>> readBedDayOfMonthH2(Integer m1, Integer m2) {
+		String bedDayH2 = SqlHolder.bedDayH2;
+		logger.debug(bedDayH2);
+		List<Map<String, Object>> bedDayOfMonthH2 = h2JdbcTemplate.queryForList(bedDayH2);
+		return bedDayOfMonthH2;
+	}
+
+	public List<Map<String, Object>> readBedDayOfMonthMySql(Integer mm) {
+		List<Map<String, Object>> bedDayOfMonthMySql = mySqlJdbcTemplate.queryForList(SqlHolder.bedDayMySql);
+		return bedDayOfMonthMySql;
+	}
 	
+	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
+
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	public List<Map<String, Object>> readMoveTodayPatients(DateTime thisDay) {
 		logger.debug("readMoveTodayPatients - "+thisDay);
-		initPatient1day(thisDay);
+		int dayOfMonth = thisDay.getDayOfMonth();
+		if(dayOfMonth != 1)
+			initPatient1day(thisDay);
 		List<Map<String, Object>> moveTodayPatients = queryDayPatient(thisDay);
 		return moveTodayPatients;
 	}
+
 	private void initPatient1day( DateTime thisDay) {
 		String thisDayStr = AppConfig.ddMMyyyDateFormat.format(thisDay.toDate());
 		String sqlCountDay = " SELECT count(*) FROM hol2.movedepartmentpatient "
@@ -47,7 +61,7 @@ public class AppService {
 		String beforeDayStr = AppConfig.ddMMyyyDateFormat.format(beforeDay.toDate());
 		if(countDay == 0)
 		{//first init new day
-			String sql = "INSERT INTO hol2.movedepartmentpatient "
+			String sql = " INSERT INTO hol2.movedepartmentpatient "
 			+ " (department_id, movedepartmentpatient_date, movedepartmentpatient_patient1day, movedepartmentpatient_id) "
 			+ " SELECT department_id, PARSEDATETIME( ?,'dd-MM-yyyy'), movedepartmentpatient_patient2day, NEXTVAL('dbid')"
 			+ " FROM hol2.movedepartmentpatient WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')";
@@ -58,26 +72,46 @@ public class AppService {
 			h2JdbcTemplate.update( sql, new Object[] {thisDayStr,beforeDayStr});
 		}else
 		{
-			if(false)//Не дає можливість справити помилку.
-				return;
-			//update day from previous day
-			//this day start with equals previous day?
-			String sql = "SELECT s1.sum=s2.sum ask FROM "
-					+ "(SELECT sum(MOVEDEPARTMENTPATIENT_PATIENT1DAY) sum FROM hol2.movedepartmentpatient "
-					+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) AS s1,"
-					+ "(SELECT sum(MOVEDEPARTMENTPATIENT_PATIENT1DAY) sum FROM hol2.movedepartmentpatient "
-					+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) AS s2";
-			Boolean same = h2JdbcTemplate.queryForObject( sql, Boolean.class, new Object[] {beforeDayStr, thisDayStr});
-			if(same!=null && !same)
+			String sqlSumPatientBeginDay = "SELECT sum(MOVEDEPARTMENTPATIENT_PATIENT1DAY) sum FROM hol2.movedepartmentpatient "
+					+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')";
+			logger.debug(sqlSumPatientBeginDay
+					.replaceFirst("\\?", "'"+thisDayStr+"'")
+					);
+			Integer sumPatientBeginDay = h2JdbcTemplate.queryForObject( sqlSumPatientBeginDay, Integer.class, new Object[] {thisDayStr});
+			logger.debug(sumPatientBeginDay+"");
+			Boolean sameEndBeforDayStartThisDay;
+			if(sumPatientBeginDay == null)
+			{
+				sameEndBeforDayStartThisDay = false;
+			}else{
+				//update day from previous day
+				//this day start with equals previous day?
+				String sql = "SELECT s1.sum= ? ask FROM "
+						+ "(SELECT sum(MOVEDEPARTMENTPATIENT_PATIENT1DAY) sum FROM hol2.movedepartmentpatient "
+						+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) AS s1";
+				logger.debug(sql
+						.replaceFirst("\\?", "'"+sumPatientBeginDay+"'")
+						.replaceFirst("\\?", "'"+beforeDayStr+"'")
+						);
+				sameEndBeforDayStartThisDay = h2JdbcTemplate.queryForObject( sql, Boolean.class, new Object[] {sumPatientBeginDay, beforeDayStr});
+			}
+			logger.debug(sameEndBeforDayStartThisDay+"");
+			logger.debug((sameEndBeforDayStartThisDay!=null && !sameEndBeforDayStartThisDay)+"");
+//			if(sameEndBeforDayStartThisDay!=null && !sameEndBeforDayStartThisDay)
+			if(!sameEndBeforDayStartThisDay)
 			{//no
 			//update day from previous day
-				String sql2 = "SELECT concat('UPDATE hol2.movedepartmentpatient SET MOVEDEPARTMENTPATIENT_PATIENT1DAY =',d1.d2"
+				String sql2 = "SELECT concat('UPDATE hol2.movedepartmentpatient SET MOVEDEPARTMENTPATIENT_PATIENT1DAY =', ifnull(d1.d2,'null') "
 						+ " ,' WHERE movedepartmentpatient_id=',movedepartmentpatient_id) u FROM ("
 						+ " SELECT department_id did1, movedepartmentpatient_patient2day d2  FROM hol2.movedepartmentpatient "
 						+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) d1,"
-						+ " (SELECT movedepartmentpatient_id, department_id did2, movedepartmentpatient_patient1day d1  FROM hol2.movedepartmentpatient "
+						+ " (SELECT movedepartmentpatient_id, department_id did2, movedepartmentpatient_patient1day d1 FROM hol2.movedepartmentpatient "
 						+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')) d2 "
-						+ " WHERE did1 = did2 and d1.d2 != d2.d1";
+						+ " WHERE did1 = did2 and ( (d2.d1 is not null and d1.d2 is null) or (d1.d2 is not null and d2.d1 is null) or d1.d2 != d2.d1)";
+				logger.debug(sql2
+						.replaceFirst("\\?", "'"+beforeDayStr+"'")
+						.replaceFirst("\\?", "'"+thisDayStr+"'")
+						);
 				for (Map<String, Object> map : h2JdbcTemplate.queryForList(sql2,new Object[] {beforeDayStr, thisDayStr})) {
 					String updateSql = (String) map.get("u");
 					logger.debug(""+updateSql);
@@ -86,7 +120,7 @@ public class AppService {
 			}
 		}
 	}
-	
+
 	String sqlDayMoveDepartmiententPat = 
 			"SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')";
 	Integer countDayPatient(DateTime dayDate) {
@@ -109,6 +143,7 @@ public class AppService {
 				+ " ON d.department_id = m.department_id "
 				+ " WHERE d.department_sort IS NOT NULL "
 				+ " ORDER BY department_sort ";
+		logger.debug(AppConfig.ddMMyyyDateFormat.format(today.toDate()));
 		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", "'"+AppConfig.ddMMyyyDateFormat.format(today.toDate())+"'" ));
 		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql
 				,AppConfig.ddMMyyyDateFormat.format(today.toDate()));
@@ -203,7 +238,7 @@ public class AppService {
 				, mOVEDEPARTMENTPATIENT_ID}
 		, new int[] { 
 Types.INTEGER, Types.INTEGER, Types.INTEGER,
-Types.INTEGER, Types.INTEGER,Types.INTEGER,
+Types.INTEGER, Types.INTEGER, Types.INTEGER,
 Types.INTEGER, Types.INTEGER, Types.INTEGER,
 Types.INTEGER, Types.INTEGER, Types.INTEGER,
 Types.INTEGER, Types.INTEGER,
@@ -354,12 +389,22 @@ Types.INTEGER
 
 	public AppService() throws NamingException{
 		initH2();
+		initMySql();
 	}
 	
+	private void initMySql() {
+		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+		dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
+		dataSource.setUrl(AppConfig.urlMySqlDb);
+		dataSource.setUsername("hol");
+		dataSource.setPassword("hol");
+		this.mySqlJdbcTemplate = new JdbcTemplate(dataSource);
+	}
+
 	private void initH2() {
 		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-		dataSource.setDriverClass(Driver.class);
-		dataSource.setUrl(AppConfig.urlDb);
+		dataSource.setDriverClass(org.h2.Driver.class);
+		dataSource.setUrl(AppConfig.urlH2Db);
 		dataSource.setUsername("sa");
 //		dataSource.setPassword("");
 		this.h2JdbcTemplate = new JdbcTemplate(dataSource);
@@ -444,5 +489,8 @@ Types.INTEGER
 //		logger.debug(" o - "+readJsonDbFile2map);
 		return readJsonDbFile2map;
 	}
+
+	
+
 
 }

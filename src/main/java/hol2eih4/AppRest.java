@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
@@ -39,15 +40,71 @@ public class AppRest {
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	@RequestMapping(value = "/readMoveTodayPatients", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readMoveTodayPatients(Principal userPrincipal) {
-		logger.info("\n Start /readMoveTodayPatients");
-		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
+	public  @ResponseBody Map<String, Object> readMoveTodayPatients(Principal userPrincipal, HttpServletRequest request) {
+		logger.info("\n ------------------------- Start /readMoveTodayPatients");
 		DateTime today = new DateTime();
+		Integer sessionYear = (Integer) request.getSession().getAttribute("year");
+		if(sessionYear != null)
+		{
+			today = today.withYear(sessionYear);
+		}
 		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(today);
+		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
 		moveTodayPatients.put("moveTodayPatientsList", moveTodayPatientsList);
-		moveTodayPatients.put("today", new DateTime().toDate());
+		moveTodayPatients.put("today", today.toDate());
 		return moveTodayPatients;
 	}
+	@RequestMapping(value = "/session-year/{yyyy}", method = RequestMethod.GET)
+	public String readMoveyyyymmddPatients(
+			@PathVariable Integer yyyy, HttpServletRequest request ) {
+		logger.debug(""+yyyy);
+		setSessionYear(yyyy, request);
+		return "redirect:/";
+	}
+	private void setSessionYear(Integer yyyy, HttpServletRequest request) {
+		request.getSession().setAttribute("year", yyyy);
+		AppConfig.setWorkYear(yyyy);
+	}
+	
+	@RequestMapping(value = "/r/readBedDayH2-{m1}-{m2}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readBedDayOfMonthH2(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,Principal userPrincipal) {
+		logger.debug("---------------- 1");
+		Map<String, Object> map = new HashMap<>();
+		map.put("hello", "World");
+		map.put("m1", m1);
+		map.put("m2", m2);
+		logger.debug("---------------- 2");
+		List<Map<String, Object>> bedDayOfMonthH2 = appService.readBedDayOfMonthH2(m1,m2);
+		map.put("bedDayOfMonthH2", bedDayOfMonthH2);
+		return map;
+	}
+	@RequestMapping(value = "/r/readBedDayMySql-{mm}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readBedDayOfMonthMySql(
+			 @PathVariable Integer mm
+			,Principal userPrincipal) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("hello", "World");
+		map.put("mm", mm);
+		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(mm);
+		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
+		return map;
+	}
+	
+	@RequestMapping(value = "/r/readBedDayReception-{mm}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readBedDayReception(
+			@PathVariable Integer mm
+			,Principal userPrincipal) {
+		logger.debug("---------------- 1");
+		Map<String, Object> map = new HashMap<>();
+		map.put("hello", "World");
+		map.put("mm", mm);
+		logger.debug("---------------- 2");
+		return map;
+	}
+	
 	//  1.1  Зчитування надходження/виписки хворих на дату – readTodayMovePatients
 	@RequestMapping(value = "/readMove-{yyyy}-{mm}-{dd}-Patients", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readMoveyyyymmddPatients(
@@ -73,6 +130,7 @@ public class AppRest {
 		saveToHolWeb(moveTodayPatients, url);
 		return moveTodayPatients;
 	}
+
 	// 1.3   Запис надходження/виписки хворих на дату – saveMoveyyyymmddPatients
 	@RequestMapping(value = "/save-{yyyy}-{mm}-{dd}-Patients", method = RequestMethod.POST)
 	public  @ResponseBody Map<String, Object> save_yyyymmdd_Patients(
@@ -89,23 +147,34 @@ public class AppRest {
 //		saveToHolWeb(moveTodayPatients, url);
 		return moveTodayPatients;
 	}
+
 	@RequestMapping(value = "/init-excel", method = RequestMethod.GET)
 	public void initExcell(HttpServletResponse response){
 		try {
 			excelService.initExcel(response);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
+	@RequestMapping(value = "/file-excel-{yyyy}", method = RequestMethod.GET)
+	public String getExcell(@PathVariable Integer yyyy){
+		logger.debug(yyyy+"/");
+		String sourceFile = AppConfig.applicationExcelFolderPfad+AppConfig.getExcelfilename();
+		String targetFile = AppConfig.innerExcelFolderPfad+AppConfig.getExcelfilename();
+		logger.debug("cp "+sourceFile+" "+targetFile);
+		excelService.copyFile(sourceFile, targetFile);
+		return "redirect:/excel/pyx-2016-v.2.xls";
+	}
+
 	@RequestMapping(value = "/create-read-{yyyy}-{mm}-{dd}-excel", method = RequestMethod.GET)
 	public String createReadExcell(
 			@PathVariable Integer yyyy , @PathVariable Integer mm, @PathVariable Integer dd,
-			Principal userPrincipal) {
+			Principal userPrincipal, HttpServletRequest request) {
 		logger.debug("/create-read-{yyyy}-{mm}-{dd}-excel");
 		DateTime dateTime = new DateTime(yyyy,mm,dd,0,0);
 		excelService.createExcel(dateTime);
-		return "redirect:excel/" + AppConfig.excelFileName; 
+		return "redirect:excel/" + AppConfig.getExcelfilename(); 
 	}
 	private void saveToHolWeb(Map<String, Object> moveTodayPatients, String url) {
 		

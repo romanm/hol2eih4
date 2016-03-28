@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -78,16 +79,18 @@ public class ExcelService2 {
 	}
 	public void createExcel(DateTime dateTime) {
 		logger.debug("--------createExcel-----------------------------------------------");
-		HSSFWorkbook pyx2015 = readExcel(AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName);
+		String filePath = AppConfig.applicationExcelFolderPfad+AppConfig.getExcelfilename();
+		logger.debug(filePath);
+		HSSFWorkbook pyxWorkbook = readExcel(filePath);
 		int monthOfYear = dateTime.getMonthOfYear();
 		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
-		Cell cellSumDay = getCellSumDay(pyx2015, dateTime);
+		Cell cellSumDay = getCellSumDay(pyxWorkbook, dateTime);
 		setPatientMovesDate(moveTodayPatientsList, cellSumDay);
 
 		DateTime minusDays = dateTime.minusDays(1);
 		while (minusDays.getMonthOfYear() == monthOfYear) {
 			Integer countDayPatient = appService.countDayPatient(minusDays);
-			cellSumDay = getCellSumDay(pyx2015, minusDays);
+			cellSumDay = getCellSumDay(pyxWorkbook, minusDays);
 			Cell cellSumDepartmentIn = cellSumDay.getSheet().getRow(cellSumDay.getRowIndex()).getCell(3);
 			double numberValueSumDepartmentIn = cellSumDepartmentIn.getSheet().getWorkbook()
 					.getCreationHelper().createFormulaEvaluator()
@@ -102,9 +105,9 @@ public class ExcelService2 {
 		DateTime plusDays = dateTime.plusDays(1);
 		while (plusDays.getMonthOfYear() == monthOfYear) {
 			Integer countDayPatient = appService.countDayPatient(plusDays);
-			cellSumDay = getCellSumDay(pyx2015, plusDays);
+			cellSumDay = getCellSumDay(pyxWorkbook, plusDays);
 			Cell cellSumDepartmentIn = cellSumDay.getSheet().getRow(cellSumDay.getRowIndex()).getCell(3);
-			double numberValueSumDepartmentIn = pyx2015.getCreationHelper().createFormulaEvaluator().evaluate(cellSumDepartmentIn).getNumberValue();
+			double numberValueSumDepartmentIn = pyxWorkbook.getCreationHelper().createFormulaEvaluator().evaluate(cellSumDepartmentIn).getNumberValue();
 			if(!(numberValueSumDepartmentIn > 0) && countDayPatient > 0){
 			}
 				moveTodayPatientsList = appService.readMoveTodayPatients(plusDays);
@@ -112,10 +115,10 @@ public class ExcelService2 {
 			plusDays = plusDays.plusDays(1);
 		}
 		
-		String fileName = AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName;
+		String fileName = filePath;
 		logger.debug("--------fileName-----------------------------------");
 		logger.debug(fileName);
-		saveExcel(pyx2015, fileName);
+		saveExcel(pyxWorkbook, fileName);
 		makeBackup();
 	}
 	private int getFirstDepartmentRowFromCellSumDay(Cell cellSumDay) {
@@ -233,9 +236,15 @@ public class ExcelService2 {
 		,"грудень" };
 	
 	private void makeBackup() {
+		String sourceFile = AppConfig.applicationExcelFolderPfad+AppConfig.getExcelfilename();
+		String targetFile = AppConfig.innerExcelFolderPfad+AppConfig.getExcelfilename();
+		copyFile(sourceFile, targetFile);
+	}
+	
+	void copyFile(String sourceFile, String targetFile) {
 		try {
-			Files.copy(new File(AppConfig.applicationExcelFolderPfad+AppConfig.excelFileName).toPath()
-			, new File(AppConfig.innerExcelFolderPfad+AppConfig.excelFileName).toPath()
+			Files.copy(new File(sourceFile).toPath()
+			, new File(targetFile).toPath()
 			, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
