@@ -81,13 +81,33 @@ public class AppRest {
 		map.put("bedDayOfMonthH2", bedDayOfMonthH2);
 		return map;
 	}
+	@RequestMapping(value = "/r/readBedDayDepartmentMySql-{m1}-{m2}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readBedDayDepartmentMySql(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,Principal userPrincipal) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("m1", m1);
+		map.put("m2", m2);
+		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2);
+		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
+		if(m1 < m2) {
+			List<Object> arrayList = new ArrayList<>();
+			for (int i = m1; i <= m2; i++) {
+				List<Map<String, Object>> readBedDayOfMonthMySql = appService.readBedDayOfMonthMySql(i,i);
+				arrayList.add(readBedDayOfMonthMySql);
+			}
+			map.put("bedDayDepartmentMySql", arrayList);
+		}
+		return map;
+	}
+
 	@RequestMapping(value = "/r/readBedDayMySql-{m1}-{m2}", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readBedDayOfMonthMySql(
+	public  @ResponseBody Map<String, Object> readBedDayMySql(
 			 @PathVariable Integer m1
 			 ,@PathVariable Integer m2
 			,Principal userPrincipal) {
 		Map<String, Object> map = new HashMap<>();
-		map.put("hello", "World");
 		map.put("m1", m1);
 		map.put("m2", m2);
 		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2);

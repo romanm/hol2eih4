@@ -81,31 +81,36 @@ td.satsanday {
 					{{n>9?'':'&nbsp;'}}{{n}} </a></td>
 			<td class="btn btn-sm btn-info" ng-click="eqMonth()">Виконати
 				запит</td>
-			<td ng-if="param.viddilennja">
-			<a href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+			<td ng-if="param.viddilennja"><a
+				href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
 					Показати всі відділення </a></td>
 		</tr>
 	</table>
 	<div ng-if="param.viddilennja">
-		<table class="table table-bordered">
-			<caption>
-				<h3>
-					Ліжкодні Відділення {{bedDayOfMonthMySql.department_name}} <span
-						ng-if="bedDay.m1 == bedDay.m2"> за {{bedDay.m1}} місяць </span> <span
-						ng-if="bedDay.m1 != bedDay.m2"> з {{bedDay.m1}} по
-						{{bedDay.m2}} місяці</span> поточного року
-				</h3>
-			</caption>
-			<tr>
-				<th>Показник</th>
-				<th>Значення</th>
-			</tr>
-			<tr ng-repeat="h in bedDayHead" ng-if="$index > 0">
-				<td>{{h.name}}</td>
-				<td>{{bedDayOfMonthMySql[h.key]}}</td>
-			</tr>
-		</table>
-	</div>
+			<table class="table table-bordered">
+				<caption>
+					<h3>
+						Ліжкодні Відділення {{bedDayOfMonthMySql.department_name}} <span
+							ng-if="bedDay.m1 == bedDay.m2"> за {{bedDay.m1}} місяць </span> <span
+							ng-if="bedDay.m1 != bedDay.m2"> з {{bedDay.m1}} по
+							{{bedDay.m2}} місяці</span> поточного року
+					</h3>
+				</caption>
+				<tr>
+					<th>Показник</th>
+					<th ng-if="mmArray.length > 1" ng-repeat="m in mmArray">{{months.nominative[m]}}</th>
+					<th ng-if="mmArray.length == 1">Значення</th>
+					<th ng-if="mmArray.length > 1">За {{mmArray.length}} місяця</th>
+				</tr>
+				<tr ng-repeat="h in bedDayHead" ng-if="$index > 0">
+					<td>{{h.name}} </td>
+					<td ng-repeat="bedDayDepartment in bedDay.bedDayDepartmentMySql">
+					{{bedDayDepartment[param.viddilennja][h.key]}}</td>
+					<td ng-repeat="m in mmNewArray">?</td>
+					<td>{{bedDayOfMonthMySql[h.key]}}</td>
+				</tr>
+			</table>
+		</div>
 	<div ng-if="!param.viddilennja">
 		<table class="table-bordered">
 			<caption>
