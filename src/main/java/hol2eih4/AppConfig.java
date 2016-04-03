@@ -14,8 +14,8 @@ public class AppConfig {
 	final static String jsonDbFiles	= "src/main/webapp/db/";
 	//product server /home/hol2/db-h2
 //	final static String applicationFolderPfad	= "/home/hol2/server4/hol2eih4/";
-//	final static String urlDb = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";
-//	final static String urlMySqlDb = "jdbc:mysql://localhost/hol?useUnicode=true&characterEncoding=utf-8";
+//	final static String urlH2Db = "jdbc:h2:tcp://192.168.4.10/db-hol2-eih/db-hol2-eih";
+//	final static String urlMySqlDb = "jdbc:mysql://192.168.4.10/hol?useUnicode=true&characterEncoding=utf-8";
 //	final static String applicationExcelFolderPfad	= "/home/hol2/db-h2/excel/";
 	//development server /home/roman/algoritmed.com/h2-server
 	final static String urlH2Db = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";

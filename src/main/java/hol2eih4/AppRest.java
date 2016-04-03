@@ -81,14 +81,16 @@ public class AppRest {
 		map.put("bedDayOfMonthH2", bedDayOfMonthH2);
 		return map;
 	}
-	@RequestMapping(value = "/r/readBedDayMySql-{mm}", method = RequestMethod.GET)
+	@RequestMapping(value = "/r/readBedDayMySql-{m1}-{m2}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readBedDayOfMonthMySql(
-			 @PathVariable Integer mm
+			 @PathVariable Integer m1
+			 ,@PathVariable Integer m2
 			,Principal userPrincipal) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("hello", "World");
-		map.put("mm", mm);
-		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(mm);
+		map.put("m1", m1);
+		map.put("m2", m2);
+		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2);
 		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
 		return map;
 	}

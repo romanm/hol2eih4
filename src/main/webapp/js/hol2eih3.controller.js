@@ -186,15 +186,88 @@ hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$cookies', '$cookieSto
 hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 	console.log("DepartmentMonthMovementCtrl");
-	var url = "/r/readBedDayMySql-2";
+	$scope.param = parameters;
+	console.log($scope.param);
+	$scope.bedDayHead = [
+		{"title":"","name":"Відділення","key":""}
+		,{"title":"","name":"Ліжок на штаті","key":"department_bed"}
+		,{"title":"","name":"Поступило","key":"in_clinic"}
+		,{"title":"","name":"Виписано","key":"out_clinic"}
+	];
+	$scope.eqMonthType = "month";
+	if(parameters.type){
+		$scope.eqMonthType = parameters.type;
+	}
+	var today = new Date();
+	var mm = today.getMonth();
+	if(mm==0) mm=1;
+	$scope.minMonth = mm;
+	$scope.maxMonth = mm;
+	if(parameters.m1){
+		$scope.minMonth = parameters.m1;
+		if($scope.eqMonthType == "month"){
+			$scope.maxMonth = parameters.m1;
+		}else if(parameters.m2){
+			$scope.maxMonth = parameters.m2;
+		}
+	}
+
+	eqMonth = function(){
+		var url = "/r/readBedDayMySql-" + $scope.minMonth + "-" + $scope.maxMonth;
 		$http({ method : 'GET', url : url
 		}).success(function(data, status, headers, config) {
 			$scope.bedDay = data;
 			console.log($scope.bedDay);
+			if($scope.param.viddilennja){
+				$scope.bedDayOfMonthMySql 
+				= $scope.bedDay.bedDayOfMonthMySql[$scope.param.viddilennja]
+				console.log($scope.bedDayOfMonthMySql);
+			}
 //			initDateVariables();
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
+		
+	}
+	
+	eqMonth();
+	
+	$scope.eqMonth = function(){
+		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
+		eqMonth();
+	}
+	$scope.isWaleMonth = function(month){
+		return month >= $scope.minMonth && month <= $scope.maxMonth;
+	}
+
+	$scope.setMonth = function(month){
+		console.log($scope.eqMonthType);
+		if($scope.eqMonthType == "month"){
+			$scope.maxMonth = month;
+			$scope.minMonth = month;
+		}else{
+			if($scope.minMonth == null){
+				$scope.minMonth = month;
+			}
+			if($scope.maxMonth == null){
+				$scope.maxMonth = month;
+			}
+			if(month < $scope.minMonth){
+				$scope.minMonth = month;
+			}else if(month > $scope.maxMonth){
+				$scope.maxMonth = month;
+			}else if((month - $scope.minMonth) < ($scope.maxMonth - month)){
+				$scope.minMonth = month;
+			}else if((month - $scope.minMonth) > ($scope.maxMonth - month)){
+				$scope.maxMonth = month;
+			}else{
+				$scope.maxMonth = month;
+				$scope.minMonth = month;
+			}
+		}
+		console.log(month+" - "+$scope.minMonth+" - "+$scope.maxMonth);
+	}
+
 }]);
 
 hol2eih3App.controller('MvPatientInWeekDayCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
