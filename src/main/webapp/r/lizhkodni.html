@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html ng-app="hol2eih3App" ng-controller="DepartmentMonthMovementMySqlCtrl" ng-cloak class="ng-cloak">
+<html ng-app="hol2eih3App"
+	ng-controller="DepartmentMonthMovementMySqlCtrl" ng-cloak
+	class="ng-cloak">
 <head>
 <meta charset="utf-8" />
 <link rel="stylesheet" href="/css/lib/bootstrap.min.css"></link>
@@ -15,8 +17,13 @@ table.year tr td {
 	border: 1px solid #DDD;
 	text-align: center;
 }
+
 tr.center th {
 	text-align: center;
+}
+
+td.wale {
+	background-color: red
 }
 
 td.satsanday {
@@ -52,52 +59,102 @@ td.satsanday {
 <title>Ліжкодні</title>
 </head>
 <body>
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
-			<a href="/"><span class="glyphicon glyphicon-home"></span></a>
-			Ліжкодні за місяць</div>
+				<a href="/"><span class="glyphicon glyphicon-home"></span></a>
+				Ліжкодні за місяць
+			</div>
 			<div class="collapse navbar-collapse navbar-right">.</div>
 		</div>
 	</nav>
+<div class="container">
 	<table class="table-bordered">
-		<tr>
-			<th rowspan="3">Відділення</th>
-			<th colspan="3">Ліжок на штаті</th>
-			<th colspan="2">Померло</th>
-			<th></th>
-			<th colspan="2">Лікувалось хворих</th>
-		</tr>
-		<tr>
-			<th></th>
-			<th colspan="2">Поступило</th>
-			<th></th>
-			<th rowspan="1" colspan="4">Переведено в/з інші відділення</th>
-		</tr>
-		<tr>
-			<th></th>
-			<th></th>
-			<th colspan="2">Виписано</th>
-			<th>в</th>
-			<th> з </th>
-			<th></th>
-			<th>Проведено ліжкоднів</th>
-		</tr>
 		<tr class="center">
-			<th ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]">{{n}}</th>
-		</tr>
-		<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql">
-			<td>{{bedDayOfMonthMySql.department_name}}</td>
-			<td>{{bedDayOfMonthMySql.department_bed}}</td>
-			<td>{{bedDayOfMonthMySql.in_clinic}}</td>
-			<td>{{bedDayOfMonthMySql.out_clinic}}</td>
-			<td>{{bedDayOfMonthMySql.dead}}</td>
-			<td>{{bedDayOfMonthMySql.in_dep}}</td>
-			<td>{{bedDayOfMonthMySql.out_dep}}</td>
-			<td>{{bedDayOfMonthMySql.treat}}</td>
-			<td>{{bedDayOfMonthMySql.bed_day}}</td>
+			<td>Вибрати <label> <input type="radio"
+					name="eqMonthType" value="month" ng-model="eqMonthType" /> місяць
+			</label>, <label> <input type="radio" name="eqMonthType"
+					value="period" ng-model="eqMonthType" /> період
+			</label></td>
+			<td ng-click="setMonth(n)" ng-class="isWaleMonth(n) ? 'wale' : '' "
+				ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]"><a href="#">
+					{{n>9?'':'&nbsp;'}}{{n}} </a></td>
+			<td class="btn btn-sm btn-info" ng-click="eqMonth()">Виконати
+				запит</td>
+			<td ng-if="param.viddilennja">
+			<a href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+					Показати всі відділення </a></td>
 		</tr>
 	</table>
+	<div ng-if="param.viddilennja">
+		<table class="table table-bordered">
+			<caption>
+				<h3>
+					Ліжкодні Відділення {{bedDayOfMonthMySql.department_name}} <span
+						ng-if="bedDay.m1 == bedDay.m2"> за {{bedDay.m1}} місяць </span> <span
+						ng-if="bedDay.m1 != bedDay.m2"> з {{bedDay.m1}} по
+						{{bedDay.m2}} місяці</span> поточного року
+				</h3>
+			</caption>
+			<tr>
+				<th>Показник</th>
+				<th>Значення</th>
+			</tr>
+			<tr ng-repeat="h in bedDayHead" ng-if="$index > 0">
+				<td>{{h.name}}</td>
+				<td>{{bedDayOfMonthMySql[h.key]}}</td>
+			</tr>
+		</table>
+	</div>
+	<div ng-if="!param.viddilennja">
+		<table class="table-bordered">
+			<caption>
+				<h3>
+					Ліжкодні <span ng-if="bedDay.m1 == bedDay.m2"> за
+						{{bedDay.m1}} місяць </span> <span ng-if="bedDay.m1 != bedDay.m2">
+						з {{bedDay.m1}} по {{bedDay.m2}} місяці</span> поточного року
+				</h3>
+			</caption>
+			<tr>
+				<th rowspan="3">{{bedDayHead[0].name}}</th>
+				<th colspan="3">{{bedDayHead[1].name}}</th>
+				<th colspan="3">Померло</th>
+				<th colspan="3">Лікувалось хворих</th>
+			</tr>
+			<tr>
+				<th></th>
+				<th colspan="2">{{bedDayHead[2].name}}</th>
+				<th></th>
+				<th rowspan="1" colspan="3" title="Переведено в/з інші відділення">Переведено</th>
+			</tr>
+			<tr>
+				<th></th>
+				<th></th>
+				<th colspan="2">{{bedDayHead[3].name}}</th>
+				<th>в</th>
+				<th colspan="2">з відд.</th>
+				<th>Проведено ліжкоднів</th>
+			</tr>
+			<tr class="center">
+				<th ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]">{{n}}</th>
+			</tr>
+			<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql">
+				<td><a
+href="?viddilennja={{$index}}&m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+						{{bedDayOfMonthMySql.department_name}} </a></td>
+				<td>{{bedDayOfMonthMySql.department_bed}}</td>
+				<td>{{bedDayOfMonthMySql.in_clinic}}</td>
+				<td>{{bedDayOfMonthMySql.out_clinic}}</td>
+				<td>{{bedDayOfMonthMySql.dead}}</td>
+				<td>{{bedDayOfMonthMySql.in_dep}}</td>
+				<td>{{bedDayOfMonthMySql.out_dep}}</td>
+				<td>{{bedDayOfMonthMySql.treat}}</td>
+				<td>{{bedDayOfMonthMySql.bed_day}}</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
 
 </body>
 <script src="/js/lib/jquery-2.1.4.min.js"></script>
