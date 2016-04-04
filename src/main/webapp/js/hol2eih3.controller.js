@@ -188,11 +188,24 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 	console.log("DepartmentMonthMovementCtrl");
 	$scope.param = parameters;
 	console.log($scope.param);
+	var m = [];
+	var o = {};
+	var j = {"a":"b",
+			"m":[],
+			"o":{}};
 	$scope.bedDayHead = [
 		{"title":"","name":"Відділення","key":""}
 		,{"title":"","name":"Ліжок на штаті","key":"department_bed"}
 		,{"title":"","name":"Поступило","key":"in_clinic"}
 		,{"title":"","name":"Виписано","key":"out_clinic"}
+		,{"title":"Переведено в інші відділення"
+			,"name":"П. в інші від.","key":"in_dep"}
+		,{"title":"Переведено з інші відділення"
+			,"name":"П. з інші від.","key":"out_dep"}
+		,{"title":"","name":"Померло","key":"dead"}
+		,{"title":"","name":"Л-на летальність","key":"mortality"}
+		,{"title":"","name":"Лік. хворих","key":"TREAT"}
+		,{"title":"Проведено ліжкоднів","name":"Пр-но ліжкоднів","key":"bed_day"}
 	];
 	$scope.eqMonthType = "month";
 	if(parameters.type){
