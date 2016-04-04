@@ -232,15 +232,16 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
-		
 	}
-	
+
 	eqMonth();
-	
+
 	$scope.eqMonth = function(){
 		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
 //	eqMonth();
 		var url = "?viddilennja="+parameters.viddilennja+"&m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
+		if(!parameters.viddilennja)
+			url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
 //		window.open();
 		window.location.href = url;
 	}
