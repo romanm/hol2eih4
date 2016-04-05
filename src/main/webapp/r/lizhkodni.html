@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="/css/hol2eih3.css"></link>
 <link rel='stylesheet prefetch' href='/css/lib/font-awesome.min.css'>
 <style type="text/css" media="screen">
+
 body {
 	padding-top: 30px;
 	padding-bottom: 60px;
@@ -68,8 +69,8 @@ td.satsanday {
 			<div class="collapse navbar-collapse navbar-right">.</div>
 		</div>
 	</nav>
-<div class="container">
-	<table class="table-bordered">
+<div class="container-fluid">
+	<table class="table-bordered no-print">
 		<tr class="center">
 			<td>Вибрати <label> <input type="radio"
 					name="eqMonthType" value="month" ng-model="eqMonthType" /> місяць
@@ -90,49 +91,62 @@ td.satsanday {
 	<div ng-if="param.viddilennja">
 			<table class="table table-bordered">
 				<caption>
-					<h3>
-						Ліжкодні Відділення {{bedDayOfMonthMySql.department_name}} <span
-							ng-if="bedDay.m1 == bedDay.m2"> за {{bedDay.m1}} місяць </span> <span
-							ng-if="bedDay.m1 != bedDay.m2"> з {{bedDay.m1}} по
-							{{bedDay.m2}} місяці</span> поточного року
-					</h3>
+					<h4>
+						Ліжкодні Відділення <b> {{bedDayOfMonthMySql.department_name}}
+						</b> <span ng-if="bedDay.m1 == bedDay.m2"> за
+							{{months.nominative[bedDay.m1]}} місяць </span> <span
+							ng-if="bedDay.m1 != bedDay.m2"> з
+							{{months.accusative[bedDay.m1]}} — по
+							{{months.nominative[bedDay.m2]}} місяці</span> {{yyyy}} року. <small>
+							Хмельницька обласна лікарня </small>
+					</h4>
 				</caption>
-				<tr>
-					<th>Показник</th>
-					<th ng-if="mmArray.length > 1" ng-repeat="m in mmArray">{{months.nominative[m]}}</th>
-					<th ng-if="mmArray.length == 1">Значення</th>
-					<th ng-if="mmArray.length > 1">За {{mmArray.length}} місяця</th>
-				</tr>
-				<tr ng-repeat="h in bedDayHead" ng-if="$index > 0">
-					<td>{{h.name}} </td>
-					<td ng-repeat="bedDayDepartment in bedDay.bedDayDepartmentMySql">
-					{{bedDayDepartment[param.viddilennja][h.key]}}</td>
-					<td ng-repeat="m in mmNewArray">?</td>
-					<td>{{bedDayOfMonthMySql[h.key]}}</td>
-				</tr>
+				<thead>
+					<tr>
+						<th>Показник</th>
+						<th ng-if="mmArray.length > 1" ng-repeat="m in mmArray">{{months.nominative[m]}}</th>
+						<th ng-if="mmArray.length == 1">Значення</th>
+						<th ng-if="mmArray.length > 1">За {{mmArray.length}} місяця</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="h in bedDayHead" ng-if="$index > 0">
+						<td title="{{h.title}}">{{h.name}}</td>
+						<td ng-repeat="bedDayDepartment in bedDay.bedDayDepartmentMySql">
+							{{bedDayDepartment[param.viddilennja][h.key]}}</td>
+						<td ng-repeat="m in mmNewArray">?</td>
+						<td>{{bedDayOfMonthMySql[h.key]}}</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>
 		<div ng-if="!param.viddilennja">
 			<table class="table-bordered">
 				<caption>
-					<h3>
+					<h4>
 						Ліжкодні <span ng-if="bedDay.m1 == bedDay.m2"> за
 							{{bedDay.m1}} місяць </span> <span ng-if="bedDay.m1 != bedDay.m2">
 							з {{bedDay.m1}} по {{bedDay.m2}} місяці</span> поточного року
-					</h3>
+					</h4>
 				</caption>
-				<tr>
-					<th ng-repeat="bedDayH in bedDayHead">{{bedDayH.name}}</th>
-				</tr>
-				<tr class="center">
-					<th ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]">{{n}}</th>
-				</tr>
-				<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql">
-					<td><a
-						href="?viddilennja={{$index}}&m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
-							{{bedDayOfMonthMySql.department_name}}</a></td>
-					<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0">{{bedDayOfMonthMySql[bedDayH.key]}}</td>
-				</tr>
+				<thead>
+					<tr>
+						<th ng-repeat="bedDayH in bedDayHead">{{bedDayH.name}}</th>
+					</tr>
+					<tr class="center">
+						<th ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{n}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql">
+						<td><a
+							href="?viddilennja={{$index}}&m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+								{{bedDayOfMonthMySql.department_name}}</a></td>
+						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0">
+							{{bedDayOfMonthMySql[bedDayH.key]==0?'':bedDayOfMonthMySql[bedDayH.key]}}
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>
 	</div>

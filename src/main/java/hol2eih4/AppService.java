@@ -13,7 +13,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,7 @@ public class AppService {
 	private NamedParameterJdbcTemplate mySqlJdbcTemplate;
 	private int cnt_repetable;
 	private int cnt_update;
-	
+
 	public List<Map<String, Object>> readBedDayOfMonthH2(Integer m1, Integer m2) {
 		String bedDayH2 = SqlHolder.bedDayH2;
 		logger.debug(bedDayH2);
@@ -38,11 +37,11 @@ public class AppService {
 	}
 
 	public List<Map<String, Object>> readBedDayOfMonthMySql(Integer m1, Integer m2) {
-		logger.debug(SqlHolder.bedDayMySql);
 		Map<String, Integer> mmp = new HashMap<>();
 		mmp.put("min_month", m1);
 		mmp.put("max_month", m2);
 		logger.debug(mmp.toString());
+		logger.debug("SQL length "+SqlHolder.bedDayMySql.length());
 		List<Map<String, Object>> bedDayOfMonthMySql 
 		= mySqlJdbcTemplate.queryForList(SqlHolder.bedDayMySql, mmp);
 		return bedDayOfMonthMySql;

@@ -1,10 +1,21 @@
-.navbar,
-.navbar ol
-{
+@media print {
+	a[href]:after {
+		content: none;
+	}
+	.no-print, .no-print * {
+		display: none !important;
+	}
+}
+
+.navbar, .navbar ol {
 	margin-bottom: 1px;
 	min-height: 2px;
 }
-.bold {font-weight: bold;}
-.center {text-align: center;}
-//---------patient movement head------------------------------
-//---------patient movement head------------------------------END
+
+.bold {
+	font-weight: bold;
+}
+
+.center {
+	text-align: center;
+}

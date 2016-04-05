@@ -188,24 +188,27 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 	console.log("DepartmentMonthMovementCtrl");
 	$scope.param = parameters;
 	console.log($scope.param);
-	var m = [];
-	var o = {};
-	var j = {"a":"b",
-			"m":[],
-			"o":{}};
+	
 	$scope.bedDayHead = [
 		{"title":"","name":"Відділення","key":""}
-		,{"title":"","name":"Ліжок на штаті","key":"department_bed"}
-		,{"title":"","name":"Поступило","key":"in_clinic"}
-		,{"title":"","name":"Виписано","key":"out_clinic"}
-		,{"title":"Переведено в інші відділення"
+		,{"title":" (ліжка)","name":"Ліжок на штаті","key":"department_bed"}
+		,{"title":"Поступило (люди)","name":"Поступило","key":"in_clinic"}
+		,{"title":"Виписано (люди)","name":"Виписано","key":"out_clinic"}
+		,{"title":"Переведено в інші відділення (люди)"
 			,"name":"П. в інші від.","key":"in_dep"}
-		,{"title":"Переведено з інші відділення"
+		,{"title":"Переведено з інші відділення (люди)"
 			,"name":"П. з інші від.","key":"out_dep"}
-		,{"title":"","name":"Померло","key":"dead"}
-		,{"title":"","name":"Л-на летальність","key":"mortality"}
-		,{"title":"","name":"Лік. хворих","key":"TREAT"}
-		,{"title":"Проведено ліжкоднів","name":"Пр-но ліжкоднів","key":"bed_day"}
+		,{"title":"Померло (люди)","name":"Померло","key":"dead"}
+		,{"title":"Лікарняна летальність (%)","name":"Л-на летальність","key":"mortality"}
+		,{"title":"Лікувалось хворих (люди)","name":"Лік. хворих","key":"TREAT"}
+		,{"title":"Проведено ліжкоднів (дні)","name":"Пр-но ліжкоднів","key":"bed_day"}
+		,{"title":"План ліжкоднів (дні)","name":"Пл-н ліжкоднів","key":"bed_day_plan"}
+		,{"title":"Процент виконання плана ліжкоднів (%)","name":"% вик. плана","key":"bed_day_fulfil"}
+		,{"title":"Зайнятість ліжка (днів)","name":"З-ть ліжка","key":"bed_occupancy"}
+		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка","key":"bed_turnover"}
+		,{"title":"Ср. трив. лікуання (днів)","name":"Ср. трив. лікуання","key":"treat_avg"}
+		/*
+		 * */
 	];
 	$scope.eqMonthType = "month";
 	if(parameters.type){
@@ -213,6 +216,7 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 	}
 	var today = new Date();
 	var mm = today.getMonth();
+	$scope.yyyy = today.getFullYear();
 	if(mm==0) mm=1;
 	$scope.minMonth = mm;
 	$scope.maxMonth = mm;
