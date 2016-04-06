@@ -26,7 +26,7 @@ public class SqlHolder {
 			+"              out_to_clinic.out_to_clinic, \n"
 			+"              dead.dead, \n"
 			+"              bed_day.bed_day \n"
-			+"       FROM (-- відділення +розгорнуті ліжка +план ліжкоднів \n"
+			+"       FROM (-- відділення + розгорнуті ліжка + план ліжкоднів \n"
 			+"             SELECT department_id, \n"
 			+"                    department_name, \n"
 			+"                    department_bed, \n"
