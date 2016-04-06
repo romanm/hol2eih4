@@ -205,7 +205,8 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 		,{"title":"План ліжкоднів (дні)","name":"Пл-н ліжкоднів","key":"bed_day_plan"}
 		,{"title":"Процент виконання плана ліжкоднів (%)","name":"% вик. плана","key":"bed_day_fulfil"}
 		,{"title":"Зайнятість ліжка (днів)","name":"З-ть ліжка","key":"bed_occupancy"}
-		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка","key":"bed_turnover"}
+		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка","key":"bed_turnover2"}
+//		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка","key":"bed_turnover"}
 		,{"title":"Ср. трив. лікуання (днів)","name":"Ср. трив. лікуання","key":"treat_avg"}
 		/*
 		 * */
