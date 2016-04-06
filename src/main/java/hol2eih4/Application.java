@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 	public static void main(String[] args) throws Throwable {
-		logger.debug("------main---------");
+		logger.debug("------main--3.7.3-------");
 		SpringApplication.run(Application.class, args);
 //		logger.debug("------main---------"+ initComponent.getInit());
 	}
