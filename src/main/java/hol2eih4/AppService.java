@@ -26,6 +26,7 @@ public class AppService {
 	private static final Logger logger = LoggerFactory.getLogger(AppService.class);
 	private JdbcTemplate h2JdbcTemplate;
 	private NamedParameterJdbcTemplate mySqlJdbcTemplate;
+	private NamedParameterJdbcTemplate k1JdbcTemplate;
 	private int cnt_repetable;
 	private int cnt_update;
 
@@ -34,6 +35,20 @@ public class AppService {
 		logger.debug(bedDayH2);
 		List<Map<String, Object>> bedDayOfMonthH2 = h2JdbcTemplate.queryForList(bedDayH2);
 		return bedDayOfMonthH2;
+	}
+
+	public List<Map<String, Object>> readIcd10K1(Integer m1, Integer m2) {
+		Map<String, Integer> mmp = new HashMap<>();
+		mmp.put("min_month", 1);
+//		mmp.put("max_month", m2);
+//		mmp.put("nulltrue", true);
+		logger.debug(mmp.toString());
+		logger.debug("SQL length "+SqlHolder.icd10K1.length());
+		logger.debug(SqlHolder.icd10K1);
+		logger.debug(""+k1JdbcTemplate);
+		List<Map<String, Object>> icd10K1 
+		= k1JdbcTemplate.queryForList(SqlHolder.icd10K1,mmp);
+		return icd10K1;
 	}
 
 	public List<Map<String, Object>> readBedDayOfMonthMySql(Integer m1, Integer m2) {
@@ -398,6 +413,7 @@ Types.INTEGER
 	public AppService() throws NamingException{
 		initH2();
 		initMySql();
+		initK1Sql();
 	}
 	
 	private void initMySql() {
@@ -407,6 +423,17 @@ Types.INTEGER
 		dataSource.setUsername("hol");
 		dataSource.setPassword("hol");
 		this.mySqlJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+	}
+
+	private void initK1Sql() {
+		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+		dataSource.setDriverClass(org.hsqldb.jdbcDriver.class);
+		dataSource.setUrl(AppConfig.urlK1Db);
+		dataSource.setUsername("sa");
+//		dataSource.setPassword("hol");
+		logger.debug(""+dataSource);
+		this.k1JdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+		logger.debug(""+k1JdbcTemplate);
 	}
 
 	private void initH2() {

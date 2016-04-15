@@ -1,0 +1,49 @@
+
+
+body {
+	padding-top: 30px;
+	padding-bottom: 60px;
+}
+
+table.year tr td {
+	border: 1px solid #DDD;
+	text-align: center;
+}
+
+tr.center th {
+	text-align: center;
+}
+
+td.wale {
+	background-color: red
+}
+
+td.satsanday {
+	/*
+	color: darkgray;
+	color: cadetblue;
+	color: chocolate;
+	background-color: aliceblue;
+	background-color: azure;
+	*/
+	background-color: honeydew;
+}
+
+.satsanday a {
+	/*
+	color: darkgray;
+	color: cadetblue;
+	color: chocolate;
+	color: coral;
+*/
+	
+}
+
+.param-date {
+	font-weight: bold;
+	text-decoration: underline;
+	background-color: coral !important;
+	/*
+	background-color: aqua;
+	*/
+}

@@ -2,13 +2,25 @@ package hol2eih4;
 
 public class SqlHolder {
 
+	public static String icd10K1 = ""
+			+" SELECT ICD_CODE, \n"
+			+"        count(ICD_CODE), \n"
+			+"        icd_name \n"
+			+" FROM dity1.ix ix, \n"
+			+"      list.icd icd \n"
+			+" WHERE ix.ICD_CODE1=ICD_CODE \n"
+			+" AND 1 = :min_month \n"
+			+" GROUP BY ICD_CODE \n"
+			+" ORDER BY ICD_CODE \n"
+			+"  \n"
+;
 	public static String bedDayMySql = ""
 			+" SELECT d.*, \n"
 			+"        round(if(d.dead IS NULL, 0, d.dead/TREAT*100),2) mortality, \n"
 			+"        round(bed_day * 100 / bed_day_plan,2) bed_day_fulfil, \n"
 			+"        round(bed_day  / department_bed,2)  bed_occupancy, \n"
-			+"         round(TREAT * 100 / bed_day,2) treat_avg, \n"
-			+"         round((bed_day  / department_bed)/(TREAT * 100 / bed_day ),2)  bed_turnover, \n"
+			+"        round(bed_day  / TREAT,1) treat_avg, \n"
+			+"        round((bed_day  / department_bed)/( bed_day / TREAT ),2)  bed_turnover, \n"
 			+"         round((d.in_clinic+ifnull(d.dead,0))/d.department_bed,2)  bed_turnover2 \n"
 			+" FROM \n"
 			+"   (SELECT d.*, \n"

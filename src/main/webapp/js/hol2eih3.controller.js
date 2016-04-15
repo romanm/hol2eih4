@@ -183,11 +183,21 @@ hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$cookies', '$cookieSto
 	});
 }]);
 
+var initReport = function($scope){
+	$scope.param = parameters;
+	console.log($scope.param);
+}
+
+hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+	console.log("K1Icd10Ctrl");
+	initReport($scope);
+}]);
+
 hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 	console.log("DepartmentMonthMovementCtrl");
-	$scope.param = parameters;
-	console.log($scope.param);
+	initReport($scope);
 	
 	$scope.bedDayHead = [
 		{"title":"","name":"Відділення","key":""}
@@ -205,8 +215,8 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 		,{"title":"План ліжкоднів (дні)","name":"Пл-н ліжкоднів","key":"bed_day_plan"}
 		,{"title":"Процент виконання плана ліжкоднів (%)","name":"% вик. плана","key":"bed_day_fulfil"}
 		,{"title":"Зайнятість ліжка (днів)","name":"З-ть ліжка","key":"bed_occupancy"}
-		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка","key":"bed_turnover2"}
-//		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка","key":"bed_turnover"}
+		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка","key":"bed_turnover"}
+		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка (альтернатів)","key":"bed_turnover2"}
 		,{"title":"Ср. трив. лікуання (днів)","name":"Ср. трив. лікуання","key":"treat_avg"}
 		/*
 		 * */

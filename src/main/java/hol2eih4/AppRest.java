@@ -102,6 +102,19 @@ public class AppRest {
 		return map;
 	}
 
+	@RequestMapping(value = "/r/readIcd10K1-{m1}-{m2}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readIcd10K1(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,Principal userPrincipal) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("m1", m1);
+		map.put("m2", m2);
+		List<Map<String, Object>> icd10K1 = appService.readIcd10K1(m1,m2);
+		map.put("icd10K1", icd10K1);
+		return map;
+	}
+
 	@RequestMapping(value = "/r/readBedDayMySql-{m1}-{m2}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readBedDayMySql(
 			 @PathVariable Integer m1
