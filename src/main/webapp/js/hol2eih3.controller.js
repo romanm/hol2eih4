@@ -186,41 +186,6 @@ hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$cookies', '$cookieSto
 var initReport = function($scope){
 	$scope.param = parameters;
 	console.log($scope.param);
-}
-
-hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
-	console.log("K1Icd10Ctrl");
-	initReport($scope);
-}]);
-
-hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
-	console.log("DepartmentMonthMovementCtrl");
-	initReport($scope);
-	
-	$scope.bedDayHead = [
-		{"title":"","name":"Відділення","key":""}
-		,{"title":" (ліжка)","name":"Ліжок на штаті","key":"department_bed"}
-		,{"title":"Поступило (люди)","name":"Поступило","key":"in_clinic"}
-		,{"title":"Виписано (люди)","name":"Виписано","key":"out_clinic"}
-		,{"title":"Переведено в інші відділення (люди)"
-			,"name":"П. в інші від.","key":"in_dep"}
-		,{"title":"Переведено з інші відділення (люди)"
-			,"name":"П. з інші від.","key":"out_dep"}
-		,{"title":"Померло (люди)","name":"Померло","key":"dead"}
-		,{"title":"Лікарняна летальність (%)","name":"Л-на летальність","key":"mortality"}
-		,{"title":"Лікувалось хворих (люди)","name":"Лік. хворих","key":"TREAT"}
-		,{"title":"Проведено ліжкоднів (дні)","name":"Пр-но ліжкоднів","key":"bed_day"}
-		,{"title":"План ліжкоднів (дні)","name":"Пл-н ліжкоднів","key":"bed_day_plan"}
-		,{"title":"Процент виконання плана ліжкоднів (%)","name":"% вик. плана","key":"bed_day_fulfil"}
-		,{"title":"Зайнятість ліжка (днів)","name":"З-ть ліжка","key":"bed_occupancy"}
-		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка","key":"bed_turnover"}
-		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка (альтернатів)","key":"bed_turnover2"}
-		,{"title":"Ср. трив. лікуання (днів)","name":"Ср. трив. лікуання","key":"treat_avg"}
-		/*
-		 * */
-	];
 	$scope.eqMonthType = "month";
 	if(parameters.type){
 		$scope.eqMonthType = parameters.type;
@@ -239,44 +204,33 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 			$scope.maxMonth = parameters.m2;
 		}
 	}
-
-	eqMonth = function(){
-		var url1 = "/r/readBedDayMySql-";
-		if(parameters.viddilennja)
-			url1 = "/r/readBedDayDepartmentMySql-";
-		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth;
-		console.log(url);
-		$http({ method : 'GET', url : url
-		}).success(function(data, status, headers, config) {
-			$scope.bedDay = data;
-			console.log($scope.bedDay);
-			if($scope.param.viddilennja){
-				$scope.bedDayOfMonthMySql 
-				= $scope.bedDay.bedDayOfMonthMySql[$scope.param.viddilennja]
-				console.log($scope.bedDayOfMonthMySql);
-				mmArray();
+	
+	mmArray = function(){
+		if($scope.param.viddilennja){
+			$scope.mmArray =[];
+			for (var i = $scope.minMonth*1; i <= $scope.maxMonth; i++) {
+				$scope.mmArray.push(i);
 			}
-//			initDateVariables();
-		}).error(function(data, status, headers, config) {
-			$scope.error = data;
-		});
+			console.log($scope.mmArray);
+			if($scope.bedDay){
+				$scope.mmNewArray =[];
+				if($scope.bedDay.bedDayDepartmentMySql){
+					if($scope.mmArray.length > $scope.bedDay.bedDayDepartmentMySql.length){
+						console.log($scope.bedDay.bedDayDepartmentMySql.length);
+						var mmNew = $scope.mmArray.length - $scope.bedDay.bedDayDepartmentMySql.length;
+						for (var i = 1; i <= mmNew; i++) {
+							$scope.mmNewArray.push(i);
+						}
+						console.log($scope.mmNewArray);
+					}
+				}
+			}
+		}
 	}
-
-	eqMonth();
-
-	$scope.eqMonth = function(){
-		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
-//	eqMonth();
-		var url = "?viddilennja="+parameters.viddilennja+"&m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
-		if(!parameters.viddilennja)
-			url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
-//		window.open();
-		window.location.href = url;
-	}
+	
 	$scope.isWaleMonth = function(month){
 		return month >= $scope.minMonth && month <= $scope.maxMonth;
 	}
-
 	$scope.setMonth = function(month){
 		console.log($scope.eqMonthType);
 		if($scope.eqMonthType == "month"){
@@ -305,29 +259,97 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 		console.log(month+" - "+$scope.minMonth+" - "+$scope.maxMonth);
 		mmArray();
 	}
-
-	mmArray = function(){
-		if($scope.param.viddilennja){
-			$scope.mmArray =[];
-			for (var i = $scope.minMonth*1; i <= $scope.maxMonth; i++) {
-				$scope.mmArray.push(i);
-			}
-			console.log($scope.mmArray);
-			if($scope.bedDay){
-				$scope.mmNewArray =[];
-				if($scope.bedDay.bedDayDepartmentMySql){
-					if($scope.mmArray.length > $scope.bedDay.bedDayDepartmentMySql.length){
-						console.log($scope.bedDay.bedDayDepartmentMySql.length);
-						var mmNew = $scope.mmArray.length - $scope.bedDay.bedDayDepartmentMySql.length;
-						for (var i = 1; i <= mmNew; i++) {
-							$scope.mmNewArray.push(i);
-						}
-						console.log($scope.mmNewArray);
-					}
-				}
-			}
-		}
+	
+	$scope.eqMonth = function(){
+		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
+//	eqMonth();
+		var url = "?viddilennja="+parameters.viddilennja+"&m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
+		if(!parameters.viddilennja)
+			url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
+//		window.open();
+		window.location.href = url;
 	}
+	
+}
+
+hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+	console.log("K1Icd10Ctrl");
+	initReport($scope);
+	$scope.icd10Head = [
+		{"title":"","name":"МКХ-10","key":"ICD_CODE"}
+		,{"title":"","name":"Діагноз","key":"ICD_NAME"}
+		,{"title":"","name":"Кількість","key":"CNT"}
+	];
+
+	eqMonth = function(){
+		var url1 = "/r/readIcd10K1-";
+		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth;
+		console.log(url);
+		$http({ method : 'GET', url : url
+		}).success(function(data, status, headers, config) {
+			$scope.k1 = data;
+			console.log($scope.k1);
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+	}
+
+	eqMonth();
+
+}]);
+
+hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+	console.log("DepartmentMonthMovementCtrl");
+	initReport($scope);
+	
+	$scope.bedDayHead = [
+		{"title":"","name":"Відділення","key":""}
+		,{"title":" (ліжка)","name":"Ліжок на штаті","key":"department_bed"}
+		,{"title":"Поступило (люди)","name":"Поступило","key":"in_clinic"}
+		,{"title":"Виписано (люди)","name":"Виписано","key":"out_clinic"}
+		,{"title":"Переведено в інші відділення (люди)"
+			,"name":"П. в інші від.","key":"in_dep"}
+		,{"title":"Переведено з інші відділення (люди)"
+			,"name":"П. з інші від.","key":"out_dep"}
+		,{"title":"Померло (люди)","name":"Померло","key":"dead"}
+		,{"title":"Лікарняна летальність (%)","name":"Л-на летальність","key":"mortality"}
+		,{"title":"Лікувалось хворих (люди)","name":"Лік. хворих","key":"TREAT"}
+		,{"title":"Проведено ліжкоднів (дні)","name":"Пр-но ліжкоднів","key":"bed_day"}
+		,{"title":"План ліжкоднів (дні)","name":"Пл-н ліжкоднів","key":"bed_day_plan"}
+		,{"title":"Процент виконання плана ліжкоднів (%)","name":"% вик. плана","key":"bed_day_fulfil"}
+		,{"title":"Зайнятість ліжка (днів)","name":"З-ть ліжка","key":"bed_occupancy"}
+		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка","key":"bed_turnover"}
+		,{"title":"Оборот ліжка (раз)","name":"Оборот ліжка (альтернатів)","key":"bed_turnover2"}
+		,{"title":"Ср. трив. лікуання (днів)","name":"Ср. трив. лікуання","key":"treat_avg"}
+	];
+
+	eqMonth = function(){
+		var url1 = "/r/readBedDayMySql-";
+		if(parameters.viddilennja)
+			url1 = "/r/readBedDayDepartmentMySql-";
+		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth;
+		console.log(url);
+		$http({ method : 'GET', url : url
+		}).success(function(data, status, headers, config) {
+			$scope.bedDay = data;
+			console.log($scope.bedDay);
+			if($scope.param.viddilennja){
+				$scope.bedDayOfMonthMySql 
+				= $scope.bedDay.bedDayOfMonthMySql[$scope.param.viddilennja]
+				console.log($scope.bedDayOfMonthMySql);
+				mmArray();
+			}
+//			initDateVariables();
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+	}
+
+	eqMonth();
+
+
 	mmArray();
 	$scope.months = {
 		'nominative': '_січень_лютий_березень_квітень_травень_червень_липень_серпень_вересень_жовтень_листопад_грудень'.split('_'),
