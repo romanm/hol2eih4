@@ -270,6 +270,10 @@ var initReport = function($scope){
 		window.location.href = url;
 	}
 	
+	$scope.months = {
+		'nominative': '_січень_лютий_березень_квітень_травень_червень_липень_серпень_вересень_жовтень_листопад_грудень'.split('_'),
+		'accusative': '_січня_лютого_березня_квітня_травня_червня_липня_серпня_вересня_жовтня_листопада_грудня'.split('_')
+	};
 }
 
 hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
@@ -351,10 +355,6 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 
 
 	mmArray();
-	$scope.months = {
-		'nominative': '_січень_лютий_березень_квітень_травень_червень_липень_серпень_вересень_жовтень_листопад_грудень'.split('_'),
-		'accusative': '_січня_лютого_березня_квітня_травня_червня_липня_серпня_вересня_жовтня_листопада_грудня'.split('_')
-	};
 }]);
 
 hol2eih3App.controller('MvPatientInWeekDayCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'

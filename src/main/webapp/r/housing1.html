@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/css/hol2eih3.css"></link>
 <link rel="stylesheet" href="/css/lizhkodni.css"></link>
 <link rel='stylesheet prefetch' href='/css/lib/font-awesome.min.css'>
-<title>Ліжкодні</title>
+<title>Проліковано хворих за нозологіями</title>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -75,26 +75,40 @@
 			<table class="table-bordered">
 				<caption>
 					<h4>
-						Ліжкодні <span ng-if="bedDay.m1 == bedDay.m2"> за
-							{{bedDay.m1}} місяць </span> <span ng-if="bedDay.m1 != bedDay.m2">
-							з {{bedDay.m1}} по {{bedDay.m2}} місяці</span> поточного року
+						Проліковано хворих за нозологіями <span ng-if="k1.m1 == k1.m2">
+							за {{k1.m1}} місяць <small>
+								({{months.nominative[k1.m1]}}) </small>
+						</span> <span ng-if="k1.m1 != k1.m2"> з {{k1.m1}} по {{k1.m2}}
+							місяці <small>(з {{months.accusative[k1.m1]}} — по
+								{{months.nominative[k1.m2]}})</small>
+
+						</span> {{yyyy}} року
 					</h4>
 				</caption>
 				<thead>
 					<tr>
-						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}">{{bedDayH.name}}</th>
+						<th ng-repeat="icd10H in icd10Head" ng-if="!$last" title="{{icd10H.title}}">{{icd10H.name}}</th>
+						<th ng-repeat="icd10K1Month in k1.someMonth">
+							{{minMonth*1+$index}}</th>
+						<th>{{icd10Head[icd10Head.length - 1].name}}</th>
 					</tr>
 					<tr class="center">
-						<th ng-repeat="n in bedDayHead">{{$index + 1}}</th>
+						<th ng-repeat="n in icd10Head" ng-if="!$last">{{$index + 1}}</th>
+						<th ng-repeat="icd10K1Month in k1.someMonth">
+						{{icd10Head.length + $index}}
+						</th>
+						<th>
+						{{icd10Head.length + k1.someMonth.length}}
+						</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql">
-						<td><a
-							href="?viddilennja={{$index}}&m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
-								{{bedDayOfMonthMySql.department_name}}</a></td>
-						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0">
-							{{bedDayOfMonthMySql[bedDayH.key]==0?'':bedDayOfMonthMySql[bedDayH.key]}}
+					<tr ng-repeat="icd10K1 in k1.icd10K1" ng-init="icdIndex=$index">
+						<td ng-repeat="icd10H in icd10Head" ng-if="!$last">
+							{{icd10K1[icd10H.key]==0?'':icd10K1[icd10H.key]}}</td>
+						<td ng-repeat="icd10K1Month in k1.someMonth">
+							{{icd10K1Month[icdIndex].CNT}}</td>
+						<td>{{icd10K1.CNT}}
 						</td>
 					</tr>
 				</tbody>

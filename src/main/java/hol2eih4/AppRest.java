@@ -81,6 +81,7 @@ public class AppRest {
 		map.put("bedDayOfMonthH2", bedDayOfMonthH2);
 		return map;
 	}
+
 	@RequestMapping(value = "/r/readBedDayDepartmentMySql-{m1}-{m2}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readBedDayDepartmentMySql(
 			@PathVariable Integer m1
@@ -112,6 +113,14 @@ public class AppRest {
 		map.put("m2", m2);
 		List<Map<String, Object>> icd10K1 = appService.readIcd10K1(m1,m2);
 		map.put("icd10K1", icd10K1);
+		if(m1 < m2) {
+			List<Object> someMonth = new ArrayList<>();
+			for (int i = m1; i <= m2; i++) {
+				List<Map<String, Object>> icd10K1Month1 = appService.readIcd10K1(i,i);
+				someMonth.add(icd10K1Month1);
+			}
+			map.put("someMonth", someMonth);
+		}
 		return map;
 	}
 

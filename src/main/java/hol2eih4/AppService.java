@@ -39,13 +39,9 @@ public class AppService {
 
 	public List<Map<String, Object>> readIcd10K1(Integer m1, Integer m2) {
 		Map<String, Integer> mmp = new HashMap<>();
-		mmp.put("min_month", 1);
-//		mmp.put("max_month", m2);
-//		mmp.put("nulltrue", true);
-		logger.debug(mmp.toString());
-		logger.debug("SQL length "+SqlHolder.icd10K1.length());
-		logger.debug(SqlHolder.icd10K1);
-		logger.debug(""+k1JdbcTemplate);
+		mmp.put("min_month", m1);
+		mmp.put("max_month", m2);
+		logger.debug(mmp.toString()+" SQL length "+SqlHolder.icd10K1.length());
 		List<Map<String, Object>> icd10K1 
 		= k1JdbcTemplate.queryForList(SqlHolder.icd10K1,mmp);
 		return icd10K1;
@@ -55,13 +51,12 @@ public class AppService {
 		Map<String, Integer> mmp = new HashMap<>();
 		mmp.put("min_month", m1);
 		mmp.put("max_month", m2);
-		logger.debug(mmp.toString());
-		logger.debug("SQL length "+SqlHolder.bedDayMySql.length());
+		logger.debug(mmp.toString()+" SQL length "+SqlHolder.bedDayMySql.length());
 		List<Map<String, Object>> bedDayOfMonthMySql 
 		= mySqlJdbcTemplate.queryForList(SqlHolder.bedDayMySql, mmp);
 		return bedDayOfMonthMySql;
 	}
-	
+
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
