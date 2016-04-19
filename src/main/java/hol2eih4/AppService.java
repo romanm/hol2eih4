@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component("appService")
 public class AppService {
 	private static final Logger logger = LoggerFactory.getLogger(AppService.class);
-	private JdbcTemplate h2JdbcTemplate;
-	private NamedParameterJdbcTemplate mySqlJdbcTemplate;
+	private JdbcTemplate h2JdbcTemplate, mySqlJdbcTemplate;
+	private NamedParameterJdbcTemplate mySqlParamJdbcTemplate;
 	private NamedParameterJdbcTemplate k1JdbcTemplate;
 	private int cnt_repetable;
 	private int cnt_update;
@@ -42,18 +42,45 @@ public class AppService {
 		mmp.put("min_month", m1);
 		mmp.put("max_month", m2);
 		logger.debug(mmp.toString()+" SQL length "+SqlHolder.icd10K1.length());
+//		logger.debug(SqlHolder.icd10K1);
 		List<Map<String, Object>> icd10K1 
 		= k1JdbcTemplate.queryForList(SqlHolder.icd10K1,mmp);
 		return icd10K1;
+	}
+
+	public List<Map<String, Object>> readDepartmentIcd10(Integer m1, Integer m2, Integer departmentId) {
+		Map<String, Integer> mmp = new HashMap<>();
+		mmp.put("min_month", m1);
+		mmp.put("max_month", m2);
+		mmp.put("department_id", departmentId);
+		addCommonParameter(mmp);
+		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentIcd10.length());
+		List<Map<String, Object>> bedDayOfMonthMySql 
+		= mySqlParamJdbcTemplate.queryForList(SqlHolder.departmentIcd10, mmp);
+//		String departmentIcd10 = SqlHolder.departmentIcd10
+//		.replaceAll(":year", mmp.get("year").toString())
+//		.replaceAll(":min_month", mmp.get("min_month").toString())
+//		.replaceAll(":max_month", mmp.get("max_month").toString())
+//		.replaceAll(":department_id", mmp.get("department_id").toString());
+//		logger.debug(departmentIcd10);
+//		List<Map<String, Object>> bedDayOfMonthMySql 
+//		= mySqlJdbcTemplate.queryForList(departmentIcd10);
+		return bedDayOfMonthMySql;
+	}
+
+	private void addCommonParameter(Map<String, Integer> mmp) {
+		int year = new DateTime().year().get();
+		mmp.put("year", year);
 	}
 
 	public List<Map<String, Object>> readBedDayOfMonthMySql(Integer m1, Integer m2) {
 		Map<String, Integer> mmp = new HashMap<>();
 		mmp.put("min_month", m1);
 		mmp.put("max_month", m2);
+		addCommonParameter(mmp);
 		logger.debug(mmp.toString()+" SQL length "+SqlHolder.bedDayMySql.length());
 		List<Map<String, Object>> bedDayOfMonthMySql 
-		= mySqlJdbcTemplate.queryForList(SqlHolder.bedDayMySql, mmp);
+		= mySqlParamJdbcTemplate.queryForList(SqlHolder.bedDayMySql, mmp);
 		return bedDayOfMonthMySql;
 	}
 
@@ -73,6 +100,7 @@ public class AppService {
 		String thisDayStr = AppConfig.ddMMyyyDateFormat.format(thisDay.toDate());
 		String sqlCountDay = " SELECT count(*) FROM hol2.movedepartmentpatient "
 				+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy') ";
+		logger.debug(thisDayStr);
 		Integer countDay = h2JdbcTemplate.queryForObject( sqlCountDay, Integer.class, new Object[] {thisDayStr});
 		logger.debug(countDay +"  --  "+sqlCountDay.replace("\\?", "'"+thisDayStr+"'"));
 		DateTime beforeDay = thisDay.minusDays(1);
@@ -417,7 +445,8 @@ Types.INTEGER
 		dataSource.setUrl(AppConfig.urlMySqlDb);
 		dataSource.setUsername("hol");
 		dataSource.setPassword("hol");
-		this.mySqlJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+		this.mySqlParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+		this.mySqlJdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 	private void initK1Sql() {
