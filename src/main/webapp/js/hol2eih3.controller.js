@@ -300,6 +300,65 @@ hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$h
 	}
 
 	eqMonth();
+	
+}]);
+
+hol2eih3App.controller('DepartmentIcd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+	console.log("DepartmentIcd10Ctrl");
+	initReport($scope);
+
+$scope.bedDayHead = [
+	{"title":"","name":"МКХ10","key":""}
+	,{"title":"","name":"Місто","key":"misto"}
+	,{"title":"","name":"Село","key":"selo"}
+	,{"title":"Поступило з направленням","name":"з напр.","key":"referral_has"}
+	,{"title":"Поступило без направлення","name":"без напр.","key":"referral_self"}
+	,{"title":"Переведений з іншого відділення","name":"пер. з","key":"referral_hol"}
+	,{"title":"Переведений в інше відділення","name":"пер. в","key":"remove_hol"}
+	,{"title":"Виписаний","name":"вип.","key":"remove_true"}
+	,{"title":"Померлі","name":"пом.","key":"remove_dead"}
+];
+
+$scope.clickShowAllIcd10 = function(){
+	console.log($scope.showAllIcd10);
+}
+
+$scope.showIcd10 = function(bedDayOfMonthMySql){
+	if($scope.showAllIcd10)
+		return true;
+	var showIcd10 = bedDayOfMonthMySql.misto_cnt + bedDayOfMonthMySql.selo_cnt > 0;
+	return showIcd10;
+}
+	
+	$scope.eqMonth = function(){
+		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
+		var url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&department_id=" + $scope.param.department_id+"&type="+$scope.eqMonthType;
+		window.location.href = url;
+	}
+eqMonth = function(){
+	var url1 = "/r/readDepartmentIcd10-";
+	$scope.departmentId = 5;
+	var url = url1 + $scope.minMonth + "-" + $scope.maxMonth + "-" + $scope.param.department_id;
+	console.log(url);
+//	alert(url)
+	$http({ method : 'GET', url : url
+	}).success(function(data, status, headers, config) {
+		$scope.bedDay = data;
+		console.log($scope.bedDay);
+		if($scope.param.viddilennja){
+			$scope.bedDayOfMonthMySql 
+			= $scope.bedDay.bedDayOfMonthMySql[$scope.param.viddilennja]
+			console.log($scope.bedDayOfMonthMySql);
+			mmArray();
+		}
+//		initDateVariables();
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+}
+
+eqMonth();
 
 }]);
 

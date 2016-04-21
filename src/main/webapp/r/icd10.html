@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html ng-app="hol2eih3App"
-	ng-controller="DepartmentMonthMovementMySqlCtrl" ng-cloak
+	ng-controller="DepartmentIcd10Ctrl" ng-cloak
 	class="ng-cloak">
 <head>
 <meta charset="utf-8" />
@@ -23,11 +23,22 @@
 <div class="container-fluid">
 	<table class="table-bordered no-print">
 		<tr class="center">
-			<td>Вибрати <label> <input type="radio"
-					name="eqMonthType" value="month" ng-model="eqMonthType" /> місяць
-			</label>, <label> <input type="radio" name="eqMonthType"
-					value="period" ng-model="eqMonthType" /> період
-			</label></td>
+				<td>
+					<div>
+						Вибрати <label> <input type="radio" name="eqMonthType"
+							value="month" ng-model="eqMonthType" /> місяць
+						</label>, <label> <input type="radio" name="eqMonthType"
+							value="period" ng-model="eqMonthType" /> період
+						</label>
+					</div>
+					<div 
+					ng-click="clickShowAllIcd10()"
+					>
+						<label title="Показати">  всі МКХ10 відділення <input
+							type="checkbox" name="showAllIcd10" ng-model="showAllIcd10" />
+						</label>
+					</div>
+				</td>
 				<td ng-class="isWaleMonth(n) ? 'wale' : '' "
 					ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]"
 					ng-click="setMonth(n)"><a href="#">
@@ -40,12 +51,14 @@
 					<td>
 					| |
 					</td>
+					<!-- 
 					<td>
 					<a
 				href="/r/icd10.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
 					МКХ10
 					</a>
 					</td>
+					 -->
 		</tr>
 	</table>
 	<div ng-if="param.viddilennja">
@@ -91,19 +104,40 @@
 				</caption>
 				<thead>
 					<tr>
+						<th></th>
+						<th colspan="{{bedDayHead.length}}">Кількість хворих</th>
+						<th colspan="{{bedDayHead.length}}">Ліжкодні</th>
+					</tr>
+					<tr>
 						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}">{{bedDayH.name}}</th>
+						<th></th>
+						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}"
+						ng-if="$index > 0"
+						>{{bedDayH.name}}</th>
 					</tr>
 					<tr class="center">
 						<th ng-repeat="n in bedDayHead">{{$index + 1}}</th>
+						<th></th>
+						<th ng-repeat="n in bedDayHead"
+						ng-if="$index > 0"
+						>{{$index + 1 + bedDayHead.length}}</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql">
-						<td><a
-							href="?viddilennja={{$index}}&m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
-								{{bedDayOfMonthMySql.department_name}}</a></td>
-						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0">
-							{{bedDayOfMonthMySql[bedDayH.key]==0?'':bedDayOfMonthMySql[bedDayH.key]}}
+					<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql"
+					ng-if="showIcd10(bedDayOfMonthMySql)"
+					>
+						<td title="З 2012 проліковано {{bedDayOfMonthMySql.cnt_all_icd}} хворих {{bedDayOfMonthMySql.icd_code}}">
+						{{bedDayOfMonthMySql.icd_code}}
+						-
+						{{bedDayOfMonthMySql.icd_name}}
+						</td>
+						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0" title="{{bedDayH.title}}">
+							{{bedDayOfMonthMySql[bedDayH.key+'_cnt']==0?'':bedDayOfMonthMySql[bedDayH.key+'_cnt']}}
+						</td>
+						<td></td>
+						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0" title="{{bedDayH.title}}">
+							{{bedDayOfMonthMySql[bedDayH.key+'_bed_day']==0?'':bedDayOfMonthMySql[bedDayH.key+'_bed_day']}}
 						</td>
 					</tr>
 				</tbody>
