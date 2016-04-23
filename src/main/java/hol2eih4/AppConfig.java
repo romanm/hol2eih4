@@ -1,7 +1,6 @@
 package hol2eih4;
 
 import java.text.SimpleDateFormat;
-
 import org.joda.time.DateTime;
 
 public class AppConfig {

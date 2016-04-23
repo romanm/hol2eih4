@@ -183,6 +183,34 @@ hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$cookies', '$cookieSto
 	});
 }]);
 
+var initQuartal = function($scope, $http){
+	$scope.eqMonth = function(){
+		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
+		var url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&department_id=" + $scope.param.department_id+"&type="+$scope.eqMonthType;
+		window.location.href = url;
+	}
+eqMonth = function(){
+	var url1 = $scope.url1;
+	var url = url1 + $scope.minMonth + "-" + $scope.maxMonth + "-" + $scope.param.department_id;
+	console.log(url);
+//	alert(url)
+	$http({ method : 'GET', url : url
+	}).success(function(data, status, headers, config) {
+		$scope.bedDay = data;
+		console.log($scope.bedDay);
+		if($scope.param.viddilennja){
+			$scope.bedDayOfMonthMySql 
+			= $scope.bedDay.bedDayOfMonthMySql[$scope.param.viddilennja]
+			console.log($scope.bedDayOfMonthMySql);
+			mmArray();
+		}
+//		initDateVariables();
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+}
+}
+
 var initReport = function($scope){
 	$scope.param = parameters;
 	console.log($scope.param);
@@ -303,10 +331,32 @@ hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$h
 	
 }]);
 
+hol2eih3App.controller('DepartmentAdressCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+	console.log("DepartmentAdressCtrl");
+	$scope.url1 = "/r/readDepartmentAdress-";
+	initReport($scope);
+	initQuartal($scope, $http);
+	$scope.bedDayHead = [
+ {"title":"","name":"Райони","key":""}
+ ,{"title":"Поступило з направленням","name":"з напр.","key":"with"}
+ ,{"title":"Поступило без направлення","name":"без напр.","key":"without"}
+ ,{"title":"Переведений з іншого відділення","name":"пер. з","key":"from_dep"}
+ ,{"title":"Переведений в інше відділення","name":"пер. в","key":"to_dep"}
+ ,{"title":"Виписаний","name":"вип.","key":"remove"}
+ ,{"title":"Померлі","name":"пом.","key":"dead"}
+ ];
+
+eqMonth();
+
+}]);
+
 hol2eih3App.controller('DepartmentIcd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 	console.log("DepartmentIcd10Ctrl");
+	$scope.url1 = "/r/readDepartmentIcd10-";
 	initReport($scope);
+	initQuartal($scope, $http);
 
 $scope.bedDayHead = [
 	{"title":"","name":"МКХ10","key":""}
@@ -329,33 +379,6 @@ $scope.showIcd10 = function(bedDayOfMonthMySql){
 		return true;
 	var showIcd10 = bedDayOfMonthMySql.misto_cnt + bedDayOfMonthMySql.selo_cnt > 0;
 	return showIcd10;
-}
-	
-	$scope.eqMonth = function(){
-		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
-		var url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&department_id=" + $scope.param.department_id+"&type="+$scope.eqMonthType;
-		window.location.href = url;
-	}
-eqMonth = function(){
-	var url1 = "/r/readDepartmentIcd10-";
-	$scope.departmentId = 5;
-	var url = url1 + $scope.minMonth + "-" + $scope.maxMonth + "-" + $scope.param.department_id;
-	console.log(url);
-//	alert(url)
-	$http({ method : 'GET', url : url
-	}).success(function(data, status, headers, config) {
-		$scope.bedDay = data;
-		console.log($scope.bedDay);
-		if($scope.param.viddilennja){
-			$scope.bedDayOfMonthMySql 
-			= $scope.bedDay.bedDayOfMonthMySql[$scope.param.viddilennja]
-			console.log($scope.bedDayOfMonthMySql);
-			mmArray();
-		}
-//		initDateVariables();
-	}).error(function(data, status, headers, config) {
-		$scope.error = data;
-	});
 }
 
 eqMonth();

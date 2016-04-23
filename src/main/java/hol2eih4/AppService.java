@@ -48,6 +48,26 @@ public class AppService {
 		return icd10K1;
 	}
 
+	public Map<String, Object> readDepartment(Integer departmentId) {
+		Map<String, Integer> mmp = new HashMap<>();
+		mmp.put("department_id", departmentId);
+		logger.debug(mmp+" "+SqlHolder.department);
+		Map<String, Object> queryForMap = mySqlParamJdbcTemplate.queryForMap(SqlHolder.department,mmp);
+		return queryForMap;
+	}
+
+	public List<Map<String, Object>> readDepartmentAdress(Integer m1, Integer m2, Integer departmentId) {
+		Map<String, Integer> mmp = new HashMap<>();
+		mmp.put("min_month", m1);
+		mmp.put("max_month", m2);
+		mmp.put("department_id", departmentId);
+		addCommonParameter(mmp);
+		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentAdress.length());
+		List<Map<String, Object>> bedDayOfMonthMySql
+		= mySqlParamJdbcTemplate.queryForList(SqlHolder.departmentAdress, mmp);
+		return bedDayOfMonthMySql;
+	}
+
 	public List<Map<String, Object>> readDepartmentIcd10(Integer m1, Integer m2, Integer departmentId) {
 		Map<String, Integer> mmp = new HashMap<>();
 		mmp.put("min_month", m1);

@@ -51,6 +51,9 @@
 					<td>
 					| |
 					</td>
+					<td><a
+					href="/r/adress.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">
+						по районах </a></td>
 					<!-- 
 					<td>
 					<a
@@ -97,9 +100,11 @@
 			<table class="table-bordered">
 				<caption>
 					<h4>
-						Ліжкодні <span ng-if="bedDay.m1 == bedDay.m2"> за
-							{{bedDay.m1}} місяць </span> <span ng-if="bedDay.m1 != bedDay.m2">
-							з {{bedDay.m1}} по {{bedDay.m2}} місяці</span> поточного року
+						Ліжкодні відділення <b> {{bedDay.department.department_name}}
+						</b> <span ng-if="bedDay.m1 == bedDay.m2"> за {{bedDay.m1}}
+							місяць </span> <span ng-if="bedDay.m1 != bedDay.m2"> з
+							{{bedDay.m1}} по {{bedDay.m2}} місяці</span> {{yyyy}} року
+							
 					</h4>
 				</caption>
 				<thead>
