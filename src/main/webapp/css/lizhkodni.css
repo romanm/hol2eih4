@@ -10,6 +10,13 @@ table.year tr td {
 	text-align: center;
 }
 
+table.number-center tr td:first-child {
+	text-align: left;
+}
+table.number-center tr td {
+	text-align: center;
+}
+
 tr.center th {
 	text-align: center;
 }
@@ -39,6 +46,9 @@ td.satsanday {
 	
 }
 
+.bold {
+	font-weight: bold;
+}
 .param-date {
 	font-weight: bold;
 	text-decoration: underline;

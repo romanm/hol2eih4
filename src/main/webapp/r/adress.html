@@ -22,7 +22,7 @@
 	</nav>
 <div class="container-fluid">
 	<table class="table-bordered no-print">
-		<tr class="center">
+			<tr class="center">
 				<td>
 					<div>
 						Вибрати <label> <input type="radio" name="eqMonthType"
@@ -31,36 +31,25 @@
 							value="period" ng-model="eqMonthType" /> період
 						</label>
 					</div>
-					<div 
-					ng-click="clickShowAllIcd10()"
-					>
-						<label title="Показати">  всі МКХ10 відділення <input
-							type="checkbox" name="showAllIcd10" ng-model="showAllIcd10" />
-						</label>
-					</div>
 				</td>
 				<td ng-class="isWaleMonth(n) ? 'wale' : '' "
 					ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]"
 					ng-click="setMonth(n)"><a href="#">
 						{{n>9?'':'&nbsp;'}}{{n}} </a></td>
 				<td class="btn btn-sm btn-info" ng-click="eqMonth()">Виконати
-				запит</td>
-			<td ng-if="param.viddilennja"><a
-				href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
-					Показати всі відділення </a></td>
-					<td>
-					| |
-					</td>
-					<!-- 
-					<td>
-					<a
-				href="/r/icd10.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
-					МКХ10
-					</a>
-					</td>
-					 -->
-		</tr>
-	</table>
+					запит</td>
+				<td ng-if="param.viddilennja"><a
+					href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+						Показати всі відділення </a></td>
+				<td><a
+					href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+						Показати всі відділення </a></td>
+				<td>| |</td>
+				<td><a
+					href="/r/icd10.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">
+						МКХ10 </a></td>
+			</tr>
+		</table>
 	<div ng-if="param.viddilennja">
 			<table class="table table-bordered">
 				<caption>
@@ -94,7 +83,7 @@
 			</table>
 		</div>
 		<div ng-if="!param.viddilennja">
-			<table class="table-bordered">
+			<table class="table-bordered number-center">
 				<caption>
 					<h4>
 						Ліжкодні відділення <b> {{bedDay.department.department_name}}
@@ -122,15 +111,17 @@
 						<th></th>
 						<th ng-repeat="n in bedDayHead"
 						ng-if="$index > 0"
-						>{{$index + 1 + bedDayHead.length}}</th>
+						>{{$index + bedDayHead.length}}</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql"
+					ng-if="bedDayOfMonthMySql.order_group!=10001"
+					class="{{bedDayOfMonthMySql.order_group==0 || bedDayOfMonthMySql.order_group==9999?'bold':''}}"
 					>
 						<td>
-						{{!(bedDayOfMonthMySql.misto_raion_other>0)?'м.':''}}
-						{{bedDayOfMonthMySql.region_name}}
+						{{!(bedDayOfMonthMySql.misto_raion_other>=0)?'м.':''}}
+						{{bedDayOfMonthMySql.misto_raion_other==10000?'Інші області':bedDayOfMonthMySql.region_name}}
 						</td>
 						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0" title="{{bedDayH.title}}">
 							{{bedDayOfMonthMySql[bedDayH.key+'_cnt']==0?'':bedDayOfMonthMySql[bedDayH.key+'_cnt']}}

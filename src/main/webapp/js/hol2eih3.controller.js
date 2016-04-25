@@ -191,8 +191,9 @@ var initQuartal = function($scope, $http){
 	}
 eqMonth = function(){
 	var url1 = $scope.url1;
-	var url = url1 + $scope.minMonth + "-" + $scope.maxMonth + "-" + $scope.param.department_id;
+	var url = url1 + "-" + $scope.minMonth + "-" + $scope.maxMonth + "-" + $scope.param.department_id;
 	console.log(url);
+	console.log($scope.showExpandIcd10);
 //	alert(url)
 	$http({ method : 'GET', url : url
 	}).success(function(data, status, headers, config) {
@@ -334,7 +335,7 @@ hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$h
 hol2eih3App.controller('DepartmentAdressCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 	console.log("DepartmentAdressCtrl");
-	$scope.url1 = "/r/readDepartmentAdress-";
+	$scope.url1 = "/r/readDepartmentAdress";
 	initReport($scope);
 	initQuartal($scope, $http);
 	$scope.bedDayHead = [
@@ -354,8 +355,10 @@ eqMonth();
 hol2eih3App.controller('DepartmentIcd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 	console.log("DepartmentIcd10Ctrl");
-	$scope.url1 = "/r/readDepartmentIcd10-";
 	initReport($scope);
+	console.log($scope.param);
+	console.log($scope.param.showExpandIcd10==1);
+	$scope.url1 = $scope.param.showExpandIcd10==1?"/r/readDepartmentIcd10":"/r/readDepartmentIcd10Group";
 	initQuartal($scope, $http);
 
 $scope.bedDayHead = [
@@ -371,7 +374,7 @@ $scope.bedDayHead = [
 ];
 
 $scope.clickShowAllIcd10 = function(){
-	console.log($scope.showAllIcd10);
+	console.log("showAllIcd10 "+$scope.showAllIcd10+"; showExpandIcd10 "+$scope.showExpandIcd10);
 }
 
 $scope.showIcd10 = function(bedDayOfMonthMySql){

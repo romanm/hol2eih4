@@ -68,6 +68,17 @@ public class AppService {
 		return bedDayOfMonthMySql;
 	}
 
+	public List<Map<String, Object>> readDepartmentIcd10Group(Integer m1, Integer m2, Integer departmentId) {
+		Map<String, Integer> mmp = new HashMap<>();
+		mmp.put("min_month", m1);
+		mmp.put("max_month", m2);
+		mmp.put("department_id", departmentId);
+		addCommonParameter(mmp);
+		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentIcd10Group.length());
+		List<Map<String, Object>> bedDayOfMonthMySql 
+		= mySqlParamJdbcTemplate.queryForList(SqlHolder.departmentIcd10Group, mmp);
+		return bedDayOfMonthMySql;
+	}
 	public List<Map<String, Object>> readDepartmentIcd10(Integer m1, Integer m2, Integer departmentId) {
 		Map<String, Integer> mmp = new HashMap<>();
 		mmp.put("min_month", m1);

@@ -154,6 +154,23 @@ public class AppRest {
 		return map;
 	}
 
+	@RequestMapping(value = "/r/readDepartmentIcd10Group-{m1}-{m2}-{departmentId}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readDepartmentIcd10Group(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer departmentId
+			,Principal userPrincipal) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("m1", m1);
+		map.put("m2", m2);
+		map.put("departmentId", departmentId);
+		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentIcd10Group(m1,m2, departmentId);
+		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
+		Map<String, Object> department = appService.readDepartment(departmentId);
+		map.put("department", department);
+		return map;
+	}
+
 	@RequestMapping(value = "/r/readDepartmentIcd10-{m1}-{m2}-{departmentId}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readDepartmentIcd10(
 			@PathVariable Integer m1

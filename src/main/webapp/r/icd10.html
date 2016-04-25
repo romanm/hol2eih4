@@ -21,8 +21,8 @@
 		</div>
 	</nav>
 <div class="container-fluid">
-	<table class="table-bordered no-print">
-		<tr class="center">
+		<table class="table-bordered no-print">
+			<tr class="center">
 				<td>
 					<div>
 						Вибрати <label> <input type="radio" name="eqMonthType"
@@ -31,30 +31,24 @@
 							value="period" ng-model="eqMonthType" /> період
 						</label>
 					</div>
-					<div 
-					ng-click="clickShowAllIcd10()"
-					>
-						<label title="Показати">  всі МКХ10 відділення <input
-							type="checkbox" name="showAllIcd10" ng-model="showAllIcd10" />
-						</label>
-					</div>
 				</td>
 				<td ng-class="isWaleMonth(n) ? 'wale' : '' "
 					ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]"
 					ng-click="setMonth(n)"><a href="#">
 						{{n>9?'':'&nbsp;'}}{{n}} </a></td>
 				<td class="btn btn-sm btn-info" ng-click="eqMonth()">Виконати
-				запит</td>
-			<td ng-if="param.viddilennja"><a
-				href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
-					Показати всі відділення </a></td>
-					<td>
-					| |
-					</td>
-					<td><a
+					запит</td>
+				<td><a
+					href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+						Показати всі відділення </a></td>
+				<td ng-if="param.viddilennja"><a
+					href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+						Показати всі відділення </a></td>
+				<td>| |</td>
+				<td><a
 					href="/r/adress.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">
 						по районах </a></td>
-					<!-- 
+				<!-- 
 					<td>
 					<a
 				href="/r/icd10.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
@@ -62,9 +56,19 @@
 					</a>
 					</td>
 					 -->
-		</tr>
-	</table>
-	<div ng-if="param.viddilennja">
+			</tr>
+			<tr>
+				<td colspan="14">Діагнози: <a ng-class="param.showExpandIcd10==1?'':'bold'"
+					href="/r/icd10.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">згруповані</a>
+					| <a ng-class="param.showExpandIcd10==1?'bold':''"
+					href="/r/icd10.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}&showExpandIcd10=1">
+						розгорнуті</a><span>, </span> <label ng-click="clickShowAllIcd10()" title="Показати"> всі
+						МКХ10 відділення <input type="checkbox" name="showAllIcd10"
+						ng-model="showAllIcd10" />
+				</label></td>
+			</tr>
+		</table>
+		<div ng-if="param.viddilennja">
 			<table class="table table-bordered">
 				<caption>
 					<h4>
@@ -97,7 +101,7 @@
 			</table>
 		</div>
 		<div ng-if="!param.viddilennja">
-			<table class="table-bordered">
+			<table class="table-bordered number-center">
 				<caption>
 					<h4>
 						Ліжкодні відділення <b> {{bedDay.department.department_name}}
@@ -110,8 +114,8 @@
 				<thead>
 					<tr>
 						<th></th>
-						<th colspan="{{bedDayHead.length}}">Кількість хворих</th>
-						<th colspan="{{bedDayHead.length}}">Ліжкодні</th>
+						<th colspan="{{bedDayHead.length - 1}}">Кількість хворих</th>
+						<th colspan="{{bedDayHead.length}} - 1">Ліжкодні</th>
 					</tr>
 					<tr>
 						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}">{{bedDayH.name}}</th>
@@ -125,7 +129,7 @@
 						<th></th>
 						<th ng-repeat="n in bedDayHead"
 						ng-if="$index > 0"
-						>{{$index + 1 + bedDayHead.length}}</th>
+						>{{$index + bedDayHead.length}}</th>
 					</tr>
 				</thead>
 				<tbody>
