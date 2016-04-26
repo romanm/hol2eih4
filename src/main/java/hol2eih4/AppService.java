@@ -56,6 +56,17 @@ public class AppService {
 		return queryForMap;
 	}
 
+	public List<Map<String, Object>> readDepartmentMotion(Integer m1, Integer m2, Integer departmentId) {
+		Map<String, Integer> mmp = new HashMap<>();
+		mmp.put("min_month", m1);
+		mmp.put("max_month", m2);
+		mmp.put("department_id", departmentId);
+		addCommonParameter(mmp);
+		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentMotion.length());
+		List<Map<String, Object>> bedDayOfMonthMySql
+		= mySqlParamJdbcTemplate.queryForList(SqlHolder.departmentMotion, mmp);
+		return bedDayOfMonthMySql;
+	}
 	public List<Map<String, Object>> readDepartmentAdress(Integer m1, Integer m2, Integer departmentId) {
 		Map<String, Integer> mmp = new HashMap<>();
 		mmp.put("min_month", m1);

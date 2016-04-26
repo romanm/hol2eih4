@@ -332,6 +332,17 @@ hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$h
 	
 }]);
 
+hol2eih3App.controller('DepartmentMotionCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+	console.log("DepartmentMotionCtrl");
+	$scope.url1 = "/r/readDepartmentMotion";
+	initReport($scope);
+	initQuartal($scope, $http);
+
+	eqMonth();
+
+}]);
+
 hol2eih3App.controller('DepartmentAdressCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 	console.log("DepartmentAdressCtrl");

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html ng-app="hol2eih3App"
+	ng-controller="DepartmentMotionCtrl" ng-cloak
+	class="ng-cloak">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="/css/lib/bootstrap.min.css"></link>
+<link rel="stylesheet" href="/css/hol2eih3.css"></link>
+<link rel="stylesheet" href="/css/lizhkodni.css"></link>
+<link rel='stylesheet prefetch' href='/css/lib/font-awesome.min.css'>
+<title>Журнал руху хворих</title>
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="/"><span class="glyphicon glyphicon-home"></span></a>
+				Ліжкодні за місяць
+			</div>
+			<div class="collapse navbar-collapse navbar-right">.</div>
+		</div>
+	</nav>
+<div class="container-fluid">
+	<table class="table-bordered no-print">
+			<tr class="center">
+				<td>
+					<div>
+						Вибрати <label> <input type="radio" name="eqMonthType"
+							value="month" ng-model="eqMonthType" /> місяць
+						</label>, <label> <input type="radio" name="eqMonthType"
+							value="period" ng-model="eqMonthType" /> період
+						</label>
+					</div>
+				</td>
+				<td ng-class="isWaleMonth(n) ? 'wale' : '' "
+					ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]"
+					ng-click="setMonth(n)"><a href="#">
+						{{n>9?'':'&nbsp;'}}{{n}} </a></td>
+				<td class="btn btn-sm btn-info" ng-click="eqMonth()">Виконати
+					запит</td>
+				<td ng-if="param.viddilennja"><a
+					href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+						Показати всі відділення </a></td>
+				<td><a
+					href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+						Показати всі відділення </a></td>
+				<td>| |</td>
+				<td><a
+					href="/r/icd10.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">
+						МКХ10 </a></td>
+			</tr>
+		</table>
+	
+		<table class="table-bordered number-center">
+				<caption>
+					<h4>
+						Ліжкодні відділення <b> {{bedDay.department.department_name}}
+						</b> <span ng-if="bedDay.m1 == bedDay.m2"> за {{bedDay.m1}}
+							місяць </span> <span ng-if="bedDay.m1 != bedDay.m2"> з
+							{{bedDay.m1}} по {{bedDay.m2}} місяці</span> {{yyyy}} року
+							
+					</h4>
+				</caption>
+				<thead>
+					<tr>
+						<th></th>
+						<th colspan="{{bedDayHead.length}}">Кількість хворих</th>
+						<th colspan="{{bedDayHead.length}}">Ліжкодні</th>
+					</tr>
+					<tr>
+						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}">{{bedDayH.name}}</th>
+						<th></th>
+						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}"
+						ng-if="$index > 0"
+						>{{bedDayH.name}}</th>
+					</tr>
+					<tr class="center">
+						<th ng-repeat="n in bedDayHead">{{$index + 1}}</th>
+						<th></th>
+						<th ng-repeat="n in bedDayHead"
+						ng-if="$index > 0"
+						>{{$index + bedDayHead.length}}</th>
+					</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql"
+					ng-if="bedDayOfMonthMySql.order_group!=10001"
+					class="{{bedDayOfMonthMySql.order_group==0 || bedDayOfMonthMySql.order_group==9999?'bold':''}}">
+					<td>{{$index}})</td>
+					<td>{{bedDayOfMonthMySql.name_id}}</td>
+					<td>{{bedDayOfMonthMySql.direct_name}} /
+						{{bedDayOfMonthMySql.misto_raion_other>0?'р-н.':'м.'}}
+						{{bedDayOfMonthMySql.region_name}}</td>
+					<td>
+						{{bedDayOfMonthMySql.department_history_in|date:'dd-MM-yyyy'}}/
+						{{bedDayOfMonthMySql.department_history_out|date:'dd-MM-yyyy
+						HH:mm:ss '}}/ {{bedDayOfMonthMySql.bed_day}}</td>
+					<!-- 
+					<td>{{bedDayOfMonthMySql}}</td>
+					 -->
+				</tr>
+			</tbody>
+			</table>
+	</div>
+
+</body>
+<script src="/js/lib/jquery-2.1.4.min.js"></script>
+<script src="/js/lib/bootstrap.min.js"></script>
+<!-- 
+<script src="/js/lib/angular_uk.min.js"></script>
+ -->
+<script src="/js/lib/angular.min.js"></script>
+<script src="/js/lib/angular-cookies.min.js"></script>
+<script src="/js/lib/ui-bootstrap-tpls-0.13.0.min.js"></script>
+<script src='/js/lib/textAngular.min.js'></script>
+<script src='/js/lib/textAngular-sanitize.min.js'></script>
+<script src='/js/lib/textAngular-rangy.min.js'></script>
+<script src='/js/lib/moment-with-locales.min.js'></script>
+
+<script src='/js/hol2eih3.declare.js'></script>
+<script src='/js/hol2eih3.controller.js'></script>
+
+</html>
