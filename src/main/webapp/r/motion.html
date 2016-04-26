@@ -51,7 +51,7 @@
 			</tr>
 		</table>
 	
-		<table class="table-bordered number-center">
+		<table class="table-bordered">
 				<caption>
 					<h4>
 						Ліжкодні відділення <b> {{bedDay.department.department_name}}
@@ -86,7 +86,7 @@
 				<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql"
 					ng-if="bedDayOfMonthMySql.order_group!=10001"
 					class="{{bedDayOfMonthMySql.order_group==0 || bedDayOfMonthMySql.order_group==9999?'bold':''}}">
-					<td>{{$index}})</td>
+					<td>{{$index + 1}})</td>
 					<td>{{bedDayOfMonthMySql.name_id}}</td>
 					<td>{{bedDayOfMonthMySql.direct_name}} /
 						{{bedDayOfMonthMySql.misto_raion_other>0?'р-н.':'м.'}}
