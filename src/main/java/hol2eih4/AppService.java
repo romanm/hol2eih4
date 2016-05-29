@@ -121,8 +121,9 @@ public class AppService {
 		mmp.put("max_month", m2);
 		addCommonParameter(mmp);
 		logger.debug(mmp.toString()+" SQL length "+SqlHolder.bedDayMySql.length());
+		logger.debug(SqlHolder.bedDayMySql);
 		List<Map<String, Object>> bedDayOfMonthMySql 
-		= mySqlParamJdbcTemplate.queryForList(SqlHolder.bedDayMySql, mmp);
+			= mySqlParamJdbcTemplate.queryForList(SqlHolder.bedDayMySql, mmp);
 		return bedDayOfMonthMySql;
 	}
 

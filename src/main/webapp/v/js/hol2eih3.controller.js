@@ -1,13 +1,15 @@
-var initController = function($scope, $http, $filter, $cookies){
+//var initController = function($scope, $http, $filter, $cookies){
+var initController = function($scope, $http, $filter){
 	console.log("initController");
-	console.log(parameters);
+	$scope.param = parameters;
+	console.log($scope.param);
 	$scope.inputType = "text";
 	console.log($scope.inputType);
 //	initDocCookie($scope);
 	
 	initDateVariables = function(){
 		var today = new Date($scope.moveTodayPatients.today);
-		$cookies.put('year', today.getFullYear());
+//		$cookies.put('year', today.getFullYear());
 		$scope.excelFileName = "pyx-" +today.getFullYear() + "-v.2.xls";
 	}
 	
@@ -80,9 +82,12 @@ var initController = function($scope, $http, $filter, $cookies){
 	}
 }
 //  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
-hol2eih3App.controller('SaveCopeTodayPatientsCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
-	initController($scope, $http, $filter, $cookies);
+//hol2eih3App.controller('SaveCopeTodayPatientsCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+//, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+//initController($scope, $http, $filter, $cookies);
+hol2eih3App.controller('SaveCopeTodayPatientsCtrl', ['$scope', '$http', '$filter', '$sce'
+		, function ($scope, $http, $filter, $sce) {
+	initController($scope, $http, $filter);
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	$scope.readMoveTodayPatients();
 	
@@ -169,8 +174,10 @@ fileUploadApp.controller('fileUploadCtrl', ['$scope', 'Upload', '$timeout', '$ht
 
 }]);
 
-hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-                                                       , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+//hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+//                                                         , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$scope', '$http', '$filter', '$sce'
+                                                       , function ( $scope, $http, $filter, $sce) {
 	console.log("DepartmentMonthMovementH2Ctrl");
 	var url = "/r/readBedDayH2-2-2";
 	$http({ method : 'GET', url : url
@@ -235,7 +242,7 @@ var initReport = function($scope){
 	}
 	
 	mmArray = function(){
-		if($scope.param.viddilennja){
+		if($scope.param.department_id > 0){
 			$scope.mmArray =[];
 			for (var i = $scope.minMonth*1; i <= $scope.maxMonth; i++) {
 				$scope.mmArray.push(i);
@@ -292,8 +299,8 @@ var initReport = function($scope){
 	$scope.eqMonth = function(){
 		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
 //	eqMonth();
-		var url = "?viddilennja="+parameters.viddilennja+"&m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
-		if(!parameters.viddilennja)
+		var url = "?department_id="+parameters.department_id + "&m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
+		if(!(parameters.department_id > 0))
 			url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
 //		window.open();
 		window.location.href = url;
@@ -305,8 +312,10 @@ var initReport = function($scope){
 	};
 }
 
-hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+//hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+//                                       , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+hol2eih3App.controller('K1Icd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
+	, function ( $scope, $http, $filter, $sce) {
 	console.log("K1Icd10Ctrl");
 	initReport($scope);
 	$scope.icd10Head = [
@@ -332,8 +341,10 @@ hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$h
 	
 }]);
 
-hol2eih3App.controller('DepartmentMotionCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+//hol2eih3App.controller('DepartmentMotionCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+//                                                , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+hol2eih3App.controller('DepartmentMotionCtrl', [ '$scope', '$http', '$filter', '$sce'
+		, function ( $scope, $http, $filter, $sce) {
 	console.log("DepartmentMotionCtrl");
 	$scope.url1 = "/r/readDepartmentMotion";
 	initReport($scope);
@@ -343,8 +354,10 @@ hol2eih3App.controller('DepartmentMotionCtrl', ['$cookies', '$cookieStore', '$sc
 
 }]);
 
-hol2eih3App.controller('DepartmentAdressCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+//hol2eih3App.controller('DepartmentAdressCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+//                                                , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+hol2eih3App.controller('DepartmentAdressCtrl', ['$scope', '$http', '$filter', '$sce'
+		, function ($scope, $http, $filter, $sce) {
 	console.log("DepartmentAdressCtrl");
 	$scope.url1 = "/r/readDepartmentAdress";
 	initReport($scope);
@@ -363,8 +376,10 @@ eqMonth();
 
 }]);
 
-hol2eih3App.controller('DepartmentIcd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+//hol2eih3App.controller('DepartmentIcd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+//                                               , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+hol2eih3App.controller('DepartmentIcd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
+		, function ($scope, $http, $filter, $sce) {
 	console.log("DepartmentIcd10Ctrl");
 	initReport($scope);
 	console.log($scope.param);
@@ -399,8 +414,10 @@ eqMonth();
 
 }]);
 
-hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-	, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+//hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+//                                                            , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', [ '$scope', '$http', '$filter', '$sce'
+	, function ( $scope, $http, $filter, $sce) {
 	console.log("DepartmentMonthMovementCtrl");
 	initReport($scope);
 	
@@ -427,7 +444,7 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 
 	eqMonth = function(){
 		var url1 = "/r/readBedDayMySql-";
-		if(parameters.viddilennja)
+		if($scope.param.department_id)
 			url1 = "/r/readBedDayDepartmentMySql-";
 		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth;
 		console.log(url);
@@ -435,9 +452,20 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 		}).success(function(data, status, headers, config) {
 			$scope.bedDay = data;
 			console.log($scope.bedDay);
-			if($scope.param.viddilennja){
-				$scope.bedDayOfMonthMySql 
-				= $scope.bedDay.bedDayOfMonthMySql[$scope.param.viddilennja]
+			if($scope.param.department_id){
+				for (var i = 0; i < $scope.bedDay.bedDayOfMonthMySql.length; i++) {
+					if($scope.bedDay.bedDayOfMonthMySql[i].dp_id == $scope.param.department_id){
+						$scope.bedDayOfMonthMySql = $scope.bedDay.bedDayOfMonthMySql[i];
+						if($scope.bedDay.bedDayDepartmentMySql){
+							$scope.bedDayOfMonthMySql.bedDayDepartmentMySql = [];
+							for (var j = 0; j < $scope.bedDay.bedDayDepartmentMySql.length; j++) {
+								var x = $scope.bedDay.bedDayDepartmentMySql[j][i];
+								$scope.bedDayOfMonthMySql.bedDayDepartmentMySql.push(x);
+							}
+						}
+						break;
+					}
+				}
 				console.log($scope.bedDayOfMonthMySql);
 				mmArray();
 			}
@@ -453,10 +481,14 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookie
 	mmArray();
 }]);
 
-hol2eih3App.controller('MvPatientInWeekDayCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
-		, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+//hol2eih3App.controller('MvPatientInWeekDayCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
+//                                                  , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
+//	console.log("/readMove-day-Patients");
+//	initController($scope, $http, $filter, $cookies);
+hol2eih3App.controller('MvPatientInWeekDayCtrl', ['$scope', '$http', '$filter', '$sce'
+		, function ( $scope, $http, $filter, $sce) {
 	console.log("/readMove-day-Patients");
-	initController($scope, $http, $filter, $cookies);
+	initController($scope, $http, $filter);
 	// 1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	$scope.readMoveTodayPatients();
 	$scope.isParamDate = function(month, day){
@@ -468,7 +500,8 @@ hol2eih3App.controller('MvPatientInWeekDayCtrl', ['$cookies', '$cookieStore', '$
 		return false;
 	}
 	$scope.monthDayDate = function(month, day){
-		var d2 = new Date($cookies.get('year'), month - 1, day);
+//		var d2 = new Date($cookies.get('year'), month - 1, day);
+		var d2 = new Date(2016, month - 1, day);
 		return d2;
 //		return new Date(new Date().getFullYear(), month - 1, day);
 	}

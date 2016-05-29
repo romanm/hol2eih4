@@ -1,4 +1,5 @@
-var hol2eih3App = angular.module('hol2eih3App', ['textAngular','ngCookies','ui.bootstrap']);
+var hol2eih3App = angular.module('hol2eih3App', ['textAngular']);
+//var hol2eih3App = angular.module('hol2eih3App', ['textAngular','ngCookies','ui.bootstrap']);
 
 var parameters = {};
 if(window.location.search){

@@ -3,9 +3,9 @@
 	ng-cloak class="ng-cloak">
 <head>
 <meta charset="utf-8" />
-<link rel="stylesheet" href="/css/lib/bootstrap.min.css"></link>
-<link rel="stylesheet" href="/css/hol2eih3.css"></link>
-<link rel='stylesheet prefetch' href='/css/lib/font-awesome.min.css'>
+<link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
+<link rel="stylesheet" href="/v/css/hol2eih3.css"></link>
+<link rel='stylesheet prefetch' href='/v/lib/css/font-awesome.min.css'/>
 <style type="text/css" media="screen">
 body {
 	padding-top: 10px;
@@ -130,7 +130,9 @@ input[type="number"] {
 					</tr>
 					<tr
 						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList">
-						<td>{{departmentHol.DEPARTMENT_NAME}}</td>
+						<td
+						title="{{departmentHol.MOVEDEPARTMENTPATIENT_ID}}"
+						>{{departmentHol.DEPARTMENT_NAME}}</td>
 						<td>{{departmentHol.DEPARTMENT_BED}}</td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY" type="{{inputType}}" size="3" ng-change="calc(departmentHol)" /></td>
 						<td><input ng-model="departmentHol.MOVEDEPARTMENTPATIENT_IN" type="{{inputType}}" size="3" ng-change="calc(departmentHol)"  /></td>
@@ -168,12 +170,20 @@ input[type="number"] {
 	</div>
 
 </body>
+<script src="/v/lib/js/jquery-2.2.4.min.js"></script>
+<script src="/v/lib/js/bootstrap.min.js"></script>
+<script src="/v/lib/js/angular.min.js"></script>
+<script src="/v/lib/js/angular-locale_uk.js"></script>
+<script src='/v/lib/js/textAngular.min.js'></script>
+<script src='/v/lib/js/textAngular-sanitize.min.js'></script>
+<script src='/v/lib/js/textAngular-rangy.min.js'></script>
+<script src='/v/js/hol2eih3.declare.js'></script>
+<script src='/v/js/hol2eih3.controller.js'></script>
+<!-- 
 <script src="/js/lib/jquery-2.1.4.min.js"></script>
 <script src="/js/lib/bootstrap.min.js"></script>
 
-<!-- 
 <script src="/js/lib/angular_uk.min.js"></script>
- -->
 <script src="/js/lib/angular.min.js"></script>
 <script src="/js/lib/angular-cookies.min.js"></script>
 <script src="/js/lib/ui-bootstrap-tpls-0.13.0.min.js"></script>
@@ -182,5 +192,6 @@ input[type="number"] {
 <script src='/js/lib/textAngular-rangy.min.js'></script>
 <script src='/js/hol2eih3.declare.js'></script>
 <script src='/js/hol2eih3.controller.js'></script>
+ -->
 
 </html>
