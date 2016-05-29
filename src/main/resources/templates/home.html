@@ -5,8 +5,8 @@
 <head>
 <meta charset="utf-8" />
 <link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
-<link rel="stylesheet" href="/v/css/hol2eih3.css"></link>
 <link rel='stylesheet prefetch' href='/v/lib/css/font-awesome.min.css'/>
+<link rel="stylesheet" href="/v/css/hol2eih3.css"></link>
 <style type="text/css" media="screen">
 body {
 	padding-top: 10px;
@@ -18,11 +18,13 @@ body {
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
-			<div class="navbar-header">Хмельницька обласна лікарня</div>
+			<div class="navbar-header">
+				<span class="glyphicon glyphicon-home"></span> Хмельницька обласна
+				лікарня
+			</div>
 			<div class="collapse navbar-collapse navbar-right">
-				<a href="/r/lizhkodni.html"> звіти </a>
-				|
-				<a href="/r/housing1.html"> Корпус Nr.1 </a>
+				<a href="/r/lizhkodni.html"> звіти </a> | <a href="/r/housing1.html">
+					Корпус Nr.1 </a>
 			</div>
 		</div>
 	</nav>
@@ -31,7 +33,6 @@ body {
 			<div class="col-md-12">
 				<h1>Електронна історія хвороби</h1>
 				<h2>Модуль руху хворих</h2>
-
 				<p>
 					<a th:href="@{/moveTodayPatients.html}">Запис</a>
 					поступлення/виписки хворих на сьогодні.

@@ -19,7 +19,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				, "/css/**"
 				, "/js/**"
 				, "/r/**"
-				, "/v/**"
+				, "/v/**" // REST group with free access
+				, "/h/**" // html files collection
 				, "/img/**" 
 				//                		, "/create-read-2015-07-21-excel" 
 				//                		, "/readMove-2015-07-21-Patients" 
