@@ -1,11 +1,15 @@
-var app = angular.module('myApp', []);
-app.controller('MyCtrl', function myCtrlF($scope, $http) {
-	console.log('MyCtrl');
-	
+var app = angular.module('MedProcedureOperationApp', []);
+app.controller('MedProcedureOperationCtrl', function myCtrlF($scope, $http) {
+	console.log('MedProcedureOperationCtrl');
+	$scope.error = [];
+	var errorHandle = function(response){
+		$scope.error.push(response);
+		console.log($scope.error);
+	}
 	var siblingLevel = 0;
 	$http.get("/v/siblingProcedure/"+siblingLevel).success(function(response) {
 		$scope.medProcedureDb = response;
-	});
+	}).error(errorHandle);
 	$scope.operationDb = [];
 	$http.get("/v/operation/group").success(function(response) {
 		$scope.operationDb = response;
@@ -25,6 +29,9 @@ app.controller('MyCtrl', function myCtrlF($scope, $http) {
 	$http.get("/v/procedureOperation").success(function(response) {
 		$scope.procedureOperation = response;
 		setMapProcedureOperation();
+	}).error(function(response){
+		$scope.error.push(response);
+		console.log($scope.error);
 	});
 	
 	$scope.$watch("myCtrl.seekText", function handleChange( newValue, oldValue ) {
@@ -144,6 +151,9 @@ app.controller('MyCtrl', function myCtrlF($scope, $http) {
 				if(response.length == 0){
 					checkToSaveProcedure(procedure);
 				}
+			}).error(function(response){
+				$scope.error.push(response);
+				console.log($scope.error);
 			});
 		}else{
 			checkToSaveProcedure(procedure);
