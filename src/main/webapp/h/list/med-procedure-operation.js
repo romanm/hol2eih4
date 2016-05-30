@@ -29,10 +29,7 @@ app.controller('MedProcedureOperationCtrl', function myCtrlF($scope, $http) {
 	$http.get("/v/procedureOperation").success(function(response) {
 		$scope.procedureOperation = response;
 		setMapProcedureOperation();
-	}).error(function(response){
-		$scope.error.push(response);
-		console.log($scope.error);
-	});
+	}).error(errorHandle);
 	
 	$scope.$watch("myCtrl.seekText", function handleChange( newValue, oldValue ) {
 		if(newValue != null){
@@ -151,10 +148,7 @@ app.controller('MedProcedureOperationCtrl', function myCtrlF($scope, $http) {
 				if(response.length == 0){
 					checkToSaveProcedure(procedure);
 				}
-			}).error(function(response){
-				$scope.error.push(response);
-				console.log($scope.error);
-			});
+			}).error(errorHandle);
 		}else{
 			checkToSaveProcedure(procedure);
 		}

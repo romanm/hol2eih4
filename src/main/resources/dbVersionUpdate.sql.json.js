@@ -1344,6 +1344,19 @@
 ,"UPDATE hol2.department SET department_sort = 20, department_bed=6 WHERE department_id=5"
 ,"UPDATE hol2.department SET department_sort = 21, department_bed=40 WHERE department_id=9"
 ,"UPDATE hol2.department SET department_sort = 22, department_bed=70 WHERE department_id=7"
+]},{
+	"dbVersionId" : 29, "run_script_file":"procedure-20160526.sql"
+},{"dbVersionId" : 30, "sqls" : [
+"SET AUTOCOMMIT FALSE"
+,"delete FROM hol1.OPERATION where OPERATION_id=1022;"
+,"alter table hol1.OPERATION add CONSTRAINT code_unique unique(OPERATION_CODE);"
+,"CREATE TABLE list.PROCEDURE_OPERATION (  PROCEDURE_CODE VARCHAR(10) NOT NULL, OPERATION_CODE VARCHAR(6) NOT NULL);"
+,"ALTER TABLE list.PROCEDURE_OPERATION ADD CONSTRAINT OPERATION_CODE PRIMARY KEY (OPERATION_CODE);"
+,"ALTER TABLE list.PROCEDURE_OPERATION ADD CONSTRAINT PROCEDURE_PROCEDURE_CODE FOREIGN KEY (PROCEDURE_CODE) REFERENCES list.PROCEDURE (PROCEDURE_CODE) ON UPDATE CASCADE ON DELETE RESTRICT;"
+,"ALTER TABLE list.PROCEDURE_OPERATION ADD CONSTRAINT OPERATION_OPERATION_CODE FOREIGN KEY (OPERATION_CODE) REFERENCES hol1.OPERATION (OPERATION_CODE) ON UPDATE CASCADE ON DELETE RESTRICT;"
+,"commit"
+]},{"dbVersionId" : 31, "sqls" : [
+"insert into list.procedure_operation (PROCEDURE_CODE,OPERATION_CODE) values ('HJ7.01','У3'), ('HJ7.01','У4'), ('HJ7.01','093001'), ('AJJ7.01','094001')"
 ]}
 ]
 }

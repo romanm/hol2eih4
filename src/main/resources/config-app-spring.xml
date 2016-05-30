@@ -16,6 +16,9 @@
 	<bean id="hol2EihParamJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
 		<constructor-arg ref="dataSourceHol2Eih"/>
 	</bean>
+	<bean id="hol2EihH2JdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSourceHol2Eih"/>
+	</bean>
 	
 	<bean id="propertyConfigurer"
 	class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

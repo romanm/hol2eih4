@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
@@ -13,8 +14,11 @@ public class Application {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 	public static void main(String[] args) throws Throwable {
 		logger.debug("------main--3.7.3-------");
-		SpringApplication.run(Application.class, args);
+		ConfigurableApplicationContext run = SpringApplication.run(Application.class, args);
+		AppService appService = (AppService) run.getBean("appService");
+		appService.updateDbVersion();
 //		logger.debug("------main---------"+ initComponent.getInit());
+		
 	}
 	@Autowired private static InitComponent initComponent;
 

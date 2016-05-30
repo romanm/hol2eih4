@@ -1,17 +1,23 @@
 package hol2eih4;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.NamingException;
+import javax.sql.DataSource;
 
+import org.h2.tools.RunScript;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -24,7 +30,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component("appService")
 public class AppService {
 	private static final Logger logger = LoggerFactory.getLogger(AppService.class);
-	private JdbcTemplate h2JdbcTemplate, mySqlJdbcTemplate;
+	@Autowired private JdbcTemplate hol2EihH2JdbcTemplate;
+	private JdbcTemplate mySqlJdbcTemplate;
 	private NamedParameterJdbcTemplate mySqlParamJdbcTemplate;
 	private NamedParameterJdbcTemplate k1JdbcTemplate;
 	private int cnt_repetable;
@@ -33,7 +40,7 @@ public class AppService {
 	public List<Map<String, Object>> readBedDayOfMonthH2(Integer m1, Integer m2) {
 		String bedDayH2 = SqlHolder.bedDayH2;
 		logger.debug(bedDayH2);
-		List<Map<String, Object>> bedDayOfMonthH2 = h2JdbcTemplate.queryForList(bedDayH2);
+		List<Map<String, Object>> bedDayOfMonthH2 = hol2EihH2JdbcTemplate.queryForList(bedDayH2);
 		return bedDayOfMonthH2;
 	}
 
@@ -144,7 +151,7 @@ public class AppService {
 		String sqlCountDay = " SELECT count(*) FROM hol2.movedepartmentpatient "
 				+ " WHERE movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy') ";
 		logger.debug(thisDayStr);
-		Integer countDay = h2JdbcTemplate.queryForObject( sqlCountDay, Integer.class, new Object[] {thisDayStr});
+		Integer countDay = hol2EihH2JdbcTemplate.queryForObject( sqlCountDay, Integer.class, new Object[] {thisDayStr});
 		logger.debug(countDay +"  --  "+sqlCountDay.replace("\\?", "'"+thisDayStr+"'"));
 		DateTime beforeDay = thisDay.minusDays(1);
 		String beforeDayStr = AppConfig.ddMMyyyDateFormat.format(beforeDay.toDate());
@@ -158,7 +165,7 @@ public class AppService {
 					.replaceFirst("\\?", "'"+thisDayStr+"'")
 					.replaceFirst("\\?", "'"+beforeDayStr+"'")
 					);
-			h2JdbcTemplate.update( sql, new Object[] {thisDayStr,beforeDayStr});
+			hol2EihH2JdbcTemplate.update( sql, new Object[] {thisDayStr,beforeDayStr});
 		}else
 		{
 			String sqlSumPatientBeginDay = "SELECT sum(MOVEDEPARTMENTPATIENT_PATIENT1DAY) sum FROM hol2.movedepartmentpatient "
@@ -166,7 +173,7 @@ public class AppService {
 			logger.debug(sqlSumPatientBeginDay
 					.replaceFirst("\\?", "'"+thisDayStr+"'")
 					);
-			Integer sumPatientBeginDay = h2JdbcTemplate.queryForObject( sqlSumPatientBeginDay, Integer.class, new Object[] {thisDayStr});
+			Integer sumPatientBeginDay = hol2EihH2JdbcTemplate.queryForObject( sqlSumPatientBeginDay, Integer.class, new Object[] {thisDayStr});
 			logger.debug(sumPatientBeginDay+"");
 			Boolean sameEndBeforDayStartThisDay;
 			if(sumPatientBeginDay == null)
@@ -182,7 +189,7 @@ public class AppService {
 						.replaceFirst("\\?", "'"+sumPatientBeginDay+"'")
 						.replaceFirst("\\?", "'"+beforeDayStr+"'")
 						);
-				sameEndBeforDayStartThisDay = h2JdbcTemplate.queryForObject( sql, Boolean.class, new Object[] {sumPatientBeginDay, beforeDayStr});
+				sameEndBeforDayStartThisDay = hol2EihH2JdbcTemplate.queryForObject( sql, Boolean.class, new Object[] {sumPatientBeginDay, beforeDayStr});
 			}
 			logger.debug(sameEndBeforDayStartThisDay+"");
 			logger.debug((sameEndBeforDayStartThisDay!=null && !sameEndBeforDayStartThisDay)+"");
@@ -201,10 +208,10 @@ public class AppService {
 						.replaceFirst("\\?", "'"+beforeDayStr+"'")
 						.replaceFirst("\\?", "'"+thisDayStr+"'")
 						);
-				for (Map<String, Object> map : h2JdbcTemplate.queryForList(sql2,new Object[] {beforeDayStr, thisDayStr})) {
+				for (Map<String, Object> map : hol2EihH2JdbcTemplate.queryForList(sql2,new Object[] {beforeDayStr, thisDayStr})) {
 					String updateSql = (String) map.get("u");
 					logger.debug(""+updateSql);
-					h2JdbcTemplate.execute(updateSql);
+					hol2EihH2JdbcTemplate.execute(updateSql);
 				}
 			}
 		}
@@ -214,7 +221,7 @@ public class AppService {
 			"SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date = PARSEDATETIME( ?,'dd-MM-yyyy')";
 	Integer countDayPatient(DateTime dayDate) {
 		String countMoveDayPatients_Sql = "SELECT count(*) FROM ( "+ sqlDayMoveDepartmiententPat+")";
-		Integer countDayPatient = h2JdbcTemplate.queryForObject(countMoveDayPatients_Sql
+		Integer countDayPatient = hol2EihH2JdbcTemplate.queryForObject(countMoveDayPatients_Sql
 				, new Object[]{AppConfig.ddMMyyyDateFormat.format(dayDate.toDate())}, Integer.class);
 		return countDayPatient;
 	}
@@ -234,7 +241,7 @@ public class AppService {
 				+ " ORDER BY department_sort ";
 		logger.debug(AppConfig.ddMMyyyDateFormat.format(today.toDate()));
 		logger.debug(readMoveTodayPatients_Sql.replaceFirst("\\?", "'"+AppConfig.ddMMyyyDateFormat.format(today.toDate())+"'" ));
-		List<Map<String, Object>> moveTodayPatients = h2JdbcTemplate.queryForList(readMoveTodayPatients_Sql
+		List<Map<String, Object>> moveTodayPatients = hol2EihH2JdbcTemplate.queryForList(readMoveTodayPatients_Sql
 				,AppConfig.ddMMyyyDateFormat.format(today.toDate()));
 		return moveTodayPatients;
 	}
@@ -255,7 +262,7 @@ public class AppService {
 		testCommit();
 	}
 	private void testCommit() {
-		List<Map<String, Object>> queryForList = h2JdbcTemplate.queryForList(
+		List<Map<String, Object>> queryForList = hol2EihH2JdbcTemplate.queryForList(
 				"SELECT * FROM hol2.movedepartmentpatient  WHERE movedepartmentpatient_id = 8491"
 				);
 		logger.debug("queryForList = \n "+queryForList);
@@ -318,7 +325,7 @@ public class AppService {
 
 		return update;
  * */
-		int update = h2JdbcTemplate.update( sql, new Object[] {
+		int update = hol2EihH2JdbcTemplate.update( sql, new Object[] {
 				mOVEDEPARTMENTPATIENT_IT, mOVEDEPARTMENTPATIENT_BED, mOVEDEPARTMENTPATIENT_PATIENT1DAY
 				,mOVEDEPARTMENTPATIENT_PATIENT2DAY, mOVEDEPARTMENTPATIENT_DEAD, mOVEDEPARTMENTPATIENT_INDEPARTMENT
 				,mOVEDEPARTMENTPATIENT_OUTDEPARTMENT, mOVEDEPARTMENTPATIENT_SITY, mOVEDEPARTMENTPATIENT_CHILD
@@ -405,7 +412,7 @@ Types.INTEGER
 				!= null || mOVEDEPARTMENTPATIENT_IN != null || mOVEDEPARTMENTPATIENT_OUT != null){
 			Integer mOVEDEPARTMENTPATIENT_ID = nextDbId();
 			map.put("MOVEDEPARTMENTPATIENT_ID", mOVEDEPARTMENTPATIENT_ID);
-			h2JdbcTemplate.update( sql, new Object[] {dEPARTMENT_ID, mOVEDEPARTMENTPATIENT_DATE, mOVEDEPARTMENTPATIENT_BED
+			hol2EihH2JdbcTemplate.update( sql, new Object[] {dEPARTMENT_ID, mOVEDEPARTMENTPATIENT_DATE, mOVEDEPARTMENTPATIENT_BED
 					, mOVEDEPARTMENTPATIENT_IT, mOVEDEPARTMENTPATIENT_PATIENT1DAY 
 					, mOVEDEPARTMENTPATIENT_PATIENT2DAY, mOVEDEPARTMENTPATIENT_DEAD, mOVEDEPARTMENTPATIENT_INDEPARTMENT 
 					, mOVEDEPARTMENTPATIENT_OUTDEPARTMENT, mOVEDEPARTMENTPATIENT_SITY, mOVEDEPARTMENTPATIENT_CHILD 
@@ -415,7 +422,7 @@ Types.INTEGER
 		}
 	}
 	public Integer nextDbId() {
-		return h2JdbcTemplate.queryForObject("select nextval('dbid')", Integer.class);
+		return hol2EihH2JdbcTemplate.queryForObject("select nextval('dbid')", Integer.class);
 	}
 	private Integer parseInt(Map<String, Object> map, String key) {
 		Integer value = null;
@@ -433,7 +440,7 @@ Types.INTEGER
 	public Map<String, Object> readMovePatients() {
 		DateTime todayMinus7 = new DateTime().minusDays(7);
 		String readMovePatients_Sql = "SELECT * FROM hol2.movedepartmentpatient m WHERE m.movedepartmentpatient_date >= ?";
-		List<Map<String, Object>> readMovePatients = h2JdbcTemplate.queryForList(readMovePatients_Sql,todayMinus7.toDate());
+		List<Map<String, Object>> readMovePatients = hol2EihH2JdbcTemplate.queryForList(readMovePatients_Sql,todayMinus7.toDate());
 		Map<String, Object> dateDepartmentMap = convertDateDepartmentMap(readMovePatients);
 		List<Map<String, Object>> departments = readDepartments();
 		dateDepartmentMap.put("departments", departments);
@@ -442,7 +449,7 @@ Types.INTEGER
 	
 	private List<Map<String, Object>> readDepartments() {
 		String departments_Sql = "SELECT * FROM hol1.department";
-		List<Map<String, Object>> departments = h2JdbcTemplate.queryForList(departments_Sql);
+		List<Map<String, Object>> departments = hol2EihH2JdbcTemplate.queryForList(departments_Sql);
 		return departments;
 	}
 
@@ -477,7 +484,6 @@ Types.INTEGER
 	}
 
 	public AppService() throws NamingException{
-		initH2();
 		initMySql();
 		initK1Sql();
 	}
@@ -503,34 +509,34 @@ Types.INTEGER
 		logger.debug(""+k1JdbcTemplate);
 	}
 
-	private void initH2() {
-		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-		dataSource.setDriverClass(org.h2.Driver.class);
-		dataSource.setUrl(AppConfig.urlH2Db);
-		dataSource.setUsername("sa");
-//		dataSource.setPassword("");
-		this.h2JdbcTemplate = new JdbcTemplate(dataSource);
-		updateDbVersion();
-	}
-
-	private void updateDbVersion() {
+	@Autowired DataSource dataSourceHol2Eih;
+	void updateDbVersion() throws FileNotFoundException, SQLException {
+		System.out.println("---updateDbVersion---------------------");
 		final Map<String, Object> dbVersionUpdate = readJsonDbFile2map(fileNameDbVersionUpdate);
 		final List<Map> sqlVersionUpdateList = (List) dbVersionUpdate.get("dbVersionUpdateList");
 		final List<String> sqls0 = (List<String>) ((Map) sqlVersionUpdateList.get(0)).get("sqls");
 		for (String sql : sqls0) 
-			h2JdbcTemplate.update(sql);
+			hol2EihH2JdbcTemplate.update(sql);
 		String sqlDbVersion = "SELECT * FROM dbversion ORDER BY dbversion_id DESC LIMIT 1";
-		List<Map<String, Object>> dbVersion = h2JdbcTemplate.queryForList(sqlDbVersion);
+		List<Map<String, Object>> dbVersion = hol2EihH2JdbcTemplate.queryForList(sqlDbVersion);
 		logger.debug(" "+dbVersion);
 		int thisDbVersionId = dbVersion.size() == 0 ? 0:(int) dbVersion.get(0).get("DBVERSION_ID");
 		logger.debug(" "+thisDbVersionId);
 		for (Map map : sqlVersionUpdateList) {
 			final Integer dbVersionId = (Integer) map.get("dbVersionId");
 			if(dbVersionId > thisDbVersionId){
-				logger.debug("UPDATE DB structure to version"+dbVersionId);
-				boolean containsKey = map.containsKey("run_method");
-				if(containsKey){
-					String runMethod = (String) map.get("run_method");
+				logger.debug("UPDATE DB structure to version -- "+dbVersionId);
+				boolean containsRunScriptFile = map.containsKey("run_script_file");
+				if(containsRunScriptFile){
+					String runScriptFile = (String) map.get("run_script_file");
+					System.out.println(runScriptFile);
+					runScriptFile = AppConfig.applicationResourcesFolderPfad+"sql_script/"+runScriptFile;
+					System.out.println(runScriptFile);
+					FileReader runScriptFileReader = new FileReader(runScriptFile);
+					System.out.println(runScriptFileReader);
+//					RunScript.execute(AppConfig.urlH2Db, "sa", "", runScriptFile, Charset.UTF8, false);
+					RunScript.execute(dataSourceHol2Eih.getConnection(), runScriptFileReader);
+					System.out.println("-----------------------");
 				}else{
 					final List<String> sqls = (List<String>) map.get("sqls");
 					for (String sql : sqls) {
@@ -542,25 +548,25 @@ Types.INTEGER
 							logger.debug("cnt_update = "+cnt_update+" / cnt_repetable = "+cnt_repetable);
 						}else{
 							logger.debug(sql);
-							h2JdbcTemplate.update(sql);
+							hol2EihH2JdbcTemplate.update(sql);
 						}
 					}
 				}
-				h2JdbcTemplate.update("INSERT INTO dbversion (dbversion_id) VALUES (?)",dbVersionId);
+				hol2EihH2JdbcTemplate.update("INSERT INTO dbversion (dbversion_id) VALUES (?)",dbVersionId);
 			}
 		}
 //		Map<String, Object> readMovePatients = readMovePatients();
 //		logger.debug(""+readMovePatients);
 	}
 	private void sqlUpdate(String sql) {
-		List<Map<String, Object>> sqlUpdateList = h2JdbcTemplate.queryForList(sql);
+		List<Map<String, Object>> sqlUpdateList = hol2EihH2JdbcTemplate.queryForList(sql);
 		cnt_update += sqlUpdateList.size();
 		if(sqlUpdateList.size()>0)
 		{
 			for (Map<String, Object> sqlToUpdateMap : sqlUpdateList) {
 				String sqlToUpdate = (String) sqlToUpdateMap.get("sql_update");
 				System.out.println(sqlToUpdate);
-				h2JdbcTemplate.update(sqlToUpdate);
+				hol2EihH2JdbcTemplate.update(sqlToUpdate);
 			}
 			System.out.println("cnt_update = "+cnt_update);
 			if(sql.indexOf("sql_repetable")>0){

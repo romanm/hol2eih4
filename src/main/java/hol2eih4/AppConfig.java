@@ -21,9 +21,10 @@ public class AppConfig {
 	final static String urlH2Db = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";
 	final static String urlK1Db = "jdbc:hsqldb:hsql://localhost/db-hsql-dity1";
 	final static String urlMySqlDb = "jdbc:mysql://localhost/hol?useUnicode=true&characterEncoding=utf-8";
-	final static String applicationFolderPfad = "/home/roman/algoritmed.com/dev-workspace-20160406/hol2eih4/";
+	final static String applicationFolderPfad = "/home/roman/dev-20160518/research_2/hol2eih4/";
 	final static String applicationExcelFolderPfad = "/home/roman/db-java/h2-server/db-hol2-eih-excel/";
 
+//	final static String applicationFolderPfad = "/home/roman/algoritmed.com/dev-workspace-20160406/hol2eih4/";
 //	final static String urlH2Db = "jdbc:h2:/home/roman/db-java/h2-server/db-hol2-eih/db-hol2-eih";
 	//all
 	private static Integer workYear = DateTime.now().getYear();
