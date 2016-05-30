@@ -3,6 +3,7 @@
 	right: 0;
 	top: 5%;
 	margin-top: -2.5em;
+	z-index: 1031; /*bootstrap .navbar-fixed-top z-index: 1030;*/ 
 	/*
 	width: 8em;
 	color: white;
