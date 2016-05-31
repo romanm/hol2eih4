@@ -12,12 +12,15 @@
 </head>
 <body>
 	<div id="menu-fix-top" class="no-print">
-		<ul class="navbar_horizontal_gray">
-			<li><a href="/"><i class="fa fa-home" aria-hidden="true"></i>
-					Хмельницька обласна лікарня </a></li>
-			<li><a>|</a></li>
-			<li><a href="/r/lizhkodni.html">звіти</a></li>
-		</ul>
+		<div class="navcontainer">
+			<ul>
+				<li><a href="/"><i class="fa fa-home" aria-hidden="true"></i>
+						Хмельницька обласна лікарня <i class="fa fa-angle-double-right"
+						aria-hidden="true"></i> </a></li>
+				<li><a> <a href="/r/lizhkodni.html"> звіти </a>
+				</a></li>
+			</ul>
+		</div>
 	</div>
 	<small> <a
 	href="http://www.moz.gov.ua/ua/portal/dn_20160121_0029.html"> <i>12.02.2016
@@ -33,13 +36,13 @@
 		ng-controller="MedProcedureOperationCtrl as myCtrl">
 		<h2>Перехід кодування процедур і операції Хмельницької обласної
 			лікарні на стандарт МОЗ</h2>
+
 		<div ng-repeat="e in error" style="color: orangered;">
 			<div class="tooltip">
 				{{e.path}}
 				<div class="tooltiptext">{{e.message}}</div>
 			</div>
 		</div>
-
 
 		<ul class="navbar_horizontal_gray">
 			<li><a ng-class="{'active': viewTab == 'linking'}" href="#"

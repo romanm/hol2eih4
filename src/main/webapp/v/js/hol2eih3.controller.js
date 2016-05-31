@@ -241,6 +241,12 @@ var initReport = function($scope){
 		}
 	}
 	
+	$scope.error = [];
+	errorHandle = function(response, $scope){
+		$scope.error.push(response);
+		console.log($scope.error);
+	}
+	
 	mmArray = function(){
 		if($scope.param.department_id > 0){
 			$scope.mmArray =[];
@@ -325,7 +331,7 @@ hol2eih3App.controller('K1Icd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	];
 
 	eqMonth = function(){
-		var url1 = "/r/readIcd10K1-";
+				var url1 = "/r/readIcd10K1-";
 		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth;
 		console.log(url);
 		$http({ method : 'GET', url : url
@@ -333,7 +339,8 @@ hol2eih3App.controller('K1Icd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
 			$scope.k1 = data;
 			console.log($scope.k1);
 		}).error(function(data, status, headers, config) {
-			$scope.error = data;
+			$scope.error.push(data);
+			console.log($scope.error);
 		});
 	}
 

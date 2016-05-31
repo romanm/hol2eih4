@@ -1,3 +1,16 @@
+.tooltip2 {
+	display: inline-block;
+}
+.tooltip2 .tooltiptext {
+	visibility: hidden;
+	position: absolute;
+	border: 1px solid #e7e7e7;
+	background-color: #f3f3f3;
+}
+.tooltip2:hover .tooltiptext {
+	visibility: visible;
+}
+
 .tooltip {
 	position: relative;
 	display: inline-block;
