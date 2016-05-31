@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -36,6 +37,24 @@ public class AppService {
 	private NamedParameterJdbcTemplate k1JdbcTemplate;
 	private int cnt_repetable;
 	private int cnt_update;
+	
+	
+	public void setAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+		String sql = "SELECT concat('dep-',d.department_id,'_per-',p.personal_id) role, p.personal_username username"
+				+ " FROM personal_department pd, personal p, department d "
+				+ " WHERE pd.personal_id = p.personal_id AND d.department_id=pd.department_id";
+		logger.debug(sql);
+		System.out.println("-----------------------------------");
+		System.out.println(sql);
+		System.out.println("-----------------------------------");
+		List<Map<String, Object>> userRoleList = mySqlJdbcTemplate.queryForList(sql);
+		for (Map<String, Object> map : userRoleList) {
+			final String username = (String) map.get("username");
+			final String role = (String) map.get("role");
+			auth.inMemoryAuthentication().withUser(username).password(username).roles(role);
+		}
+		logger.debug(""+auth);
+	}
 
 	public List<Map<String, Object>> readBedDayOfMonthH2(Integer m1, Integer m2) {
 		String bedDayH2 = SqlHolder.bedDayH2;

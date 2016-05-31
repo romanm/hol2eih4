@@ -4,9 +4,19 @@ var initController = function($scope, $http, $filter){
 	$scope.param = parameters;
 	console.log($scope.param);
 	$scope.inputType = "text";
+	$scope.isRoleRuh = false;
 	console.log($scope.inputType);
 //	initDocCookie($scope);
 	
+	var isRole = function(role){
+		angular.forEach($scope.moveTodayPatients.principal.authorities, function(authoritie, key) {
+			console.log(authoritie);
+			console.log(authoritie.authority);
+			if(authoritie.authority.indexOf(role) >= 0){
+				$scope.isRoleRuh = true;
+			}
+		});
+	}
 	initDateVariables = function(){
 		var today = new Date($scope.moveTodayPatients.today);
 //		$cookies.put('year', today.getFullYear());
@@ -22,7 +32,10 @@ var initController = function($scope, $http, $filter){
 		$http({ method : 'GET', url : url
 		}).success(function(data, status, headers, config) {
 			$scope.moveTodayPatients = data;
+			console.log(data);
 			initDateVariables();
+			isRole("ruh");
+			console.log($scope.isRoleRuh);
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
@@ -81,6 +94,28 @@ var initController = function($scope, $http, $filter){
 		return myDate;
 	}
 }
+hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce'
+		, function ($scope, $http, $filter, $sce) {
+	console.log("OperationCodeCtrl");
+	$http({ method : 'GET', url : "/v/readDepartmentPatient"
+	}).success(function(model, status, headers, config) {
+		$scope.model = model;
+		console.log($scope.model);
+	}).error(function(model, status, headers, config) {
+		$scope.error = model;
+	});
+}]);
+hol2eih3App.controller('HomeCtrl', ['$scope', '$http', '$filter', '$sce'
+		, function ($scope, $http, $filter, $sce) {
+	console.log("HomeCtrl");
+	$http({ method : 'GET', url : "/v/readHome"
+	}).success(function(model, status, headers, config) {
+		$scope.model = model;
+		console.log($scope.model);
+	}).error(function(model, status, headers, config) {
+		$scope.error = model;
+	});
+}]);
 //  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 //hol2eih3App.controller('SaveCopeTodayPatientsCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 //, function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {

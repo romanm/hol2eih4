@@ -54,7 +54,18 @@ td.satsanday {
 	</nav>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-12" ng-if="!isRoleRuh">
+				<p> <br /> <br /> <br /> <br /> <br /> </p>
+				<div class="alert alert-warning">
+					<strong> Шановний
+					<a href="/hello">
+					 {{moveTodayPatients.principal.name}}! 
+					</a></strong> У
+					Вас немає прав для редагування руху хворих.
+				</div>
+			</div>
+
+			<div class="col-md-12" ng-if="isRoleRuh">
 			<!--
 			<table class="table table-bordered">
 			-->
@@ -90,7 +101,7 @@ td.satsanday {
 				</table>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row"ng-if="isRoleRuh">
 			<div class="col-md-3">
 			<!-- 
 				<table border="1" width="100%">

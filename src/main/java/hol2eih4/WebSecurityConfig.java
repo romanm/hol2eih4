@@ -35,15 +35,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.logout()
 		.permitAll();
 	}
-
+	@Autowired private AppService appService;
+	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		appService.setAuthentication(auth);
 		auth
 		.inMemoryAuthentication()
-		.withUser("рух").password("рух").roles("USER");
+		.withUser("рух").password("рух").roles("ruh");
 		auth
 		.inMemoryAuthentication()
-		.withUser("ruh").password("ruh").roles("USER");
+		.withUser("ruh").password("ruh").roles("ruh");
 //		auth
 //		.inMemoryAuthentication()
 //		.withUser("user").password("password").roles("USER");

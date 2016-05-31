@@ -8,6 +8,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,8 +42,41 @@ public class AppRest {
 	@Autowired private ExcelService2 excelService;
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
+	@RequestMapping(value = "/v/readDepartmentPatient", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readDepartmentPatient(Principal principal, HttpServletRequest request) {
+		logger.info("\n ------------------------- Start /readHome");
+		Map<String, Object> model = new HashMap<String, Object>();
+		DateTime today = new DateTime();
+		model.put("today", today.toDate());
+		model.put("principal", principal);
+		System.out.println(principal);
+		for (GrantedAuthority grantedAuthority : ((Authentication) principal).getAuthorities()) {
+			System.out.println(grantedAuthority);
+			for (String string : grantedAuthority.getAuthority().split("_")) {
+				if(string.contains("dep-")){
+					int departmentId = Integer.parseInt(string.replace("dep-", ""));
+					logger.info("\n ------------------------- departmentId = "+departmentId);
+					model.put("departmentId", departmentId);
+				}else if(string.contains("per-")){
+					int personInDepartmentId = Integer.parseInt(string.replace("per-", ""));
+					model.put("personInDepartmentId", personInDepartmentId);
+					logger.info("\n ------------------------- personInDepartmentId = "+personInDepartmentId);
+				}
+			}
+		}
+		return model;
+	}
+	@RequestMapping(value = "/v/readHome", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readHome(Principal principal, HttpServletRequest request) {
+		logger.info("\n ------------------------- Start /readHome");
+		Map<String, Object> model = new HashMap<String, Object>();
+		DateTime today = new DateTime();
+		model.put("today", today.toDate());
+		model.put("principal", principal);
+		return model;
+	}
 	@RequestMapping(value = "/readMoveTodayPatients", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readMoveTodayPatients(Principal userPrincipal, HttpServletRequest request) {
+	public  @ResponseBody Map<String, Object> readMoveTodayPatients(Principal principal, HttpServletRequest request) {
 		logger.info("\n ------------------------- Start /readMoveTodayPatients");
 		DateTime today = new DateTime();
 		Integer sessionYear = (Integer) request.getSession().getAttribute("year");
@@ -52,7 +88,30 @@ public class AppRest {
 		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
 		moveTodayPatients.put("moveTodayPatientsList", moveTodayPatientsList);
 		moveTodayPatients.put("today", today.toDate());
+		moveTodayPatients.put("principal", principal);
 		return moveTodayPatients;
+	}
+	@RequestMapping(value = "/throughlogin/gotopage/{page1}/{page2}", method = RequestMethod.GET)
+	public String throughLoginGoToPage(
+			@PathVariable String page1,
+			@PathVariable String page2,
+			HttpServletRequest request ) {
+		logger.debug("throughLoginGoToPage -- "+page1+"/"+page2);
+		System.out.println("throughLoginGoToPage -- "+page1+"/"+page2);
+		String redirectUrl = "redirect:/"+page1+"/"+page2;
+		if("h".equals(page1))
+			redirectUrl += ".html";
+		System.out.println(redirectUrl);
+		return redirectUrl;
+	}
+	@RequestMapping(value = "/throughlogin/gotopage/{page}", method = RequestMethod.GET)
+	public String throughLoginGoToPage(
+			@PathVariable String page, HttpServletRequest request ) {
+		logger.debug(""+page);
+		System.out.println("throughLoginGoToPage -- "+page);
+		String redirectUrl = "redirect:/"+page;
+		System.out.println(redirectUrl);
+		return redirectUrl;
 	}
 	@RequestMapping(value = "/session-year/{yyyy}", method = RequestMethod.GET)
 	public String readMoveyyyymmddPatients(

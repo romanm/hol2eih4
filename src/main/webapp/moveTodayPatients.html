@@ -35,9 +35,19 @@ input[type="number"] {
 	</nav>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-12">
-				<h2>Запис поступлення/виписки хворих</h2>
+			<div class="col-md-12" ng-if="!isRoleRuh">
+				<p> <br /> <br /> <br /> <br /> <br /> </p>
+				<div class="alert alert-warning">
+					<strong> Шановний
+					<a href="/hello">
+					 {{moveTodayPatients.principal.name}}! 
+					</a></strong> У
+					Вас немає прав для редагування руху хворих.
+				</div>
+			</div>
 
+			<div class="col-md-12" ng-if="isRoleRuh">
+				<h2>Запис поступлення/виписки хворих</h2>
 <!-- 
 				<table>
 				<table class="table table-bordered">

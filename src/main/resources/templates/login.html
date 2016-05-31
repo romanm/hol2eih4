@@ -29,7 +29,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div th:if="${param.error}">Неправільний користувач і пароль.</div>
-				<div th:if="${param.logout}">Ви вийшли.</div>
+				<div th:if="${param.logout}">Ви вийшли з електронної історії хвороби.</div>
 				<form th:action="@{/login}" method="post">
 					<div>
 						<label> Ім’я користувача : <input type="text"
