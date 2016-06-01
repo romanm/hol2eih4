@@ -100,8 +100,9 @@ public class AppRest {
 		String redirectUrl = "redirect:/"+page1+"/"+page2;
 		if("h".equals(page1))
 			redirectUrl += ".html";
-		if(request.getQueryString().length()>0)
-			redirectUrl += "?"+request.getQueryString();
+		if(request.getQueryString()!=null)
+			if(request.getQueryString().length()>0)
+				redirectUrl += "?"+request.getQueryString();
 		System.out.println(redirectUrl);
 		return redirectUrl;
 	}

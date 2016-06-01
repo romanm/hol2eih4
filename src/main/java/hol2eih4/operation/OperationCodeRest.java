@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import hol2eih4.AppRest;
-
 @Controller
 public class OperationCodeRest {
 	private static final Logger logger = LoggerFactory.getLogger(OperationCodeRest.class);
 		@Autowired NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 		
 		@Value("${sql.hol1Eih.history.id}") private String sqlHol1EihHistoryId;
+		@Value("${sql.hol1Eih.operation_history.history_id}") private String sqlHol1EihOperationHistoryHistoryId;
 		
 		@RequestMapping(value = "/v/ix/{historyId}", method = RequestMethod.GET)
 		public @ResponseBody Map<String, Object> ix(@PathVariable Integer historyId, HttpServletRequest request) {
@@ -34,8 +33,11 @@ public class OperationCodeRest {
 			HashMap<String, Integer> sqlParam = new HashMap<>();
 			sqlParam.put("historyId", historyId);
 			map.put("sqlParam", sqlParam);
-			Map<String, Object> historyMap = hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihHistoryId, sqlParam);
-			map.put("historyMap", historyMap);
+			map.put("historyMap", hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihHistoryId, sqlParam));
+			List<Map<String, Object>> operationHistoryList 
+			= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihOperationHistoryHistoryId, sqlParam);
+			System.out.println(operationHistoryList);
+			map.put("operationHistoryList", operationHistoryList);
 			return map;
 		}
 		

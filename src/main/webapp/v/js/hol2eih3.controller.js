@@ -94,7 +94,7 @@ var initController = function($scope, $http, $filter){
 		return myDate;
 	}
 }
-// ------------
+// ------------OperationCodeCtrl
 hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce'
 		, function ($scope, $http, $filter, $sce) {
 	console.log("OperationCodeCtrl");
@@ -102,6 +102,26 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	console.log($scope.param);
 	$scope.model = {};
 	$scope.error = [];
+	
+	$scope.calcOperationDurationHHmm = function(operation){
+		initDurationOp(operation);
+		console.log(operation.durationOpMin);
+		var free_min = Math.ceil(operation.durationOpMin%60);
+		var h = Math.floor((operation.durationOpMin)/60);
+		operation.durationOpHHmm = "";
+		if(h>0)
+			operation.durationOpHHmm = h+" год. ";
+		operation.durationOpHHmm += free_min+" хв.";
+		console.log(operation.durationOpHHmm);
+		return operation.durationOpHHmm;
+	}
+
+	var initDurationOp = function(operation){
+		if(!operation.durationOpMin){
+			operation.durationOpMin =
+				(operation.operation_history_end - operation.operation_history_start)/1000/60;
+		}
+	}
 	$scope.loginToThisPage = function(){
 		return "/throughlogin/gotopage/h/operation-code.html"+window.location.search;
 	};
@@ -133,6 +153,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.error.push(model);
 	});
 }]);
+// ------------OperationCodeCtrl END
 hol2eih3App.controller('HomeCtrl', ['$scope', '$http', '$filter', '$sce'
 		, function ($scope, $http, $filter, $sce) {
 	console.log("HomeCtrl");

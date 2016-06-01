@@ -52,10 +52,11 @@
 					class="fa fa-home" aria-hidden="true"></i> ХОЛ
 				</span> <span ng-if="ix.historyMap.patient_surname"> <i class="fa fa-angle-double-right"
 					aria-hidden="true"></i>
-					{{ix.historyMap.history_no}}:
+					{{ix.historyMap.history_no}}:<b>
 					{{ix.historyMap.patient_surname}}
 					{{ix.historyMap.patient_name}}
 					{{ix.historyMap.patient_patronnymic}}
+					</b>
 				</span>
 			</div>
 		</div>
@@ -63,20 +64,49 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
+			<!-- 
 				<h1>Електронна історія хвороби</h1>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<h2>Редагування</h2>
+			 -->
+				<h1></h1>
 				<p>
 					<a href="{{loginToThisPage()}}">
 					Кодування хірургічних (оперативних) втручаннь.
 					</a>
 				</p>
 			</div>
+		</div>
+		<div class="row">
 			<div class="col-md-6">
+			<!-- 
 				<h2>Перегляд</h2>
+			 -->
+				<div>
+					Кількість Оперецій: {{ix.operationHistoryList.length}} 
+					<hr/>
+					<div ng-repeat="operation in ix.operationHistoryList">
+						<div>{{operation.operation_history_start | date:'dd.MM.yyyy, HH:mm'}} {{operation.operation_history_end | date:' - HH:mm'}}
+							({{calcOperationDurationHHmm(operation)}})</div>
+						<div>
+							Операція: <b> {{operation.operation_code}} </b>
+							{{operation.operation_name}}
+							<div>{{operation.operation_additional}}</div>
+							Діагноз при операції <b> {{operation.icd_code}} </b>
+							{{operation.icd_name}}
+							<div>{{operation.icd_additional}}</div>
+							<div>Відділення: {{operation.department_name}}, Хірург:
+								{{operation.surgery_name}}</div>
+							<div>Анестезіолог: {{operation.anesthetist_name}},
+								Анестезія: {{operation.anestesia_name}}</div>
+							<div>Результат: {{operation.operation_result_name}},
+								Ускладнення: {{operation.operation_complication_name}}</div>
+						</div>
+						<hr />
+					</div>
+
+				</div>
+			</div>
+			<div class="col-md-6">
+				<h2>Редагування</h2>
 				
 			</div>
 		</div>
