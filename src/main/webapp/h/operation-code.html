@@ -38,8 +38,7 @@
 				</li>
 				<li data-ng-if="!model.principal"><span
 					class="glyphicon glyphicon-log-in"></span> 
-					<a href="/throughlogin/gotopage/h/operation-code.html">
-					Ввійти </a></li>
+					<a href="{{loginToThisPage()}}"> Ввійти </a></li>
 				<li data-ng-show="model.principal" class="ng-binding ng-hide"><span
 					class="glyphicon glyphicon-log-out"></span> : <a
 					href="/logout"> Вийти </a></li>
@@ -71,7 +70,7 @@
 			<div class="col-md-6">
 				<h2>Редагування</h2>
 				<p>
-					<a href="/throughlogin/gotopage/h/operation-code.html">
+					<a href="{{loginToThisPage()}}">
 					Кодування хірургічних (оперативних) втручаннь.
 					</a>
 				</p>
@@ -93,8 +92,7 @@
 				</li>
 				<li data-ng-if="!model.principal"><span
 					class="glyphicon glyphicon-log-in"></span>
-					<a href="/throughlogin/gotopage/h/operation-code.html">
-					Ввійти </a></li>
+					<a href="{{loginToThisPage()}}"> Ввійти </a></li>
 				<li data-ng-show="model.principal" class="ng-binding ng-hide"><span
 					class="glyphicon glyphicon-log-out"></span> : <a
 					href="/logout"> Вийти </a></li>

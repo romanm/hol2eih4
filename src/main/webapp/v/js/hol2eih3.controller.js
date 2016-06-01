@@ -102,8 +102,12 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	console.log($scope.param);
 	$scope.model = {};
 	$scope.error = [];
+	$scope.loginToThisPage = function(){
+		return "/throughlogin/gotopage/h/operation-code.html"+window.location.search;
+	};
+
 	if($scope.param.ix){
-		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix
+		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix+window.location.search
 		}).success(function(model, status, headers, config) {
 			$scope.ix = model;
 			console.log($scope.ix);
@@ -111,6 +115,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			$scope.error.push(model);
 		});
 	}
+
 	$http({ method : 'GET', url : "/v/readAuthorityUser"
 	}).success(function(model, status, headers, config) {
 		$scope.model = model;
@@ -131,7 +136,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 hol2eih3App.controller('HomeCtrl', ['$scope', '$http', '$filter', '$sce'
 		, function ($scope, $http, $filter, $sce) {
 	console.log("HomeCtrl");
-	$http({ method : 'GET', url : "/v/readHome"
+	$http({ method : 'GET', url : "/v/readHome"+window.location.search
 	}).success(function(model, status, headers, config) {
 		$scope.model = model;
 		console.log($scope.model);

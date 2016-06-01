@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -13,14 +17,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import hol2eih4.AppRest;
+
 @Controller
 public class OperationCodeRest {
+	private static final Logger logger = LoggerFactory.getLogger(OperationCodeRest.class);
 		@Autowired NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 		
 		@Value("${sql.hol1Eih.history.id}") private String sqlHol1EihHistoryId;
 		
 		@RequestMapping(value = "/v/ix/{historyId}", method = RequestMethod.GET)
-		public @ResponseBody Map<String, Object> ix(@PathVariable Integer historyId) {
+		public @ResponseBody Map<String, Object> ix(@PathVariable Integer historyId, HttpServletRequest request) {
+			logger.info("\n ------------------------- Start /ix/"+historyId);
+			System.out.println(request.getQueryString());
 			HashMap<String, Object> map = new HashMap<>();
 			HashMap<String, Integer> sqlParam = new HashMap<>();
 			sqlParam.put("historyId", historyId);
