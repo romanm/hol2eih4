@@ -94,15 +94,38 @@ var initController = function($scope, $http, $filter){
 		return myDate;
 	}
 }
+// ------------
 hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce'
 		, function ($scope, $http, $filter, $sce) {
 	console.log("OperationCodeCtrl");
-	$http({ method : 'GET', url : "/v/readDepartmentPatient"
+	$scope.param = parameters;
+	console.log($scope.param);
+	$scope.model = {};
+	$scope.error = [];
+	if($scope.param.ix){
+		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix
+		}).success(function(model, status, headers, config) {
+			$scope.ix = model;
+			console.log($scope.ix);
+		}).error(function(model, status, headers, config) {
+			$scope.error.push(model);
+		});
+	}
+	$http({ method : 'GET', url : "/v/readAuthorityUser"
 	}).success(function(model, status, headers, config) {
 		$scope.model = model;
 		console.log($scope.model);
+		console.log($scope.model.departmentId);
+		if($scope.model.departmentId)
+			$http({ method : 'GET', url : "/v/department-patient/"+$scope.model.departmentId
+			}).success(function(model, status, headers, config) {
+				$scope.model.departmentPatient = model;
+				console.log($scope.model);
+			}).error(function(model, status, headers, config) {
+				$scope.error.push(model);
+			});
 	}).error(function(model, status, headers, config) {
-		$scope.error = model;
+		$scope.error.push(model);
 	});
 }]);
 hol2eih3App.controller('HomeCtrl', ['$scope', '$http', '$filter', '$sce'

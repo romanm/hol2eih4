@@ -27,6 +27,15 @@
 	border: 1px solid #e7e7e7;
 	background-color: #f3f3f3;
 }
+.tooltip2 .tooltiptext2 {
+	visibility: hidden;
+	position: absolute;
+	height: 400px;
+	overflow: scroll;
+	border: 1px solid #e7e7e7;
+	background-color: #f3f3f3;
+}
+.tooltip2:hover .tooltiptext2,
 .tooltip2:hover .tooltiptext {
 	visibility: visible;
 }
