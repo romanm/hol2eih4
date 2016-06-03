@@ -30,7 +30,7 @@ app.controller('MedProcedureOperationCtrl', function myCtrlF($scope, $http) {
 		$scope.procedureOperation = response;
 		setMapProcedureOperation();
 	}).error(errorHandle);
-	
+
 	$scope.$watch("myCtrl.seekText", function handleChange( newValue, oldValue ) {
 		if(newValue != null){
 			$http.get("/v/seekProcedure/"+newValue).success(function(response) {

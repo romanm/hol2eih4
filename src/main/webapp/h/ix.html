@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html ng-app="hol2eih3App" ng-controller="IxCtrl as ixCtrl">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
+<link rel='stylesheet prefetch' href='/v/lib/css/font-awesome.min.css' />
+<link rel="stylesheet" href="/v/css/ui.css"></link>
+<link rel="stylesheet" href="/v/css/hol2eih3.css"></link>
+<link rel="stylesheet" href="/v/css/navbar_horizontal_gray.css" />
+<style type="text/css" media="screen"></style>
+<script type="text/javascript">
+var testVar = 12;
+</script>
+<title>ІХ.</title>
+</head>
+<body>
+<div id="menu-fix-top" class="no-print">
+		<div class="navcontainer">
+			<ul>
+				<li><a href="/"><i class="fa fa-home" aria-hidden="true"></i>
+						Хмельницька обласна лікарня <i class="fa fa-angle-double-right"
+						aria-hidden="true"></i></li>
+				<li>
+					<div class="tooltip2">
+						<a href="#"> <i class="fa fa-angle-double-down"
+							aria-hidden="true"></i> пацієнти
+						</a>
+						<div class="tooltiptext2">
+							<div
+								ng-repeat="patient in model.departmentPatient.departmentPatients">
+								<a href="?ix={{patient.history_id}}"
+								title="{{$index + 1}}"
+								> {{patient.history_no}}
+									: {{patient.name}} </a>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li>|
+				{{model.principal.name}}
+				</li>
+				<li data-ng-if="!model.principal"><span
+					class="glyphicon glyphicon-log-in"></span> 
+					<a href="{{loginToThisPage()}}"> Ввійти </a></li>
+				<li data-ng-show="model.principal" class="ng-binding ng-hide"><span
+					class="glyphicon glyphicon-log-out"></span> : <a
+					href="/logout"> Вийти </a></li>
+			</ul>
+		</div>
+	</div>
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<span title="Хмельницька обласна лікарня"> <i
+					class="fa fa-home" aria-hidden="true"></i> ХОЛ
+				</span> <span ng-if="ix.historyMap.patient_surname"> <i class="fa fa-angle-double-right"
+					aria-hidden="true"></i>
+					{{ix.historyMap.history_no}}:<b>
+					{{ix.historyMap.patient_surname}}
+					{{ix.historyMap.patient_name}}
+					{{ix.historyMap.patient_patronnymic}}
+					</b>
+				</span>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+			<!-- 
+				<h1>Електронна історія хвороби</h1>
+			 -->
+				<h1></h1>
+				<!-- 
+				<p>
+					<a href="{{loginToThisPage()}}">
+					{{loginToThisPage()}}
+					</a>
+				</p>
+				 -->
+				<ul class="navbar_horizontal_gray">
+					<li><a ng-class="{'active': viewTab == 'linking'}" href="#"
+						ng-click="viewTab = 'linking'">Редагуваня ІХ</a></li>
+					<li><a ng-class="{'active': viewTab == 'linked'}"
+						title="Кодування хірургічних (оперативних) втручаннь."
+						href="operation-code.html{{param.ix?'?ix='+param.ix:''}}">Кодування
+							операція </a></li>
+					<li><a> {{param.ix}} </a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- 
+			width="100%" height="500px">
+	 -->
+	<iframe id="hol1frame" ng-src="http://localhost/history/edit/id/85656"
+			width="100%" height="600px">
+			<p>Your browser does not support iframes.</p>
+		</iframe>
+	<nav class="navbar navbar-default navbar-fixed-bottom"
+		role="navigation">
+		<div class="container">
+			<span><span class="glyphicon glyphicon-console"></span> &nbsp;
+				&nbsp; </span>
+			<ol class="list-inline navbar-right">
+				<li>|
+				{{model.principal.name}}
+				</li>
+				<li data-ng-if="!model.principal"><span
+					class="glyphicon glyphicon-log-in"></span>
+					<a href="{{loginToThisPage()}}"> Ввійти </a></li>
+				<li data-ng-show="model.principal" class="ng-binding ng-hide"><span
+					class="glyphicon glyphicon-log-out"></span> : <a
+					href="/logout"> Вийти </a></li>
+			</ol>
+		</div>
+	</nav>
+</body>
+<script src="/v/lib/js/jquery-2.2.4.min.js"></script>
+<script src="/v/lib/js/bootstrap.min.js"></script>
+<script src="/v/lib/js/angular.min.js"></script>
+<script src="/v/lib/js/angular-locale_uk.js"></script>
+<script src='/v/lib/js/textAngular.min.js'></script>
+<script src='/v/lib/js/textAngular-sanitize.min.js'></script>
+<script src='/v/lib/js/textAngular-rangy.min.js'></script>
+<script src='/v/js/hol2eih3.declare.js'></script>
+<script src='/v/js/hol2eih3.controller.js'></script>
+</html>

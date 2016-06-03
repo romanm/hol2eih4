@@ -90,31 +90,7 @@ public class AppRest {
 		moveTodayPatients.put("principal", principal);
 		return moveTodayPatients;
 	}
-	@RequestMapping(value = "/throughlogin/gotopage/{page1}/{page2}", method = RequestMethod.GET)
-	public String throughLoginGoToPage(
-			@PathVariable String page1,
-			@PathVariable String page2,
-			HttpServletRequest request ) {
-		logger.debug("throughLoginGoToPage -- "+page1+"/"+page2);
-		System.out.println("throughLoginGoToPage -- "+page1+"/"+page2);
-		String redirectUrl = "redirect:/"+page1+"/"+page2;
-		if("h".equals(page1))
-			redirectUrl += ".html";
-		if(request.getQueryString()!=null)
-			if(request.getQueryString().length()>0)
-				redirectUrl += "?"+request.getQueryString();
-		System.out.println(redirectUrl);
-		return redirectUrl;
-	}
-	@RequestMapping(value = "/throughlogin/gotopage/{page}", method = RequestMethod.GET)
-	public String throughLoginGoToPage(
-			@PathVariable String page, HttpServletRequest request ) {
-		logger.debug(""+page);
-		System.out.println("throughLoginGoToPage -- "+page);
-		String redirectUrl = "redirect:/"+page;
-		System.out.println(redirectUrl);
-		return redirectUrl;
-	}
+
 	@RequestMapping(value = "/session-year/{yyyy}", method = RequestMethod.GET)
 	public String readMoveyyyymmddPatients(
 			@PathVariable Integer yyyy, HttpServletRequest request ) {

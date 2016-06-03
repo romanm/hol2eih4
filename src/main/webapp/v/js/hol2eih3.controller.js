@@ -94,46 +94,22 @@ var initController = function($scope, $http, $filter){
 		return myDate;
 	}
 }
-// ------------OperationCodeCtrl
-hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce'
-		, function ($scope, $http, $filter, $sce) {
-	console.log("OperationCodeCtrl");
+var initCtrl = function($scope, $http){
+	$scope.viewTab = viewTab;
+	$scope.error = [];
 	$scope.param = parameters;
 	console.log($scope.param);
-	$scope.model = {};
-	$scope.error = [];
-	
-	$scope.calcOperationDurationHHmm = function(operation){
-		initDurationOp(operation);
-		console.log(operation.durationOpMin);
-		var free_min = Math.ceil(operation.durationOpMin%60);
-		var h = Math.floor((operation.durationOpMin)/60);
-		operation.durationOpHHmm = "";
-		if(h>0)
-			operation.durationOpHHmm = h+" год. ";
-		operation.durationOpHHmm += free_min+" хв.";
-		console.log(operation.durationOpHHmm);
-		return operation.durationOpHHmm;
-	}
-
-	var initDurationOp = function(operation){
-		if(!operation.durationOpMin){
-			operation.durationOpMin =
-				(operation.operation_history_end - operation.operation_history_start)/1000/60;
+	if(!$scope.param.ix){
+		if(window['eixId'] != undefined){
+			$scope.param.ix = eixId; 
 		}
 	}
-	$scope.loginToThisPage = function(){
-		return "/throughlogin/gotopage/h/operation-code.html"+window.location.search;
-	};
+	console.log($scope.param);
+	$scope.model = {};
 
-	if($scope.param.ix){
-		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix+window.location.search
-		}).success(function(model, status, headers, config) {
-			$scope.ix = model;
-			console.log($scope.ix);
-		}).error(function(model, status, headers, config) {
-			$scope.error.push(model);
-		});
+	$scope.errorHandle = function(response){
+		$scope.error.push(response);
+		console.log($scope.error);
 	}
 
 	$http({ method : 'GET', url : "/v/readAuthorityUser"
@@ -152,6 +128,112 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}).error(function(model, status, headers, config) {
 		$scope.error.push(model);
 	});
+	
+	if($scope.param.ix){
+		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix+window.location.search
+		}).success(function(model, status, headers, config) {
+			$scope.ix = model;
+			console.log($scope.ix);
+		}).error(function(model, status, headers, config) {
+			$scope.error.push(model);
+		});
+	}
+}
+// ------------IxCtrl
+hol2eih3App.controller('IxCtrl', function ($scope, $http, $filter, $sce, $interval) {
+	console.log("IxCtrl");
+	initCtrl($scope, $http);
+	function frameCtrl() {
+		var fc = $(hol1frame).contents();
+		var hol1frame = document.getElementById("hol1frame");
+		console.log(hol1frame.contentDocument);
+		console.log(hol1frame.contentWindow);
+		var hol1frame_breadcrumbs = hol1frame.getElementsByClassName("breadcrumbs")[0];
+	}
+	//$interval(frameCtrl, 3000);
+	$http.get("http://localhost/history/edit/id/85656").success(function(response) {
+		console.log(response);
+	}).error($scope.errorHandle);
+});
+// ------------IxCtrl END
+// ------------OperationCodeCtrl
+hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce'
+		, function ($scope, $http, $filter, $sce) {
+	console.log("OperationCodeCtrl");
+	initCtrl($scope, $http);
+	
+	$scope.openToEdit = function(operation){
+		$scope.openedToEdit = operation;
+	}
+	//------procedure------Operation-----------
+	$scope.isProcedureGroup = function (code){
+		return !isNaN(code.substring(0,1));
+	}
+	$scope.procedureOperation = {procedure_id:3552};// group 7 -- хірургічні операції
+	$scope.openChild = function (procedure){
+		procedure.open = !procedure.open;
+	}
+	$scope.editOperation = function(){
+		$scope.openedToEdit = "operation";
+		$scope.openChildProcedureDb($scope.procedureOperation);
+	}
+	checkToSaveProcedure = function (procedure){
+		if(procedure.procedure_code.split(".").length == 2){
+			$scope.toSaveProcedure(procedure)
+		}
+	}
+	$scope.toSaveProcedure = function (procedure){
+		$scope.procedureToSave = procedure;
+	}
+	$scope.openChildProcedureDb = function (procedure){
+		$scope.openChild(procedure);
+		if(procedure.procedure == null){
+			var siblingLevel = procedure.procedure_id;
+			$http.get("/v/siblingProcedureOperation/"+siblingLevel).success(function(response) {
+				procedure.procedure = response;
+				if(response.length == 0){
+					checkToSaveProcedure(procedure);
+				}
+			}).error($scope.errorHandle);
+		}else{
+			checkToSaveProcedure(procedure);
+		}
+	}
+	//------procedure------Operation-----------END
+	
+	$scope.$watch("operationCodeCtrl.seekOperation", function handleChange( newValue, oldValue ) {
+		if(newValue != null){
+			$http.get("/v/seekProcedureOperation/"+newValue).success(function(response) {
+				$scope.seekProcedure = response;
+				console.log($scope.seekProcedure);
+			});
+		}
+	})
+
+	$scope.useOperation = function(operationHistoryId){
+		console.log($scope.openedToEdit+"/"+operationHistoryId);
+	}
+	$scope.calcOperationDurationHHmm = function(operation){
+		initDurationOp(operation);
+		var free_min = Math.ceil(operation.durationOpMin%60);
+		var h = Math.floor((operation.durationOpMin)/60);
+		operation.durationOpHHmm = "";
+		if(h>0)
+			operation.durationOpHHmm = h+" год. ";
+		operation.durationOpHHmm += free_min+" хв.";
+		return operation.durationOpHHmm;
+	}
+
+	var initDurationOp = function(operation){
+		if(!operation.durationOpMin){
+			operation.durationOpMin =
+				(operation.operation_history_end - operation.operation_history_start)/1000/60;
+		}
+	}
+	$scope.loginToThisPage = function(){
+		return "/throughlogin/gotopage/h/operation-code.html"+window.location.search;
+	};
+
 }]);
 // ------------OperationCodeCtrl END
 hol2eih3App.controller('HomeCtrl', ['$scope', '$http', '$filter', '$sce'
@@ -326,10 +408,6 @@ var initReport = function($scope){
 	}
 	
 	$scope.error = [];
-	errorHandle = function(response, $scope){
-		$scope.error.push(response);
-		console.log($scope.error);
-	}
 	
 	mmArray = function(){
 		if($scope.param.department_id > 0){

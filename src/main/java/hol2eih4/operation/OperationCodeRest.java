@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class OperationCodeRest {
 	private static final Logger logger = LoggerFactory.getLogger(OperationCodeRest.class);
 		@Autowired NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
+		
+		@Value("${sql.hol1.procedure-operation.sibling}") private String sqlHol1ProcedureOperationSibling;
+
+		@RequestMapping(value = "/v/siblingProcedureOperation/{parentId}", method = RequestMethod.GET)
+		public @ResponseBody List<Map<String, Object>> getSibling(@PathVariable Integer parentId) {
+			logger.info("\n ------------------------- Start /siblingProcedureOperation/"+parentId);
+			System.out.println(sqlHol1ProcedureOperationSibling);
+			List<Map<String, Object>> seekProcedure 
+			= hol1EihParamJdbcTemplate.queryForList(sqlHol1ProcedureOperationSibling, 
+					new MapSqlParameterSource("parentId",  parentId ));
+			return seekProcedure;
+		}
 		
 		@Value("${sql.hol1Eih.history.id}") private String sqlHol1EihHistoryId;
 		@Value("${sql.hol1Eih.operation_history.history_id}") private String sqlHol1EihOperationHistoryHistoryId;

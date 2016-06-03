@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="hol2eih3App" ng-controller="OperationCodeCtrl">
+<html ng-app="hol2eih3App" ng-controller="OperationCodeCtrl as operationCodeCtrl">
 <head>
 <meta charset="utf-8" />
 <link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
@@ -8,19 +8,21 @@
 <link rel="stylesheet" href="/v/css/hol2eih3.css"></link>
 <link rel="stylesheet" href="/v/css/navbar_horizontal_gray.css" />
 <style type="text/css" media="screen"></style>
+<script type="text/javascript">
+var viewTab = "editOperation";
+</script>
 <title>Кодування хірургічних (оперативних) втручаннь.</title>
 </head>
 <body>
 <div id="menu-fix-top" class="no-print">
 		<div class="navcontainer">
 			<ul>
-				<li><a href="/"><i class="fa fa-home" aria-hidden="true"></i>
-						Хмельницька обласна лікарня <i class="fa fa-angle-double-right"
+				<li><a href="/"><i class="fa fa-home" aria-hidden="true"></i> ХОЛ <i class="fa fa-angle-double-right"
 						aria-hidden="true"></i></li>
 				<li>
 					<div class="tooltip2">
 						<a href="#"> <i class="fa fa-angle-double-down"
-							aria-hidden="true"></i> пацієнти
+							aria-hidden="true"></i> список пацієнтів
 						</a>
 						<div class="tooltiptext2">
 							<div
@@ -68,11 +70,15 @@
 				<h1>Електронна історія хвороби</h1>
 			 -->
 				<h1></h1>
-				<p>
-					<a href="{{loginToThisPage()}}">
-					Кодування хірургічних (оперативних) втручаннь.
-					</a>
-				</p>
+				<ul class="navbar_horizontal_gray">
+					<li><a ng-class="{'active': viewTab == 'editIx'}" href="/v/eix/{{param.ix}}"
+						ng-click="viewTab = 'linking'">Ваписка</a></li>
+					<li><a ng-class="{'active': viewTab == 'editOperation'}"
+						title="Кодування хірургічних (оперативних) втручаннь."
+						href="/h/operation-code.html{{param.ix?'?ix='+param.ix:''}}">Кодування
+							операція </a></li>
+					<li><a> {{param.ix}} </a></li>
+				</ul>
 			</div>
 		</div>
 		<div class="row">
@@ -82,23 +88,38 @@
 			 -->
 				<div>
 					Кількість Оперецій: {{ix.operationHistoryList.length}} 
+					
 					<hr/>
-					<div ng-repeat="operation in ix.operationHistoryList">
-						<div>{{operation.operation_history_start | date:'dd.MM.yyyy, HH:mm'}} {{operation.operation_history_end | date:' - HH:mm'}}
+					<div ng-repeat="operation in ix.operationHistoryList"
+						ng-click="useOperation(operation.operation_history_id)">
+						<div>{{operation.operation_history_start | date:'dd.MM.yyyy, HH:mm'}} 
+						{{operation.operation_history_end | date:' - HH:mm'}}
 							({{calcOperationDurationHHmm(operation)}})</div>
 						<div>
-							Операція: <b> {{operation.operation_code}} </b>
-							{{operation.operation_name}}
+							<a ng-click="editOperation()">Операція</a> : <strike> <b>
+									{{operation.operation_code}} </b> {{operation.operation_name}}
+							</strike>
 							<div>{{operation.operation_additional}}</div>
-							Діагноз при операції <b> {{operation.icd_code}} </b>
-							{{operation.icd_name}}
+							<a ng-click="openToEdit('icd')"> Діагноз при операції </a> : <b>
+								{{operation.icd_code}} </b> {{operation.icd_name}}
 							<div>{{operation.icd_additional}}</div>
-							<div>Відділення: {{operation.department_name}}, Хірург:
-								{{operation.surgery_name}}</div>
-							<div>Анестезіолог: {{operation.anesthetist_name}},
-								Анестезія: {{operation.anestesia_name}}</div>
-							<div>Результат: {{operation.operation_result_name}},
-								Ускладнення: {{operation.operation_complication_name}}</div>
+							<div>
+								<a ng-click="openToEdit('department')">Відділення</a>:
+								{{operation.department_name}}, Хірург:
+								{{operation.surgery_name}}
+							</div>
+							<div>
+								<a ng-click="openToEdit('anesthetist')">Анестезіолог</a>:
+								{{operation.anesthetist_name}}, <a
+									ng-click="openToEdit('anestesia')">Анестезія</a>:
+								{{operation.anestesia_name}}
+							</div>
+							<div>
+								<a ng-click="openToEdit('result')">Результат</a> :
+								{{operation.operation_result_name}}, <a
+									ng-click="openToEdit('complication')">Ускладнення</a>:
+								{{operation.operation_complication_name}}
+							</div>
 						</div>
 						<hr />
 					</div>
@@ -107,7 +128,73 @@
 			</div>
 			<div class="col-md-6">
 				<h2>Редагування</h2>
-				
+				<div ng-if="openedToEdit == 'operation'">
+					Пошук: <input ng-model="operationCodeCtrl.seekOperation" /> <a>Поновити
+						сторінку</a>
+						{{seekProcedure.seekProcedure.length}}
+					<div ng-if="seekProcedure.seekProcedure.length < 200">
+						<div
+							ng-repeat="p in seekProcedure.seekProcedure | filter:{PROCEDURE_CODE:filterCode}"
+							ng-class="{'procedure-group': isProcedureGroup(p.PROCEDURE_CODE)}">
+							<span
+								ng-class="{'code':!isProcedureGroup(p.PROCEDURE_CODE),'selected-to-save':isToSaveProcedure(p)}"
+								ng-click="toSaveProcedure(p)"> <b
+								ng-class="{'saved': mapProcedureOperation.p[p.PROCEDURE_CODE] >= 0}">
+									{{p.PROCEDURE_CODE}}</b> : {{p.PROCEDURE_NAME}}
+							</span>
+						</div>
+					</div>
+					<div
+						ng-if="operationCodeCtrl.seekOperation == null || seekProcedure.seekProcedure.length >= 200">
+						<ul class="code-item">
+							<li ng-repeat="medprocedure in procedureOperation.procedure"
+								title="{{medprocedure.procedure_id}}"><span
+								ng-click="openChildProcedureDb(medprocedure)">
+									{{medprocedure.procedure_code}} :
+									{{medprocedure.procedure_name}} </span>
+								<ul ng-if="medprocedure.open">
+									<li ng-repeat="medprocedure2 in medprocedure.procedure"
+										title="{{medprocedure2.procedure_id}}"><span
+										ng-click="openChildProcedureDb(medprocedure2)">
+											{{medprocedure2.procedure_code}} :
+											{{medprocedure2.procedure_name}} </span>
+										<ul ng-if="medprocedure2.open">
+											<li ng-repeat="medprocedure3 in medprocedure2.procedure"
+												title="{{medprocedure3.procedure_id}}"><span
+												ng-click="openChildProcedureDb(medprocedure3)">
+													{{medprocedure3.procedure_code}} :
+													{{medprocedure3.procedure_name}} </span>
+												<ul ng-if="medprocedure3.open">
+													<li ng-repeat="medprocedure4 in medprocedure3.procedure"
+														title="{{medprocedure4.procedure_id}}"><span
+														ng-class="{'selected-to-save':isToSaveProcedure(medprocedure4)}"
+														ng-click="openChildProcedureDb(medprocedure4)">
+															{{medprocedure4.procedure_code}} :
+															{{medprocedure4.procedure_name}} </span>
+														<ul ng-if="medprocedure4.open">
+															<li ng-repeat="medprocedure5 in medprocedure4.procedure"
+																title="{{medprocedure5.procedure_id}}"><span
+																ng-click="openChildProcedureDb(medprocedure5)">
+																	{{medprocedure5.procedure_code}} :
+																	{{medprocedure5.procedure_name}} </span>
+																<ul ng-if="medprocedure5.open">
+																	<li
+																		ng-repeat="medprocedure6 in medprocedure5.procedure"
+																		title="{{medprocedure6.procedure_id}}"><span
+																		ng-click="openChildProcedureDb(medprocedure6)">
+																			{{medprocedure6.procedure_code}} :
+																			{{medprocedure6.procedure_name}} </span></li>
+																</ul></li>
+														</ul></li>
+												</ul></li>
+										</ul></li>
+								</ul></li>
+						</ul>
+					</div>
+				</div>
+				<div >
+				{{openedToEdit}}
+				</div>
 			</div>
 		</div>
 	</div>

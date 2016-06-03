@@ -19,3 +19,9 @@
 .center {
 	text-align: center;
 }
+
+.procedure-group {
+	font-size: 75%;
+	font-weight: oblique;
+	text-decoration: underline;
+}
