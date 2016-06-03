@@ -1,3 +1,11 @@
+.selected-to-save{
+/*
+	background-color: green;
+*/
+	background-color: #4CAF50;
+	color: #ffffff;
+}
+
 div.code-item > span.code:hover,
 ul.code-item li > span:hover{
 	background-color: yellow;

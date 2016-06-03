@@ -96,28 +96,45 @@ var viewTab = "editOperation";
 						{{operation.operation_history_end | date:' - HH:mm'}}
 							({{calcOperationDurationHHmm(operation)}})</div>
 						<div>
-							<a ng-click="editOperation()">Операція</a> : <strike> <b>
-									{{operation.operation_code}} </b> {{operation.operation_name}}
-							</strike>
+							<a ng-class="{'selected-to-save': openedToEdit == 'operation'}"
+								ng-click="editOperation()">{{fieldsOperation['operation']}}</a>
+							: 
+							{{openedToEdit}}
+							<strike> <b> {{operation.operation_code}} </b> {{operation.operation_name}} </strike>
 							<div>{{operation.operation_additional}}</div>
-							<a ng-click="openToEdit('icd')"> Діагноз при операції </a> : <b>
+							<a ng-class="{'selected-to-save': openedToEdit == 'icd'}"
+								ng-click="openToEdit('icd')">{{fieldsOperation['icd']}}</a>
+							 : <b>
 								{{operation.icd_code}} </b> {{operation.icd_name}}
 							<div>{{operation.icd_additional}}</div>
 							<div>
-								<a ng-click="openToEdit('department')">Відділення</a>:
-								{{operation.department_name}}, Хірург:
+							<a ng-class="{'selected-to-save': openedToEdit == 'department'}"
+								ng-click="openToEdit('department')">{{fieldsOperation['department']}}</a>
+								:
+								{{operation.department_name}}, 
+							<a ng-class="{'selected-to-save': openedToEdit == 'surgery'}"
+								ng-click="openToEdit('surgery')">{{fieldsOperation['surgery']}}</a>
+								:
 								{{operation.surgery_name}}
 							</div>
 							<div>
-								<a ng-click="openToEdit('anesthetist')">Анестезіолог</a>:
-								{{operation.anesthetist_name}}, <a
-									ng-click="openToEdit('anestesia')">Анестезія</a>:
+								<a ng-class="{'selected-to-save': openedToEdit == 'anesthetist'}"
+								ng-click="openToEdit('anesthetist')">{{fieldsOperation['anesthetist']}}</a>
+								:
+								{{operation.anesthetist_name}},
+								<a ng-class="{'selected-to-save': openedToEdit == 'anestesia'}"
+								ng-click="openToEdit('anestesia')">{{fieldsOperation['anestesia']}}</a>
+									:
 								{{operation.anestesia_name}}
 							</div>
 							<div>
-								<a ng-click="openToEdit('result')">Результат</a> :
-								{{operation.operation_result_name}}, <a
-									ng-click="openToEdit('complication')">Ускладнення</a>:
+								<a ng-class="{'selected-to-save': openedToEdit == 'result'}"
+								ng-click="openToEdit('result')">{{fieldsOperation['result']}}</a>
+								:
+								{{operation.operation_result_name}}, 
+								<a ng-class="{'selected-to-save': openedToEdit == 'complication'}"
+								ng-click="openToEdit('complication')">{{fieldsOperation['complication']}}</a>
+									:
 								{{operation.operation_complication_name}}
 							</div>
 						</div>
@@ -127,13 +144,15 @@ var viewTab = "editOperation";
 				</div>
 			</div>
 			<div class="col-md-6">
-				<h2>Редагування</h2>
+				<h2>
+					Редагування <small ng-if="openedToEdit" class="selected-to-save">{{fieldsOperation[openedToEdit]}}</small>
+				</h2>
 				<div ng-if="openedToEdit == 'operation'">
 					Пошук: <input ng-model="operationCodeCtrl.seekOperation" /> <a>Поновити
 						сторінку</a>
 						{{seekProcedure.seekProcedure.length}}
 					<div ng-if="seekProcedure.seekProcedure.length < 200">
-						<div
+						<div class="code-item"
 							ng-repeat="p in seekProcedure.seekProcedure | filter:{PROCEDURE_CODE:filterCode}"
 							ng-class="{'procedure-group': isProcedureGroup(p.PROCEDURE_CODE)}">
 							<span

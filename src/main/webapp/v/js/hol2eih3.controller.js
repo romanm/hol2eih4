@@ -143,13 +143,6 @@ var initCtrl = function($scope, $http){
 hol2eih3App.controller('IxCtrl', function ($scope, $http, $filter, $sce, $interval) {
 	console.log("IxCtrl");
 	initCtrl($scope, $http);
-	function frameCtrl() {
-		var fc = $(hol1frame).contents();
-		var hol1frame = document.getElementById("hol1frame");
-		console.log(hol1frame.contentDocument);
-		console.log(hol1frame.contentWindow);
-		var hol1frame_breadcrumbs = hol1frame.getElementsByClassName("breadcrumbs")[0];
-	}
 	//$interval(frameCtrl, 3000);
 	$http.get("http://localhost/history/edit/id/85656").success(function(response) {
 		console.log(response);
@@ -160,6 +153,18 @@ hol2eih3App.controller('IxCtrl', function ($scope, $http, $filter, $sce, $interv
 hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce'
 		, function ($scope, $http, $filter, $sce) {
 	console.log("OperationCodeCtrl");
+	$scope.fieldsOperation = {
+			operation : "Операція"
+			,icd : "Діагноз при операції"
+			,department : "Відділення"
+			,surgery: "Хірург"
+			,anesthetist: "Анестезіолог"
+			,anestesia: "Анестезія"
+			,result: "Результат"
+			,complication: "Ускладнення"
+	};
+	console.log($scope.fieldsOperation);
+
 	initCtrl($scope, $http);
 	
 	$scope.openToEdit = function(operation){
@@ -178,7 +183,8 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.openChildProcedureDb($scope.procedureOperation);
 	}
 	checkToSaveProcedure = function (procedure){
-		if(procedure.procedure_code.split(".").length == 2){
+		if((procedure.PROCEDURE_CODE && procedure.PROCEDURE_CODE.split(".").length == 2)
+				|| (procedure.procedure_code && procedure.procedure_code.split(".").length == 2)){
 			$scope.toSaveProcedure(procedure)
 		}
 	}
