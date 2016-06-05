@@ -7,6 +7,10 @@
 	}
 }
 
+table.column td{
+	vertical-align: top;
+}
+
 .navbar, .navbar ol {
 	margin-bottom: 1px;
 	min-height: 2px;

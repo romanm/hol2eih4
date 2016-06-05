@@ -98,13 +98,11 @@ var initCtrl = function($scope, $http){
 	$scope.viewTab = viewTab;
 	$scope.error = [];
 	$scope.param = parameters;
-	console.log($scope.param);
 	if(!$scope.param.ix){
 		if(window['eixId'] != undefined){
 			$scope.param.ix = eixId; 
 		}
 	}
-	console.log($scope.param);
 	$scope.model = {};
 
 	$scope.errorHandle = function(response){
@@ -112,23 +110,56 @@ var initCtrl = function($scope, $http){
 		console.log($scope.error);
 	}
 
+	$http({ method : 'GET', url : "/v/show-tables-columns"
+	}).success(function(model, status, headers, config) {
+		$scope.showTablesColumns = model;
+		$scope.showTablesColumns.notNulls = {};
+		angular.forEach($scope.showTablesColumns.tables, function(tableColumns, keyTableName) {
+			$scope.showTablesColumns.notNulls[keyTableName] = {};
+			angular.forEach(tableColumns, function(column) {
+				if(column.Null=="NO"){
+					$scope.showTablesColumns.notNulls[keyTableName][column.Field] = column;
+				}
+			});
+		});
+		console.log($scope.showTablesColumns);
+	}).error(function(model, status, headers, config) {
+		$scope.error.push(model);
+	});
+	
+	$scope.model = {};
+
 	$http({ method : 'GET', url : "/v/readAuthorityUser"
 	}).success(function(model, status, headers, config) {
-		$scope.model = model;
+		$scope.model.authority = model;
 		console.log($scope.model);
-		console.log($scope.model.departmentId);
-		if($scope.model.departmentId)
-			$http({ method : 'GET', url : "/v/department-patient/"+$scope.model.departmentId
+		if($scope.model.authority.departmentId){
+			$http({ method : 'GET', url : "/v/department-patient/"+$scope.model.authority.departmentId
 			}).success(function(model, status, headers, config) {
 				$scope.model.departmentPatient = model;
 				console.log($scope.model);
 			}).error(function(model, status, headers, config) {
 				$scope.error.push(model);
 			});
+		}
 	}).error(function(model, status, headers, config) {
 		$scope.error.push(model);
 	});
-	
+
+	$scope.$watch("model.authority", function handleChange( newValue, oldValue ) {
+		console.log($scope.model.authority);
+		if(newValue != null){
+			$http({ method : 'GET', url : "/v/operation/start-lists"
+			}).success(function(model, status, headers, config) {
+				$scope.model.operationEditLists = model;
+				console.log("operationEditLists");
+				console.log($scope.model.operationEditLists);
+			}).error(function(model, status, headers, config) {
+				$scope.error.push(model);
+			});
+		}
+	});
+
 	if($scope.param.ix){
 		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix+window.location.search
 		}).success(function(model, status, headers, config) {
@@ -154,23 +185,64 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		, function ($scope, $http, $filter, $sce) {
 	console.log("OperationCodeCtrl");
 	$scope.fieldsOperation = {
-			operation : "Операція"
-			,icd : "Діагноз при операції"
-			,department : "Відділення"
-			,surgery: "Хірург"
-			,anesthetist: "Анестезіолог"
-			,anestesia: "Анестезія"
-			,result: "Результат"
-			,complication: "Ускладнення"
+		operation : "Операція"
+		,icd : "Діагноз при операції"
+		,department : "Відділення"
+		,surgery: "Хірург"
+		,anesthetist: "Анестезіолог"
+		,anestesia: "Анестезія"
+		,result: "Результат"
+		,complication: "Ускладнення"
 	};
-	console.log($scope.fieldsOperation);
 
 	initCtrl($scope, $http);
 	
-	$scope.openToEdit = function(operation){
-		$scope.openedToEdit = operation;
+	$scope.openToEdit = function(fieldName){
+		$scope.openedToEdit = fieldName;
 	}
 	//------procedure------Operation-----------
+	$scope.changeAnesthetist = function(newValue){
+		$scope.operationHistoryToEdit.anesthetist_id = newValue.personal_id;
+		$scope.operationHistoryToEdit.anesthetist_name = newValue.personal_username;
+	}
+	$scope.changeAnesthesia = function(newValue){
+		$scope.operationHistoryToEdit.anestesia_id = newValue.anestesia_id;
+		$scope.operationHistoryToEdit.anestesia_name = newValue.anestesia_name;
+	}
+	$scope.changeResult = function(newValue){
+		$scope.operationHistoryToEdit.operation_result_id = newValue.result_id;
+		$scope.operationHistoryToEdit.operation_result_name = newValue.result_name;
+	}
+	$scope.changeDepartment = function(newValue){
+		$scope.operationHistoryToEdit.department_id = newValue.department_id;
+		$scope.operationHistoryToEdit.department_name = newValue.department_name;
+	}
+	$scope.changeSurgery = function(newValue){
+		if($scope.operationHistoryToEdit){
+			$scope.operationHistoryToEdit.personal_id = newValue.personal_id;
+			$scope.operationHistoryToEdit.surgery_name = newValue.personal_username;
+		}
+	}
+	$scope.addOperation = function(){
+		console.log("----------------");
+		//перевірка на наявність відкритої і не збереженої операції
+		for (var i = 0; i < $scope.ix.operationHistoryList.length; i++)
+			if(!$scope.ix.operationHistoryList[i].opeation_history_id)
+				return;
+		var newOperationHistory = {};
+		$scope.ix.operationHistoryList.push(newOperationHistory);
+		//створити запис операції з інформації про колонки таблиці operation_history
+		angular.forEach($scope.showTablesColumns.tables.operation_history, function(oh, key) {
+			newOperationHistory[oh.Field] = null;
+		});
+		//додати дату операції як поточна дата
+		var nd = new Date()
+		newOperationHistory.operation_history_start = new Date().getTime();
+		newOperationHistory.operation_history_end = newOperationHistory.operation_history_start + 1000;
+		console.log($scope.ix);
+		$scope.operationHistoryToEdit = newOperationHistory;
+	}
+	
 	$scope.isProcedureGroup = function (code){
 		return !isNaN(code.substring(0,1));
 	}
@@ -190,6 +262,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 	$scope.toSaveProcedure = function (procedure){
 		$scope.procedureToSave = procedure;
+		console.log($scope.procedureToSave);
 	}
 	$scope.openChildProcedureDb = function (procedure){
 		$scope.openChild(procedure);
@@ -198,7 +271,8 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			$http.get("/v/siblingProcedureOperation/"+siblingLevel).success(function(response) {
 				procedure.procedure = response;
 				if(response.length == 0){
-					checkToSaveProcedure(procedure);
+					$scope.toSaveProcedure(procedure);
+					//checkToSaveProcedure(procedure);
 				}
 			}).error($scope.errorHandle);
 		}else{
@@ -207,8 +281,16 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 	//------procedure------Operation-----------END
 	
-	$scope.$watch("operationCodeCtrl.seekOperation", function handleChange( newValue, oldValue ) {
+	$scope.$watch("procedureToSave", function handleChange( newValue, oldValue ) {
 		if(newValue != null){
+			console.log(newValue);
+			console.log($scope.operationHistoryToEdit);
+			$scope.operationHistoryToEdit.procedure = newValue;
+		}
+	});
+
+	$scope.$watch("operationCodeCtrl.seekOperation", function handleChange( newValue, oldValue ) {
+		if(newValue != null && newValue.length > 0){
 			$http.get("/v/seekProcedureOperation/"+newValue).success(function(response) {
 				$scope.seekProcedure = response;
 				console.log($scope.seekProcedure);
@@ -216,8 +298,10 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		}
 	})
 
-	$scope.useOperation = function(operationHistoryId){
-		console.log($scope.openedToEdit+"/"+operationHistoryId);
+	$scope.useOperation = function(operationHistory){
+		$scope.operationHistoryToEdit = operationHistory;
+		console.log($scope.operationHistoryToEdit);
+		console.log($scope.openedToEdit);
 	}
 	$scope.calcOperationDurationHHmm = function(operation){
 		initDurationOp(operation);

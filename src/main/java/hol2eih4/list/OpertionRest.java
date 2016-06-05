@@ -32,11 +32,11 @@ public class OpertionRest {
 		map.put("seekOperation", seekOperation);
 		return map;
 	}
-	
+
 	@Value("${sql.hol1.operation.group}")		private String sqlHol1OperationGroup;
 	@Value("${sql.hol1.operation.subgroup}")	private String sqlHol1OperationSubgroup;
 	@Value("${sql.hol1.operation.operation}")	private String sqlHol1OperationOperation;
-	
+
 	@RequestMapping(value = "/v/operation/group", method = RequestMethod.GET)
 	public @ResponseBody List<Map<String, Object>> getGroup() {
 		List<Map<String, Object>> seekProcedure 
@@ -44,6 +44,7 @@ public class OpertionRest {
 				new MapSqlParameterSource("nullParameter", 0 ));
 		return seekProcedure;
 	}
+
 	@RequestMapping(value = "/v/operation/subgroup/{operationGroupId}", method = RequestMethod.GET)
 	public @ResponseBody List<Map<String, Object>> getSiblingSubGroup(@PathVariable Integer operationGroupId) {
 		System.out.println("/v/operation/subgroup/{operationGroupId}");
@@ -54,6 +55,7 @@ public class OpertionRest {
 				new MapSqlParameterSource("operationGroupId", operationGroupId ));
 		return seekProcedure;
 	}
+
 	@RequestMapping(value = "/v/operation/operation/{operationSubGroupId}", method = RequestMethod.GET)
 	public @ResponseBody List<Map<String, Object>> getSiblingOperation(@PathVariable Integer operationSubGroupId) {
 		System.out.println("/v/operation/operation/{operationSubGroupId}");

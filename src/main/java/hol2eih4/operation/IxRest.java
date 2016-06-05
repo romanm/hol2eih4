@@ -1,19 +1,40 @@
 package hol2eih4.operation;
 
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class IxRest {
+public class IxRest extends IxBasicRest{
 	private static final Logger logger = LoggerFactory.getLogger(IxRest.class);
+
+	@RequestMapping(value = "/v/readAuthorityUser", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readAuthorityUser(Principal principal, HttpServletRequest request) {
+		logger.info("\n ------------------------- Start /readHome");
+		Map<String, Object> model = new HashMap<String, Object>();
+		DateTime today = new DateTime();
+		model.put("today", today.toDate());
+		model.put("principal", principal);
+		System.out.println(principal);
+		if(principal != null)
+			useAuthorityRole(principal, model);
+		return model;
+	}
 
 	@RequestMapping("/v/eix")
 	public String ixStaart(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {

@@ -41,30 +41,7 @@ public class AppRest {
 	@Autowired private ExcelService2 excelService;
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
-	@RequestMapping(value = "/v/readAuthorityUser", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readAuthorityUser(Principal principal, HttpServletRequest request) {
-		logger.info("\n ------------------------- Start /readHome");
-		Map<String, Object> model = new HashMap<String, Object>();
-		DateTime today = new DateTime();
-		model.put("today", today.toDate());
-		model.put("principal", principal);
-		System.out.println(principal);
-		if(principal != null)
-			for (GrantedAuthority grantedAuthority : ((Authentication) principal).getAuthorities()) {
-				System.out.println(grantedAuthority);
-				for (String string : grantedAuthority.getAuthority().split("_"))
-					if(string.contains("dep-")){
-						int departmentId = Integer.parseInt(string.replace("dep-", ""));
-						logger.info("\n ------------------------- departmentId = "+departmentId);
-						model.put("departmentId", departmentId);
-					}else if(string.contains("per-")){
-						int personInDepartmentId = Integer.parseInt(string.replace("per-", ""));
-						model.put("personInDepartmentId", personInDepartmentId);
-						logger.info("\n ------------------------- personInDepartmentId = "+personInDepartmentId);
-					}
-			}
-		return model;
-	}
+	
 	@RequestMapping(value = "/v/readHome", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readHome(Principal principal, HttpServletRequest request) {
 		logger.info("\n ------------------------- Start /readHome");
