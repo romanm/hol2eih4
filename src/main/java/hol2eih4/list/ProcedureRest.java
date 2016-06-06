@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ProcedureRest {
 	private static final Logger logger = LoggerFactory.getLogger(ProcedureRest.class);
 	@Autowired NamedParameterJdbcTemplate hol2EihParamJdbcTemplate;
+	@Autowired NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 
 	@Value("${sql.insert.list.procedure_operation}") private String sqlInsertListProcedure_operation;
 
@@ -53,7 +54,6 @@ public class ProcedureRest {
 	}
 
 	@Value("${sql.list.procedure-operation.seek}") private String sqlListProcedureOperationSeek;
-	
 	@RequestMapping(value = "/v/seekProcedureOperation/{seekText}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> seekProcedureOperation(@PathVariable String seekText) {
 		String seekTextWithPunkt = seekText.replaceAll("-", "\\.");
@@ -71,9 +71,27 @@ public class ProcedureRest {
 		map.put("seekProcedure", seekProcedure);
 		return map;
 	}
-	
-	@Value("${sql.list.procedure.seek}") private String sqlListProcedureSeek;
 
+	@Value("${sql.hol1.icd.seek}") private String sqlHol1IcdSeek;
+	@RequestMapping(value = "/v/seekIcd/{seekText}", method = RequestMethod.GET)
+	public @ResponseBody Map<String, Object> seekHol1IcdSeek(@PathVariable String seekText) {
+		String seekTextWithPunkt = seekText.replaceAll("-", "\\.");
+		logger.info("\n ------------------------- Start "+"/v/seekProcedureOperation/"+seekTextWithPunkt);
+		//		String sqlListProcedureSeek = Util.replace(this.sqlListProcedureSeek);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("seekText", seekTextWithPunkt);
+		System.out.println();
+		System.out.println(sqlHol1IcdSeek);
+		System.out.println();
+		List<Map<String, Object>> seekProcedure 
+			= hol1EihParamJdbcTemplate.queryForList(sqlHol1IcdSeek, new MapSqlParameterSource("likeText", "%"
+				+ seekTextWithPunkt
+				+ "%"));
+		map.put("seekProcedure", seekProcedure);
+		return map;
+	}
+
+	@Value("${sql.list.procedure.seek}") private String sqlListProcedureSeek;
 	@RequestMapping(value = "/v/seekProcedure/{seekText}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> seekProcedure(@PathVariable String seekText) {
 		String seekTextWithPunkt = seekText.replaceAll("-", "\\.");

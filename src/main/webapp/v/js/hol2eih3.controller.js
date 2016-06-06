@@ -337,11 +337,24 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		}
 	});
 
+	$scope.$watch("operationCodeCtrl.seekIcd", function handleChange( newValue, oldValue ) {
+		if(newValue != null && newValue.length > 0){
+			var seekText = newValue.replace(".","-");
+			var getUrl = "/v/seekIcd/"+seekText;
+			console.log(getUrl);
+			$http.get(getUrl).success(function(response) {
+				$scope.seekIcd = response;
+				console.log($scope.seekIcd);
+			});
+		}
+	})
 	$scope.$watch("operationCodeCtrl.seekOperation", function handleChange( newValue, oldValue ) {
 		if(newValue != null && newValue.length > 0){
 			$scope.procedureViewType = 'seek';
 			var seekText = newValue.replace(".","-");
-			$http.get("/v/seekProcedureOperation/"+seekText).success(function(response) {
+			var getUrl = "/v/seekProcedureOperation/"+seekText;
+			console.log(getUrl);
+			$http.get(getUrl).success(function(response) {
 				$scope.seekProcedure = response;
 				console.log($scope.seekProcedure);
 			});
