@@ -260,10 +260,6 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			$scope.toSaveProcedure(procedure)
 		}
 	}
-	$scope.toSaveProcedure = function (procedure){
-		$scope.procedureToSave = procedure;
-		console.log($scope.procedureToSave);
-	}
 	$scope.openChildProcedureDb = function (procedure){
 		$scope.openChild(procedure);
 		if(procedure.procedure == null){
@@ -281,17 +277,31 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 	//------procedure------Operation-----------END
 	
+	$scope.toSaveProcedure = function (procedure){
+		$scope.procedureToSave = procedure;
+		console.log($scope.procedureToSave);
+	}
 	$scope.$watch("procedureToSave", function handleChange( newValue, oldValue ) {
 		if(newValue != null){
 			console.log(newValue);
 			console.log($scope.operationHistoryToEdit);
-			$scope.operationHistoryToEdit.procedure = newValue;
+			if(newValue.procedure_id){
+				$scope.operationHistoryToEdit.procedure_id = newValue.procedure_id;
+				$scope.operationHistoryToEdit.procedure_name = newValue.procedure_name;
+				$scope.operationHistoryToEdit.procedure_code = newValue.procedure_code;
+			}else
+			if(newValue.PROCEDURE_ID){
+				$scope.operationHistoryToEdit.procedure_id = newValue.PROCEDURE_ID;
+				$scope.operationHistoryToEdit.procedure_name = newValue.PROCEDURE_NAME;
+				$scope.operationHistoryToEdit.PROCEDURE_CODE = newValue.PROCEDURE_CODE;
+			}
 		}
 	});
 
 	$scope.$watch("operationCodeCtrl.seekOperation", function handleChange( newValue, oldValue ) {
 		if(newValue != null && newValue.length > 0){
-			$http.get("/v/seekProcedureOperation/"+newValue).success(function(response) {
+			var seekText = newValue.replace(".","-");
+			$http.get("/v/seekProcedureOperation/"+seekText).success(function(response) {
 				$scope.seekProcedure = response;
 				console.log($scope.seekProcedure);
 			});

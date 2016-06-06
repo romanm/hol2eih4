@@ -56,6 +56,10 @@ ul.code-item li > span:hover{
 	border: 1px solid #e7e7e7;
 	background-color: #f3f3f3;
 }
+.scroll-large{
+	height: 500px;
+	overflow: scroll;
+}
 .tooltip2:hover .tooltiptext3,
 .tooltip2:hover .tooltiptext2,
 .tooltip2:hover .tooltiptext {

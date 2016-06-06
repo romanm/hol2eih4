@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class ProcedureRest {
+	private static final Logger logger = LoggerFactory.getLogger(ProcedureRest.class);
 	@Autowired NamedParameterJdbcTemplate hol2EihParamJdbcTemplate;
 
 	@Value("${sql.insert.list.procedure_operation}") private String sqlInsertListProcedure_operation;
@@ -53,19 +56,22 @@ public class ProcedureRest {
 	
 	@RequestMapping(value = "/v/seekProcedureOperation/{seekText}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> seekProcedureOperation(@PathVariable String seekText) {
-//		String sqlListProcedureSeek = Util.replace(this.sqlListProcedureSeek);
+		String seekTextWithPunkt = seekText.replaceAll("-", "\\.");
+		logger.info("\n ------------------------- Start "+"/v/seekProcedureOperation/"+seekTextWithPunkt);
+		//		String sqlListProcedureSeek = Util.replace(this.sqlListProcedureSeek);
 		HashMap<String, Object> map = new HashMap<>();
-		map.put("seekText", seekText);
+		map.put("seekText", seekTextWithPunkt);
 		System.out.println();
 		System.out.println(sqlListProcedureOperationSeek);
 		System.out.println();
 		List<Map<String, Object>> seekProcedure 
 		= hol2EihParamJdbcTemplate.queryForList(sqlListProcedureOperationSeek, new MapSqlParameterSource("likeText", "%"
-				+ seekText
+				+ seekTextWithPunkt
 				+ "%"));
 		map.put("seekProcedure", seekProcedure);
 		return map;
 	}
+	
 	@Value("${sql.list.procedure.seek}") private String sqlListProcedureSeek;
 
 	@RequestMapping(value = "/v/seekProcedure/{seekText}", method = RequestMethod.GET)

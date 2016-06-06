@@ -1357,9 +1357,12 @@
 ,"commit"
 ]},{"dbVersionId" : 31, "sqls" : [
 "insert into list.procedure_operation (PROCEDURE_CODE,OPERATION_CODE) values ('HJ7.01','У3'), ('HJ7.01','У4'), ('HJ7.01','093001'), ('AJJ7.01','094001')"
+]},{"dbVersionId" : 32, "mysqls" : [
+"ALTER TABLE procedure_moz ADD COLUMN procedure_parent_name varchar(150)"
+,"UPDATE procedure_moz p left join procedure_moz pp on pp.procedure_id=p.procedure_parent_id SET p.procedure_parent_name = pp.procedure_name WHERE LENGTH(p.procedure_code)- LENGTH(REPLACE(p.procedure_code,'.',''))=2"
 ]},{"dbVersionId" : 33, "sqls" : [
 "ALTER TABLE  list.procedure ADD COLUMN IF NOT EXISTS procedure_parent_name varchar(150)"
-,"UPDATE list.procedure p SET (p.procedure_parent_name ) = (SELECT procedure_name FROM list.procedure pp WHERE pp.procedure_id=p.procedure_parent_id) WHERE  LENGTH(p.procedure_code)- LENGTH(REPLACE(p.procedure_code,'.',''))=2"
+,"UPDATE list.procedure p SET (p.procedure_parent_name ) = (SELECT procedure_name FROM list.procedure pp WHERE pp.procedure_id=p.procedure_parent_id) WHERE LENGTH(p.procedure_code)- LENGTH(REPLACE(p.procedure_code,'.',''))=2"
 ]}
 ]
 }

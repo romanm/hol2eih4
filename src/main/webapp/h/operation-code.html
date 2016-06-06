@@ -105,13 +105,11 @@ var viewTab = "editOperation";
 								<span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
 								<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 								 -->
-							<span class="alert-danger" ng-if="!operation.operation_id">
+							<span class="alert-danger" ng-if="!operation.procedure_id">
 								<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
 								Невідмінно
-							</span> <span ng-if="operation.procedure.procedure_id"> <b>{{operation.procedure.procedure_code}}</b>:
-								{{operation.procedure.procedure_name}} <br />
-							</span> <span ng-if="operation.procedure.PROCEDURE_ID"> <b>{{operation.procedure.PROCEDURE_CODE}}</b>:
-								{{operation.procedure.PROCEDURE_NAME}} <br />
+							</span> <span ng-if="operation.procedure_id"> <b>{{operation.procedure_code}}</b>:
+								{{operation.procedure_name}} <br />
 							</span> <strike> <b> {{operation.operation_code}} </b>
 								{{operation.operation_name}}
 							</strike>
@@ -241,7 +239,9 @@ At w3schools.com you will learn how to make a website. We offer free tutorials i
 						</tr>
 					</table>
 					
-					<div ng-if="operationCodeCtrl.seekOperation.length > 0 && seekProcedure.seekProcedure.length < 200">
+					<div ng-if="operationCodeCtrl.seekOperation.length > 0 && seekProcedure.seekProcedure.length < 200"
+					class="scroll-large"
+					>
 						<div class="code-item"
 							ng-repeat="p in seekProcedure.seekProcedure | filter:{PROCEDURE_CODE:filterCode}"
 							ng-class="{'procedure-group': isProcedureGroup(p.PROCEDURE_CODE)}">
