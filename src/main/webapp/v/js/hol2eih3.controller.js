@@ -147,7 +147,6 @@ var initCtrl = function($scope, $http){
 	});
 
 	$scope.$watch("model.authority", function handleChange( newValue, oldValue ) {
-		console.log($scope.model.authority);
 		if(newValue != null){
 			$http({ method : 'GET', url : "/v/operation/start-lists"
 			}).success(function(model, status, headers, config) {
@@ -275,6 +274,48 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			checkToSaveProcedure(procedure);
 		}
 	}
+
+	$scope.procedureViewType = "navigation";
+	$scope.gotoNavigation = function (){
+		console.log($scope.procedureViewType);
+		console.log("----gotoNavigation---------------");
+		$scope.procedureViewType = "navigation";
+		console.log($scope.procedureViewType);
+	}
+	$scope.seekUpdate = function (){
+		console.log($scope.procedureViewType);
+		console.log("-----------seekUpdate--------");
+		$scope.procedureViewType = "seek";
+		console.log($scope.procedureViewType);
+	}
+	var openProcedureTreeTo = function (code, level, procedureList){
+		console.log(code+"/"+level);
+		console.log(procedureList);
+		angular.forEach(procedureList, function(procedure) {
+//			console.log(procedure.procedure_code+"/"+code.substring(0,level)+"/"+(procedure.procedure_code == code.substring(0,level)));
+			if(procedure.procedure_code == code.substring(0,level)){
+				$scope.openChild(procedure);
+				if(procedure.procedure == null){
+					$http.get("/v/siblingProcedureOperation/"+procedure.procedure_id).success(function(response) {
+						procedure.procedure = response;
+						if(procedure.procedure.length != 0){
+							if(code.length > level){
+								openProcedureTreeTo(code, level+1, procedure.procedure);
+							}
+						}
+					})
+				}
+			}
+		});
+	}
+	$scope.gotoNavigationGroup = function (procedure){
+		console.log("----gotoNavigationGroup---------------");
+		console.log($scope.procedureOperation.procedure);
+		openProcedureTreeTo(procedure.PROCEDURE_CODE, 2, $scope.procedureOperation.procedure);
+		console.log($scope.procedureOperation.procedure);
+		$scope.procedureViewType = "navigation";
+	}
+	
 	//------procedure------Operation-----------END
 	
 	$scope.toSaveProcedure = function (procedure){
@@ -283,8 +324,6 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 	$scope.$watch("procedureToSave", function handleChange( newValue, oldValue ) {
 		if(newValue != null){
-			console.log(newValue);
-			console.log($scope.operationHistoryToEdit);
 			if(newValue.procedure_id){
 				$scope.operationHistoryToEdit.procedure_id = newValue.procedure_id;
 				$scope.operationHistoryToEdit.procedure_name = newValue.procedure_name;
@@ -300,6 +339,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 
 	$scope.$watch("operationCodeCtrl.seekOperation", function handleChange( newValue, oldValue ) {
 		if(newValue != null && newValue.length > 0){
+			$scope.procedureViewType = 'seek';
 			var seekText = newValue.replace(".","-");
 			$http.get("/v/seekProcedureOperation/"+seekText).success(function(response) {
 				$scope.seekProcedure = response;

@@ -64,8 +64,15 @@
 			</table>
 		</div>
 		<div ng-if="viewTab == 'linking'">
-			<label>Пошук: <input ng-model="myCtrl.seekText" />
-			</label> <a href="med-procedure-operation.html">Поновити сторінку</a> || <span
+			<label> <i class="fa fa-search" aria-hidden="true"></i> <a
+				ng-click="seekUpdate()" href="#"
+				ng-class="{'selected-to-save':procedureViewType == 'seek'}">
+					Пошук </a> : <input ng-model="myCtrl.seekText" />
+			</label> | <a ng-click="gotoNavigation()" href="#"
+			ng-class="{'selected-to-save':procedureViewType == 'navigation'}"
+			> <i
+				class="fa fa-tree" aria-hidden="true"></i> навігація
+			</a> || <span
 				ng-click="changeFilterCode()"> <input type="checkbox"
 				ng-if="filterCode == '7'" checked> <input type="checkbox"
 				ng-if="filterCode != '7'"> шукати тільки операції
@@ -96,20 +103,31 @@
 				</tr>
 				<tr>
 					<td>
+					<!-- 
 						<div ng-if="seekProcedure.seekProcedure.length <= 200">
+					 -->
+						<div ng-if="procedureViewType == 'seek'">
 							<div
-								ng-repeat="p in seekProcedure.seekProcedure | filter:{PROCEDURE_CODE:filterCode}"
-								ng-class="{'procedure-group': isProcedureGroup(p.PROCEDURE_CODE)}">
-								<span
+								ng-repeat="p in seekProcedure.seekProcedure | filter:{PROCEDURE_CODE:filterCode}">
+								<div ng-if="isProcedureGroup(p.PROCEDURE_CODE)"
+									class="procedure-group">
+									<a ng-click="gotoNavigationGroup(p)" href="#"> <b> {{p.PROCEDURE_CODE}}</b> :
+										{{p.PROCEDURE_NAME}}
+									</a>
+								</div>
+								<div ng-if="!isProcedureGroup(p.PROCEDURE_CODE)"
 									ng-class="{'code':!isProcedureGroup(p.PROCEDURE_CODE),'selected-to-save':isToSaveProcedure(p)}"
-									ng-click="toSaveProcedure(p)"> <b
-									ng-class="{'saved': mapProcedureOperation.p[p.PROCEDURE_CODE] >= 0}">
+									ng-click="toSaveProcedure(p)">
+									<b
+										ng-class="{'saved': mapProcedureOperation.p[p.PROCEDURE_CODE] >= 0}">
 										{{p.PROCEDURE_CODE}}</b> : {{p.PROCEDURE_NAME}}
-								</span>
+								</div>
 							</div>
 						</div>
-						<div
-							ng-if="myCtrl.seekText == null || seekProcedure.seekProcedure.length > 200">
+						<!-- 
+						<div ng-if="myCtrl.seekText == null || seekProcedure.seekProcedure.length > 200">
+						 -->
+						<div ng-if="procedureViewType == 'navigation' || myCtrl.seekText == null">
 							<ul>
 								<li
 									ng-repeat="medprocedure in medProcedureDb | filter:{PROCEDURE_CODE:filterCode}"

@@ -76,15 +76,17 @@ public class ProcedureRest {
 
 	@RequestMapping(value = "/v/seekProcedure/{seekText}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> seekProcedure(@PathVariable String seekText) {
+		String seekTextWithPunkt = seekText.replaceAll("-", "\\.");
+		logger.info("\n ------------------------- Start "+"/v/seekProcedure/"+seekTextWithPunkt);
 //		String sqlListProcedureSeek = Util.replace(this.sqlListProcedureSeek);
 		HashMap<String, Object> map = new HashMap<>();
-		map.put("seekText", seekText);
+		map.put("seekText", seekTextWithPunkt);
 		System.out.println();
 		System.out.println(sqlListProcedureSeek);
 		System.out.println();
 		List<Map<String, Object>> seekProcedure 
 		= hol2EihParamJdbcTemplate.queryForList(sqlListProcedureSeek, new MapSqlParameterSource("likeText", "%"
-				+ seekText
+				+ seekTextWithPunkt
 				+ "%"));
 		map.put("seekProcedure", seekProcedure);
 		return map;

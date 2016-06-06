@@ -33,7 +33,9 @@ app.controller('MedProcedureOperationCtrl', function myCtrlF($scope, $http) {
 
 	$scope.$watch("myCtrl.seekText", function handleChange( newValue, oldValue ) {
 		if(newValue != null){
-			$http.get("/v/seekProcedure/"+newValue).success(function(response) {
+			$scope.procedureViewType = 'seek';
+			var seekText = newValue.replace(".","-");
+			$http.get("/v/seekProcedure/"+seekText).success(function(response) {
 				$scope.seekProcedure = response;
 			});
 			$http.get("/v/operation/seek/"+newValue).success(function(response) {
@@ -51,6 +53,57 @@ app.controller('MedProcedureOperationCtrl', function myCtrlF($scope, $http) {
 			$scope.filterCode = '7';
 		}else{
 			$scope.filterCode = '';
+		}
+	}
+
+	$scope.procedureViewType = "navigation";
+	$scope.gotoNavigation = function (){
+		console.log($scope.procedureViewType);
+		console.log("----gotoNavigation---------------");
+		$scope.procedureViewType = "navigation";
+		console.log($scope.procedureViewType);
+	}
+	$scope.seekUpdate = function (){
+		console.log($scope.procedureViewType);
+		console.log("-----------seekUpdate--------");
+		$scope.procedureViewType = "seek";
+		console.log($scope.procedureViewType);
+	}
+	var openProcedureTreeTo = function (code, level, procedureList){
+		angular.forEach(procedureList, function(procedure) {
+			if(procedure.PROCEDURE_CODE == code.substring(0,level)){
+				$scope.openChild(procedure);
+				if(procedure.procedure == null){
+					$http.get("/v/siblingProcedure/"+procedure.PROCEDURE_ID).success(function(response) {
+						procedure.procedure = response;
+						if(procedure.procedure.length != 0){
+							if(code.length > level){
+								openProcedureTreeTo(code, level+1, procedure.procedure);
+							}
+						}
+					}).error(errorHandle);
+				}
+			}
+		});
+	}
+	$scope.gotoNavigationGroup = function (procedure){
+		console.log("----gotoNavigationGroup---------------");
+		openProcedureTreeTo(procedure.PROCEDURE_CODE, 1, $scope.medProcedureDb);
+		console.log($scope.medProcedureDb);
+		$scope.procedureViewType = "navigation";
+	}
+	$scope.openChildProcedureDb = function (procedure){
+		$scope.openChild(procedure);
+		if(procedure.procedure == null){
+			var parentId = procedure.PROCEDURE_ID;
+			$http.get("/v/siblingProcedure/"+parentId).success(function(response) {
+				procedure.procedure = response;
+				if(response.length == 0){
+					checkToSaveProcedure(procedure);
+				}
+			}).error(errorHandle);
+		}else{
+			checkToSaveProcedure(procedure);
 		}
 	}
 	
@@ -137,20 +190,6 @@ app.controller('MedProcedureOperationCtrl', function myCtrlF($scope, $http) {
 	checkToSaveProcedure = function (procedure){
 		if(procedure.PROCEDURE_CODE.split(".").length == 2){
 			$scope.toSaveProcedure(procedure)
-		}
-	}
-	$scope.openChildProcedureDb = function (procedure){
-		$scope.openChild(procedure);
-		if(procedure.procedure == null){
-			var siblingLevel = procedure.PROCEDURE_ID;
-			$http.get("/v/siblingProcedure/"+siblingLevel).success(function(response) {
-				procedure.procedure = response;
-				if(response.length == 0){
-					checkToSaveProcedure(procedure);
-				}
-			}).error(errorHandle);
-		}else{
-			checkToSaveProcedure(procedure);
 		}
 	}
 	$scope.openChild = function (procedure){

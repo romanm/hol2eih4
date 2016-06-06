@@ -17,10 +17,11 @@ b.saved{
 	background-color: blue;
 	color: #ffffff;
 }
-span.selected-to-save{
 /*
 	background-color: green;
+span.selected-to-save{
 */
+.selected-to-save{
 	background-color: #4CAF50;
 	color: #ffffff;
 }
@@ -30,6 +31,7 @@ table.linie  th, table.linie  td {
 	border-collapse: collapse;
 }
 
+div > div.code:hover,
 div > span.code:hover,
 li > span:hover{
 	background-color: yellow;
