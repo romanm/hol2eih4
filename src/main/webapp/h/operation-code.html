@@ -81,19 +81,18 @@ var viewTab = "editOperation";
 			</div>
 		</div>
 		<div class="row">
+			<div class="col-md-12">
+				Кількість Операцій: {{ix.operationHistoryList.length}} | <a
+					ng-click="addOperation()"> Додати операцію </a> <span
+					ng-bind="OperationSaveTimerMessage"></span> | <span></span>
+			</div>
+		</div>
+		<div class="row">
 			<div class="col-md-6">
 			<!-- 
 				<h2>Перегляд</h2>
 			 -->
 				<div>
-					Кількість Операцій: {{ix.operationHistoryList.length}} 
-					|
-					<a ng-click="addOperation()">
-					Додати операцію
-					</a>
-					<span ng-bind="OperationSaveTimerMessage" ></span>
-					|
-					<span></span>
 					<hr/>
 					<div ng-repeat="operation in ix.operationHistoryList"
 						ng-click="useOperation(operation)">

@@ -2,16 +2,12 @@
 var initController = function($scope, $http, $filter){
 	console.log("initController");
 	$scope.param = parameters;
-	console.log($scope.param);
 	$scope.inputType = "text";
 	$scope.isRoleRuh = false;
-	console.log($scope.inputType);
 //	initDocCookie($scope);
 	
 	var isRole = function(role){
 		angular.forEach($scope.moveTodayPatients.principal.authorities, function(authoritie, key) {
-			console.log(authoritie);
-			console.log(authoritie.authority);
 			if(authoritie.authority.indexOf(role) >= 0){
 				$scope.isRoleRuh = true;
 			}
@@ -28,14 +24,11 @@ var initController = function($scope, $http, $filter){
 		if(parameters.date){
 			var url = "/readMove-"+parameters.date+"-Patients"
 		}
-		console.log(url);
 		$http({ method : 'GET', url : url
 		}).success(function(data, status, headers, config) {
 			$scope.moveTodayPatients = data;
-			console.log(data);
 			initDateVariables();
 			isRole("ruh");
-			console.log($scope.isRoleRuh);
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
@@ -84,9 +77,7 @@ var initController = function($scope, $http, $filter){
 	}else{
 		$scope.paramDate = $filter('date')(new Date(), "yyyy-MM-dd");
 	}
-	console.log("------------------");
 	$scope.paramDateDate = new Date(Date.parse($scope.paramDate));
-	console.log($scope.paramDateDate);
 	$scope.addDay = function(date, day){
 		var dateOffset = (24*60*60*1000) * day; //5 days
 		var myDate = new Date();
@@ -124,7 +115,6 @@ var initCtrl = function($scope, $http){
 				});
 			});
 		}
-		console.log($scope.showTablesColumns);
 	}).error(function(model, status, headers, config) {
 		$scope.error.push(model);
 	});
@@ -134,12 +124,10 @@ var initCtrl = function($scope, $http){
 	$http({ method : 'GET', url : "/v/readAuthorityUser"
 	}).success(function(model, status, headers, config) {
 		$scope.model.authority = model;
-		console.log($scope.model);
 		if($scope.model.authority.departmentId){
 			$http({ method : 'GET', url : "/v/department-patient/"+$scope.model.authority.departmentId
 			}).success(function(model, status, headers, config) {
 				$scope.model.departmentPatient = model;
-				console.log($scope.model);
 			}).error(function(model, status, headers, config) {
 				$scope.error.push(model);
 			});
@@ -153,9 +141,6 @@ var initCtrl = function($scope, $http){
 			$http({ method : 'GET', url : "/v/operation/start-lists"
 			}).success(function(model, status, headers, config) {
 				$scope.model.operationEditLists = model;
-				console.log("operationEditLists");
-				console.log($scope.model.authority);
-//				if($scope.model.operationEditLists.principal != null){
 				if($scope.model.operationEditLists.principal){
 					for (var i = 0; i < $scope.model.operationEditLists.departmentOperation.length; i++) {
 						if( $scope.model.operationEditLists.departmentOperation[i].department_id == $scope.model.authority.departmentId ){
@@ -169,7 +154,6 @@ var initCtrl = function($scope, $http){
 						}
 					}
 				}
-				console.log($scope.model.authority);
 
 			}).error(function(model, status, headers, config) {
 				$scope.error.push(model);
@@ -181,7 +165,6 @@ var initCtrl = function($scope, $http){
 		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix+window.location.search
 		}).success(function(model, status, headers, config) {
 			$scope.ix = model;
-			console.log($scope.ix);
 		}).error(function(model, status, headers, config) {
 			$scope.error.push(model);
 		});
@@ -201,7 +184,7 @@ hol2eih3App.controller('IxCtrl', function ($scope, $http, $filter, $sce, $interv
 hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce', '$interval'
 		, function ($scope, $http, $filter, $sce, $interval) {
 	console.log("OperationCodeCtrl");
-	$scope.fieldsOperationNotNull = ["procedure_id","icd_id","anestesia_id"];
+	$scope.fieldsOperationNotNull = ["procedure_id","icd_id","anestesia_id","operation_result_id"];
 	$scope.fieldsOperation = {
 		operation : "Операція"
 		,icd : "Діагноз при операції"
@@ -257,8 +240,17 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		stopwatch.setHours(stopwatch.getHours() - stopwatch.getTimezoneOffset()/60);
 
 		$scope.OperationSaveTimer = $interval(function () {
+			$scope.myFieldsOperationNotNull = [];
+			$scope.OperationSaveTimerMessage = "" ;
+			for (var i = 0; i < $scope.fieldsOperationNotNull.length; i++){
+				if($scope.operationHistoryToEdit[$scope.fieldsOperationNotNull[i]] == null){
+					$scope.myFieldsOperationNotNull.push($scope.fieldsOperationNotNull[i]);
+				}
+			}
+			if($scope.myFieldsOperationNotNull.length > 0)
+				$scope.OperationSaveTimerMessage += "Залишилось заповнити " + $scope.myFieldsOperationNotNull.length + " невідмінних поля. ";
 			var time = $filter('date')(new Date() - stopwatch, 'HH:mm:ss');
-			$scope.OperationSaveTimerMessage = "Витрачено часу. " + time;
+			$scope.OperationSaveTimerMessage += " Витрачено часу. " + time;
 		}, 2700);
 	};
 	
@@ -397,8 +389,6 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	});
 
 	var setEndOperation = function(valueInMin){
-		console.log($scope.operationHistoryToEdit.operationDurationMin);
-		console.log($scope.operationHistoryToEdit.operation_history_start);
 		var min = valueInMin;
 		var msec = min*60*1000;
 		var hour = (min - min%60)/60;
@@ -408,13 +398,10 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.operationHistoryToEdit.durationHHMM = hourStr+":"+minStr; 
 		$scope.operationHistoryToEdit.operation_history_end = 
 		$scope.operationHistoryToEdit.operation_history_start + msec;
-		console.log($scope.operationHistoryToEdit.operation_history_end);
 	}
 	$scope.$watch("operationHistoryToEdit.operationHistoryStart", function handleChange( newValue, oldValue ) {
 		if($scope.operationHistoryToEdit != null)
 			if($scope.operationHistoryToEdit.operation_history_start != null){
-				console.log($scope.operationHistoryToEdit.operationHistoryStart);
-				console.log($scope.operationHistoryToEdit.operation_history_start);
 				$scope.operationHistoryToEdit.operation_history_start = $scope.operationHistoryToEdit.operationHistoryStart.getTime();
 				setEndOperation($scope.operationHistoryToEdit.operationDurationMin);
 			}
