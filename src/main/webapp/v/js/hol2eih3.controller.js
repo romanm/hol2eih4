@@ -208,6 +208,13 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.operationHistoryToEdit.anestesia_id = newValue.anestesia_id;
 		$scope.operationHistoryToEdit.anestesia_name = newValue.anestesia_name;
 	}
+	$scope.changeComplication = function(newValue){
+		console.log("-----------");
+		$scope.openedToEdit = "complication";
+		$scope.operationHistoryToEdit.operation_complication_id = newValue.operation_complication_result_id;
+		$scope.operationHistoryToEdit.operation_complication_name = newValue.operation_complication_name;
+		console.log($scope.operationHistoryToEdit);
+	}
 	$scope.changeResult = function(newValue){
 		$scope.operationHistoryToEdit.operation_result_id = newValue.result_id;
 		$scope.operationHistoryToEdit.operation_result_name = newValue.result_name;
@@ -226,8 +233,9 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		console.log("----------------");
 		//перевірка на наявність відкритої і не збереженої операції
 		for (var i = 0; i < $scope.ix.operationHistoryList.length; i++)
-			if(!$scope.ix.operationHistoryList[i].opeation_history_id)
+			if(!$scope.ix.operationHistoryList[i].operation_history_id)
 				return;
+		console.log("----------------");
 		var newOperationHistory = {};
 		$scope.ix.operationHistoryList.push(newOperationHistory);
 		//створити запис операції з інформації про колонки таблиці operation_history
@@ -289,10 +297,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		console.log($scope.procedureViewType);
 	}
 	var openProcedureTreeTo = function (code, level, procedureList){
-		console.log(code+"/"+level);
-		console.log(procedureList);
 		angular.forEach(procedureList, function(procedure) {
-//			console.log(procedure.procedure_code+"/"+code.substring(0,level)+"/"+(procedure.procedure_code == code.substring(0,level)));
 			if(procedure.procedure_code == code.substring(0,level)){
 				$scope.openChild(procedure);
 				if(procedure.procedure == null){
@@ -317,7 +322,12 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 	
 	//------procedure------Operation-----------END
-	
+	$scope.toSaveIcd = function (icd){
+		$scope.icdToSave = icd;
+		$scope.operationHistoryToEdit.icd_id = icd.icd_id;
+		$scope.operationHistoryToEdit.icd_code = icd.icd_code;
+		$scope.operationHistoryToEdit.icd_name = icd.icd_name;
+	}
 	$scope.toSaveProcedure = function (procedure){
 		$scope.procedureToSave = procedure;
 		console.log($scope.procedureToSave);

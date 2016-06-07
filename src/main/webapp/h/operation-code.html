@@ -182,26 +182,33 @@ var viewTab = "editOperation";
 								</span> {{operation.anestesia_name}}
 							</div>
 							<div>
-								<span class="tooltip2">
-								<a ng-class="{'selected-to-save': openedToEdit == 'result'}"
-									ng-click="openToEdit('result')">{{fieldsOperation['result']}}</a>: 
+								<span class="tooltip2"> <a
+									ng-class="{'selected-to-save': openedToEdit == 'result'}"
+									ng-click="openToEdit('result')">{{fieldsOperation['result']}}</a>:
 									<div class="tooltiptext3">
-										<div
-											ng-repeat="result in model.operationEditLists.result">
-											<a ng-click="changeResult(result)"
-												title="{{result.cnt}}">
+										<div ng-repeat="result in model.operationEditLists.result">
+											<a ng-click="changeResult(result)" title="{{result.cnt}}">
 												{{result.result_name}} </a>
 										</div>
 									</div>
-								</span>
-								<span class="alert-danger" ng-if="!operation.operation_result_id">
-									<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+								</span> <span class="alert-danger"
+									ng-if="!operation.operation_result_id"> <i
+									class="fa fa-exclamation-circle" aria-hidden="true"></i>
 									Невідмінно
-								</span>
-								{{operation.operation_result_name}}, <a
+								</span> {{operation.operation_result_name}}, <span class="tooltip2">
+									<a
 									ng-class="{'selected-to-save': openedToEdit == 'complication'}"
-									ng-click="openToEdit('complication')">{{fieldsOperation['complication']}}</a>
-								: {{operation.operation_complication_name}}
+									ng-click="openToEdit('complication')">{{fieldsOperation['complication']}}</a>:
+									<div class="tooltiptext3">
+										<div
+											ng-repeat="value in model.operationEditLists.complicationDepartment">
+											<a ng-click="changeComplication(value)" title="{{value.cnt}}">
+												{{value.operation_complication_name}} </a>
+										</div>
+									</div>
+								</span> {{operation.operation_complication_name}}<span
+									ng-if="operation.operation_complication_name">. </span>
+								{{operation.operation_history_complication}}
 							</div>
 						</div>
 						<hr />
@@ -212,6 +219,26 @@ var viewTab = "editOperation";
 				<h2>
 					Редагування <small ng-if="openedToEdit" class="selected-to-save">{{fieldsOperation[openedToEdit]}}</small>
 				</h2>
+				<div ng-if="openedToEdit == 'complication'">
+				<table class="column">
+					<tr>
+						<th><i class="fa fa-search" aria-hidden="true"></i>Пошук:</th>
+						<th>Додатково:</th>
+					</tr>
+					<tr>
+						<td><input ng-model="operationCodeCtrl.seekComplication" /><br/>
+						</td>
+						<td><textarea rows="2" cols="40"
+									ng-model="operationHistoryToEdit.operation_history_complication"></textarea></td>
+					</tr>
+				</table>
+					<div class="scroll-large">
+						<div ng-repeat="value in model.operationEditLists.complication | filter: operationCodeCtrl.seekComplication">
+							<a ng-click="changeComplication(value)" href="#">
+								{{value.operation_complication_name}} </a>
+						</div>
+					</div>
+				</div>
 				<div ng-if="openedToEdit == 'operation'">
 					<div ng-if="procedureToSave.PROCEDURE_ID>0">
 						<span class="selected-to-save"> <b>
@@ -262,9 +289,6 @@ var viewTab = "editOperation";
 								</div>
 							</div>
 						</div>
-						<!-- 
-					<div ng-if="operationCodeCtrl.seekOperation == null || operationCodeCtrl.seekOperation.length == 0 || seekProcedure.seekProcedure.length >= 200">
-					 -->
 						<div
 							ng-if="procedureViewType == 'navigation' || operationCodeCtrl.seekOperation == null || operationCodeCtrl.seekOperation.length == 0">
 							<ul class="code-item">
@@ -312,7 +336,6 @@ var viewTab = "editOperation";
 									</ul></li>
 							</ul>
 						</div>
-
 					</div>
 				</div>
 				<div ng-if="openedToEdit == 'icd'">
@@ -322,14 +345,22 @@ var viewTab = "editOperation";
 						<th>Додатково:</th>
 					</tr>
 					<tr>
-						<td><input ng-model="operationCodeCtrl.seekIcd" /></td>
+						<td><input ng-model="operationCodeCtrl.seekIcd" /><br/>
+						{{seekIcd.result.length}}
+						</td>
 						<td><textarea rows="2" cols="40"
 									ng-model="operationHistoryToEdit.icd_additional"></textarea></td>
 					</tr>
 				</table>
-
+					<div class="scroll-large">
+						<div class="code-item" ng-repeat="icd in seekIcd.result">
+						<a ng-click="toSaveIcd(icd)" href="#">
+							<b> {{icd.icd_code}} </b> {{icd.icd_name}}
+						</a>
+						</div>
+					</div>
 				</div>
-				<div >
+				<div>
 				{{openedToEdit}}
 				</div>
 			</div>

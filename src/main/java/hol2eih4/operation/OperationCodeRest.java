@@ -31,6 +31,8 @@ public class OperationCodeRest extends IxBasicRest{
 		@Value("${sql.hol1.department.anesthetist}") private String sqlHol1DepartmentAnesthetist;
 		@Value("${sql.hol1.anesthesia}") private String sqlHol1Anestesia;
 		@Value("${sql.hol1.result}") private String sqlHol1Result;
+		@Value("${sql.hol1.complication}") private String sqlHol1Complication;
+		@Value("${sql.hol1.complication.department}") private String sqlHol1ComplicationDepartment;
 		@RequestMapping(value = "/v/operation/start-lists", method = RequestMethod.GET)
 		public  @ResponseBody Map<String, Object> readOperationStarLists(Principal principal) {
 			logger.info("\n ------------------------- Start /v/operation/start-lists");
@@ -51,9 +53,20 @@ public class OperationCodeRest extends IxBasicRest{
 				List<Map<String, Object>> anesthesia 
 				= hol1EihJdbcTemplate.queryForList(sqlHol1Anestesia);
 				model.put("anesthesia", anesthesia);
+				
 				List<Map<String, Object>> result 
 				= hol1EihJdbcTemplate.queryForList(sqlHol1Result);
 				model.put("result", result);
+				
+				List<Map<String, Object>> complication 
+				= hol1EihJdbcTemplate.queryForList(sqlHol1Complication);
+				model.put("complication", complication);
+				
+				List<Map<String, Object>> complicationDepartment 
+				= hol1EihParamJdbcTemplate.queryForList(sqlHol1ComplicationDepartment, 
+						new MapSqlParameterSource("departmentId",  departmentId ));
+				model.put("complicationDepartment", complicationDepartment);
+				
 				List<Map<String, Object>> departmentOperation 
 				= hol1EihJdbcTemplate.queryForList(sqlHol1DepartmentOperation);
 				model.put("departmentOperation", departmentOperation);

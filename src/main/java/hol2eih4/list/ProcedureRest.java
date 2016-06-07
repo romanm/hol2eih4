@@ -83,11 +83,11 @@ public class ProcedureRest {
 		System.out.println();
 		System.out.println(sqlHol1IcdSeek);
 		System.out.println();
-		List<Map<String, Object>> seekProcedure 
+		List<Map<String, Object>> result 
 			= hol1EihParamJdbcTemplate.queryForList(sqlHol1IcdSeek, new MapSqlParameterSource("likeText", "%"
 				+ seekTextWithPunkt
 				+ "%"));
-		map.put("seekProcedure", seekProcedure);
+		map.put("result", result);
 		return map;
 	}
 
