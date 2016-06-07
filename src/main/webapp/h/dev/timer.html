@@ -1,0 +1,38 @@
+<html>
+<head>
+<title></title>
+</head>
+<body>
+	<script src="/v/lib/js/angular.min.js"></script>
+	<script type="text/javascript">
+        var app = angular.module('MyApp', [])
+        app.controller('MyController', function ($scope, $interval, $filter) {
+            $scope.OperationSaveTimer = null;
+            $scope.StartOperationSaveTimer = function () {
+                $scope.OperationSaveTimerMessage = "OperationSaveTimer started. ";
+                var stopwatch = new Date();
+                stopwatch.setHours(stopwatch.getHours() - stopwatch.getTimezoneOffset()/60);
+ 
+                $scope.OperationSaveTimer = $interval(function () {
+                    var time = $filter('date')(new Date() - stopwatch, 'HH:mm:ss');
+                    console.log(time);
+                    $scope.OperationSaveTimerMessage = "OperationSaveTimer Ticked. " + time;
+                }, 1000);
+            };
+ 
+            $scope.StopOperationSaveTimer = function () {
+                $scope.OperationSaveTimerMessage = "Timer stopped.";
+                if (angular.isDefined($scope.OperationSaveTimer)) {
+                    $interval.cancel($scope.OperationSaveTimer);
+                }
+            };
+        });
+    </script>
+	<div ng-app="MyApp" ng-controller="MyController">
+		<div ng-bind="OperationSaveTimerMessage"></div>
+		<br /> <input type="button" value="Start Timer"
+			ng-click="StartOperationSaveTimer()" /> <input type="button" value="Stop Timer"
+			ng-click="StopOperationSaveTimer()" />
+	</div>
+</body>
+</html>

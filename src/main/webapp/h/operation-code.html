@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
+<link rel="stylesheet" href="/v/lib/css/bootstrap-datepicker3.min.css"></link>
 <link rel='stylesheet prefetch' href='/v/lib/css/font-awesome.min.css' />
 <link rel="stylesheet" href="/v/css/ui.css"></link>
 <link rel="stylesheet" href="/v/css/hol2eih3.css"></link>
@@ -11,6 +12,7 @@
 <script type="text/javascript">
 var viewTab = "editOperation";
 </script>
+<link href="/v/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 <title>Кодування хірургічних (оперативних) втручаннь.</title>
 </head>
 <body>
@@ -35,9 +37,7 @@ var viewTab = "editOperation";
 						</div>
 					</div>
 				</li>
-				<li>|
-				{{model.principal.name}}
-				</li>
+				<li>| {{model.authority.principal.name}}</li>
 				<li data-ng-if="!model.principal"><span
 					class="glyphicon glyphicon-log-in"></span> 
 					<a href="{{loginToThisPage()}}"> Ввійти </a></li>
@@ -77,7 +77,6 @@ var viewTab = "editOperation";
 						title="Кодування хірургічних (оперативних) втручаннь."
 						href="/h/operation-code.html{{param.ix?'?ix='+param.ix:''}}">Кодування
 							операція </a></li>
-					<li><a> {{param.ix}} </a></li>
 				</ul>
 			</div>
 		</div>
@@ -92,12 +91,53 @@ var viewTab = "editOperation";
 					<a ng-click="addOperation()">
 					Додати операцію
 					</a>
+					<span ng-bind="OperationSaveTimerMessage" ></span>
+					|
+					<span></span>
 					<hr/>
 					<div ng-repeat="operation in ix.operationHistoryList"
 						ng-click="useOperation(operation)">
-						<div>{{operation.operation_history_start | date:'dd.MM.yyyy, HH:mm'}} 
-						{{operation.operation_history_end | date:' - HH:mm'}}
-							({{calcOperationDurationHHmm(operation)}})</div>
+						<table>
+						<tr>
+							<td colspan="4"><a ng-class="{'selected-to-save': openedToEdit == 'beginOp'}"
+								ng-click="openToEdit('beginOp')">{{fieldsOperation['beginOp']}}</a></td>
+						</tr>
+						<tr>
+							<td>
+							
+								<!-- 
+							<input type="text"
+								class="form-control" uib-datepicker-popup="dd.MM.yy HH:mm"
+								ng-model="operation.operation_history_start" />
+								 -->
+								</td>
+								<td></td>
+								<td></td>
+							<td>  {{operation.operation_history_start | date:'dd-MMM-yyyy, HH:mm'}} 
+							{{operation.operation_history_end | date:' - HH:mm'}} ({{operation.durationHHMM}})
+							</td>
+						</tr>
+						</table>
+						
+						<div>
+							
+						</div>
+						<div>
+								<span class="tooltip2"> <a
+									ng-class="{'selected-to-save': openedToEdit == 'surgery'}"
+									ng-click="openToEdit('surgery')">{{fieldsOperation['surgery']}}</a>:
+									<div class="tooltiptext3">
+										<div
+											ng-repeat="surgery in model.operationEditLists.departmentSurgery">
+											<a ng-click="changeSurgery(surgery)" title="{{surgery.cnt}}">
+												{{surgery.personal_username}} </a>
+										</div>
+									</div>
+								</span> <span class="alert-danger" ng-if="!operation.personal_id">
+									<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+									Невідмінно
+								</span> {{operation.surgery_name}}
+							</div>
 						<div>
 							<a ng-class="{'selected-to-save': openedToEdit == 'operation'}"
 								ng-click="editOperation()">{{fieldsOperation['operation']}}</a>:
@@ -122,35 +162,25 @@ var viewTab = "editOperation";
 							</span> <b> {{operation.icd_code}} </b> {{operation.icd_name}}
 							<div>{{operation.icd_additional}}</div>
 							<div>
-							<span class="tooltip2"> 
-								<a ng-class="{'selected-to-save': openedToEdit == 'department'}"
+								<span class="tooltip2"> <a
+									ng-class="{'selected-to-save': openedToEdit == 'department'}"
 									ng-click="openToEdit('department')">{{fieldsOperation['department']}}</a>:
 									<div class="tooltiptext3">
-										<div ng-repeat="value in model.operationEditLists.departmentOperation">
-											<a ng-click="changeDepartment(value)"
-												title="{{surgery.cnt}}">
+										<div
+											ng-repeat="value in model.operationEditLists.departmentOperation">
+											<div
+												ng-if="value.department_profile_id == 1 
+											&& model.operationEditLists.departmentOperation[$index - 1].department_profile_id == 2">
+												<b> Терапевтичні</b>
+											</div>
+											<a ng-click="changeDepartment(value)" title="{{surgery.cnt}}">
 												{{value.department_name}} </a>
 										</div>
 									</div>
-								</span>
-								<span class="alert-danger" ng-if="!operation.department_id">
+								</span> <span class="alert-danger" ng-if="!operation.department_id">
 									<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
 									Невідмінно
-								</span> {{operation.department_name}}, <span class="tooltip2"> <a
-									ng-class="{'selected-to-save': openedToEdit == 'surgery'}"
-									ng-click="openToEdit('surgery')">{{fieldsOperation['surgery']}}</a>:
-									<div class="tooltiptext3">
-										<div ng-repeat="surgery in model.operationEditLists.departmentSurgery">
-											<a ng-click="changeSurgery(surgery)"
-												title="{{surgery.cnt}}">
-												{{surgery.personal_username}} </a>
-										</div>
-									</div>
-								</span> <span class="alert-danger" ng-if="!operation.personal_id">
-									<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-									Невідмінно
-								</span>
-								 {{operation.surgery_name}}
+								</span> {{operation.department_name}},
 							</div>
 							<div>
 								<span class="tooltip2"> <a
@@ -219,6 +249,86 @@ var viewTab = "editOperation";
 				<h2>
 					Редагування <small ng-if="openedToEdit" class="selected-to-save">{{fieldsOperation[openedToEdit]}}</small>
 				</h2>
+				<div ng-if="openedToEdit == 'beginOp'">
+					<div class="selected-to-save">{{operationHistoryToEdit.operation_history_start | date:'dd-MMM-yyyy,
+						HH:mm'}} {{operationHistoryToEdit.operation_history_end | date:' - HH:mm'}}
+						({{operationHistoryToEdit.durationHHMM}})</div>
+					<div>
+						<label for="intNumber">Тривалість операцій --
+							{{operationHistoryToEdit.durationHHMM}} </label>
+						<table width="100%">
+							<tr>
+								<td>0</td>
+								<td>1</td>
+								<td>2</td>
+								<td>3</td>
+								<td>4</td>
+								<td>5</td>
+								<td>6</td>
+								<td>7</td>
+							</tr>
+						</table>
+						<input id="intNumber"
+							data-ng-model="operationHistoryToEdit.operationDurationMin"
+							type="range" step="5" min="0" max="480" />
+					</div>
+
+					<table class="column">
+						<tr>
+							<th>Дата - початку операції</th>
+							<th>години:хвилини</th>
+						</tr>
+						<tr>
+							<td><uib-datepicker
+									data-ng-model="operationHistoryToEdit.operationHistoryStart"
+									data-date-format="dd MM yyyy - HH:mm" show-weeks="true"
+									class="well well-sm"></uib-datepicker></td>
+							<td><uib-timepicker
+									ng-model="operationHistoryToEdit.operationHistoryStart"
+									hour-step="1" minute-step="5" show-meridian="false"></uib-timepicker></td>
+						</tr>
+					</table>
+				</div>
+				<div ng-if="openedToEdit == 'surgery'">
+					<table class="column">
+						<tr>
+							<th><i class="fa fa-search" aria-hidden="true"></i>Пошук:</th>
+							<th></th>
+						</tr>
+						<tr>
+							<td><input ng-model="operationCodeCtrl.seekSurgery" /><br />
+							</td>
+							<td></td>
+						</tr>
+					</table>
+					<div class="scroll-large">
+						<div
+							ng-repeat="value in model.operationEditLists.surgery | filter: operationCodeCtrl.seekSurgery">
+							<a ng-click="changeSurgery(value)" href="#">
+								{{value.name}} </a>
+						</div>
+					</div>
+				</div>
+				<div ng-if="openedToEdit == 'anesthetist'">
+					<table class="column">
+						<tr>
+							<th><i class="fa fa-search" aria-hidden="true"></i>Пошук:</th>
+							<th></th>
+						</tr>
+						<tr>
+							<td><input ng-model="operationCodeCtrl.seekAnesthetist" /><br />
+							</td>
+							<td></td>
+						</tr>
+					</table>
+					<div class="scroll-large">
+						<div
+							ng-repeat="value in model.operationEditLists.anesthetist | filter: operationCodeCtrl.seekAnesthetist">
+							<a ng-click="changeAnesthetist(value)" href="#">
+								{{value.name}} </a>
+						</div>
+					</div>
+				</div>
 				<div ng-if="openedToEdit == 'complication'">
 				<table class="column">
 					<tr>
@@ -373,7 +483,7 @@ var viewTab = "editOperation";
 				&nbsp; </span>
 			<ol class="list-inline navbar-right">
 				<li>|
-				{{model.principal.name}}
+				{{model.authority.principal.name}}
 				</li>
 				<li data-ng-if="!model.principal"><span
 					class="glyphicon glyphicon-log-in"></span>
@@ -389,6 +499,8 @@ var viewTab = "editOperation";
 <script src="/v/lib/js/bootstrap.min.js"></script>
 <script src="/v/lib/js/angular.min.js"></script>
 <script src="/v/lib/js/angular-locale_uk.js"></script>
+<script src="/v/lib/js/ui-bootstrap-tpls-1.3.3.min.js"></script>
+<script src="/v/lib/js/bootstrap-datepicker.min.js"></script>
 <script src='/v/lib/js/textAngular.min.js'></script>
 <script src='/v/lib/js/textAngular-sanitize.min.js'></script>
 <script src='/v/lib/js/textAngular-rangy.min.js'></script>

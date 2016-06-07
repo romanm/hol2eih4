@@ -27,8 +27,10 @@ public class OperationCodeRest extends IxBasicRest{
 		@Autowired JdbcTemplate hol1EihJdbcTemplate;
 
 		@Value("${sql.hol1.department.operation}") private String sqlHol1DepartmentOperation;
-		@Value("${sql.hol1.department.surgery}") private String sqlHol1DepartmentSurgery;
-		@Value("${sql.hol1.department.anesthetist}") private String sqlHol1DepartmentAnesthetist;
+		@Value("${sql.hol1.surgery}") private String sqlHol1Surgery;
+		@Value("${sql.hol1.surgery.department}") private String sqlHol1DepartmentSurgery;
+		@Value("${sql.hol1.anesthetist}") private String sqlHol1Anesthetist;
+		@Value("${sql.hol1.anesthetist.department}") private String sqlHol1DepartmentAnesthetist;
 		@Value("${sql.hol1.anesthesia}") private String sqlHol1Anestesia;
 		@Value("${sql.hol1.result}") private String sqlHol1Result;
 		@Value("${sql.hol1.complication}") private String sqlHol1Complication;
@@ -42,14 +44,25 @@ public class OperationCodeRest extends IxBasicRest{
 				useAuthorityRole(principal, model);
 				System.out.println(model);
 				Integer departmentId = (Integer) model.get("departmentId");
+				
 				List<Map<String, Object>> departmentSurgery 
 				= hol1EihParamJdbcTemplate.queryForList(sqlHol1DepartmentSurgery, 
 					new MapSqlParameterSource("departmentId",  departmentId ));
 				model.put("departmentSurgery", departmentSurgery);
+				
+				List<Map<String, Object>> surgery 
+				= hol1EihJdbcTemplate.queryForList(sqlHol1Surgery);
+				model.put("surgery", surgery);
+				
 				List<Map<String, Object>> departmentAnesthetist 
 				= hol1EihParamJdbcTemplate.queryForList(sqlHol1DepartmentAnesthetist, 
 						new MapSqlParameterSource("departmentId",  departmentId ));
 				model.put("departmentAnesthetist", departmentAnesthetist);
+				
+				List<Map<String, Object>> anesthetist 
+				= hol1EihJdbcTemplate.queryForList(sqlHol1Anesthetist);
+				model.put("anesthetist", anesthetist);
+				
 				List<Map<String, Object>> anesthesia 
 				= hol1EihJdbcTemplate.queryForList(sqlHol1Anestesia);
 				model.put("anesthesia", anesthesia);

@@ -113,15 +113,17 @@ var initCtrl = function($scope, $http){
 	$http({ method : 'GET', url : "/v/show-tables-columns"
 	}).success(function(model, status, headers, config) {
 		$scope.showTablesColumns = model;
-		$scope.showTablesColumns.notNulls = {};
-		angular.forEach($scope.showTablesColumns.tables, function(tableColumns, keyTableName) {
-			$scope.showTablesColumns.notNulls[keyTableName] = {};
-			angular.forEach(tableColumns, function(column) {
-				if(column.Null=="NO"){
-					$scope.showTablesColumns.notNulls[keyTableName][column.Field] = column;
-				}
+		if($scope.showTablesColumns.principal != null){
+			$scope.showTablesColumns.notNulls = {};
+			angular.forEach($scope.showTablesColumns.tables, function(tableColumns, keyTableName) {
+				$scope.showTablesColumns.notNulls[keyTableName] = {};
+				angular.forEach(tableColumns, function(column) {
+					if(column.Null=="NO"){
+						$scope.showTablesColumns.notNulls[keyTableName][column.Field] = column;
+					}
+				});
 			});
-		});
+		}
 		console.log($scope.showTablesColumns);
 	}).error(function(model, status, headers, config) {
 		$scope.error.push(model);
@@ -152,7 +154,23 @@ var initCtrl = function($scope, $http){
 			}).success(function(model, status, headers, config) {
 				$scope.model.operationEditLists = model;
 				console.log("operationEditLists");
-				console.log($scope.model.operationEditLists);
+				console.log($scope.model.authority);
+//				if($scope.model.operationEditLists.principal != null){
+				if($scope.model.operationEditLists.principal){
+					for (var i = 0; i < $scope.model.operationEditLists.departmentOperation.length; i++) {
+						if( $scope.model.operationEditLists.departmentOperation[i].department_id == $scope.model.authority.departmentId ){
+							$scope.model.authority.department = $scope.model.operationEditLists.departmentOperation[i];
+						}
+						
+					}
+					for (var i = 0; i < $scope.model.operationEditLists.departmentSurgery.length; i++) {
+						if( $scope.model.operationEditLists.departmentSurgery[i].personal_id == $scope.model.authority.personalId ){
+							$scope.model.authority.personal = $scope.model.operationEditLists.departmentSurgery[i];
+						}
+					}
+				}
+				console.log($scope.model.authority);
+
 			}).error(function(model, status, headers, config) {
 				$scope.error.push(model);
 			});
@@ -180,9 +198,10 @@ hol2eih3App.controller('IxCtrl', function ($scope, $http, $filter, $sce, $interv
 });
 // ------------IxCtrl END
 // ------------OperationCodeCtrl
-hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce'
-		, function ($scope, $http, $filter, $sce) {
+hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce', '$interval'
+		, function ($scope, $http, $filter, $sce, $interval) {
 	console.log("OperationCodeCtrl");
+	$scope.fieldsOperationNotNull = ["procedure_id","icd_id","anestesia_id"];
 	$scope.fieldsOperation = {
 		operation : "Операція"
 		,icd : "Діагноз при операції"
@@ -192,6 +211,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		,anestesia: "Анестезія"
 		,result: "Результат"
 		,complication: "Ускладнення"
+		,beginOp: "Дата/почато - закінчено/тривалість"
 	};
 
 	initCtrl($scope, $http);
@@ -229,8 +249,29 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			$scope.operationHistoryToEdit.surgery_name = newValue.personal_username;
 		}
 	}
+	//-------------OperationSaveTimer-------------------------
+	$scope.OperationSaveTimer = null;
+	$scope.StartOperationSaveTimer = function () {
+		$scope.OperationSaveTimerMessage = "Введення нової операції розпочато. ";
+		var stopwatch = new Date();
+		stopwatch.setHours(stopwatch.getHours() - stopwatch.getTimezoneOffset()/60);
+
+		$scope.OperationSaveTimer = $interval(function () {
+			var time = $filter('date')(new Date() - stopwatch, 'HH:mm:ss');
+			$scope.OperationSaveTimerMessage = "Витрачено часу. " + time;
+		}, 2700);
+	};
+	
+	$scope.StopOperationSaveTimer = function () {
+		$scope.OperationSaveTimerMessage = "Timer stopped.";
+		if (angular.isDefined($scope.OperationSaveTimer)) {
+			$interval.cancel($scope.OperationSaveTimer);
+		}
+	};
+	//-------------OperationSaveTimer-------------------------END
 	$scope.addOperation = function(){
 		console.log("----------------");
+		$scope.openedToEdit = "beginOp";
 		//перевірка на наявність відкритої і не збереженої операції
 		for (var i = 0; i < $scope.ix.operationHistoryList.length; i++)
 			if(!$scope.ix.operationHistoryList[i].operation_history_id)
@@ -242,12 +283,20 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		angular.forEach($scope.showTablesColumns.tables.operation_history, function(oh, key) {
 			newOperationHistory[oh.Field] = null;
 		});
+		$scope.operationHistoryToEdit = newOperationHistory;
 		//додати дату операції як поточна дата
 		var nd = new Date()
-		newOperationHistory.operation_history_start = new Date().getTime();
-		newOperationHistory.operation_history_end = newOperationHistory.operation_history_start + 1000;
-		console.log($scope.ix);
-		$scope.operationHistoryToEdit = newOperationHistory;
+		newOperationHistory.operationHistoryStart = new Date();
+		newOperationHistory.operation_history_start = newOperationHistory.operationHistoryStart.getTime();
+		$scope.operationHistoryToEdit.operationDurationMin = 1;
+		setEndOperation($scope.operationHistoryToEdit.operationDurationMin);
+		console.log($scope.operationHistoryToEdit.operation_history_end);
+		newOperationHistory.personal_id = $scope.model.authority.personal.personal_id;
+		newOperationHistory.surgery_name = $scope.model.authority.personal.personal_username;
+		newOperationHistory.department_id = $scope.model.authority.department.department_id;
+		newOperationHistory.department_name = $scope.model.authority.department.department_name;
+		newOperationHistory.operationDuration = 1;
+		$scope.StartOperationSaveTimer();
 	}
 	
 	$scope.isProcedureGroup = function (code){
@@ -347,6 +396,34 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		}
 	});
 
+	var setEndOperation = function(valueInMin){
+		console.log($scope.operationHistoryToEdit.operationDurationMin);
+		console.log($scope.operationHistoryToEdit.operation_history_start);
+		var min = valueInMin;
+		var msec = min*60*1000;
+		var hour = (min - min%60)/60;
+		var hourStr = (hour<10?"0":"")+hour;
+		var minRest = min - hour*60;
+		var minStr = (minRest<10?"0":"")+minRest;
+		$scope.operationHistoryToEdit.durationHHMM = hourStr+":"+minStr; 
+		$scope.operationHistoryToEdit.operation_history_end = 
+		$scope.operationHistoryToEdit.operation_history_start + msec;
+		console.log($scope.operationHistoryToEdit.operation_history_end);
+	}
+	$scope.$watch("operationHistoryToEdit.operationHistoryStart", function handleChange( newValue, oldValue ) {
+		if($scope.operationHistoryToEdit != null)
+			if($scope.operationHistoryToEdit.operation_history_start != null){
+				console.log($scope.operationHistoryToEdit.operationHistoryStart);
+				console.log($scope.operationHistoryToEdit.operation_history_start);
+				$scope.operationHistoryToEdit.operation_history_start = $scope.operationHistoryToEdit.operationHistoryStart.getTime();
+				setEndOperation($scope.operationHistoryToEdit.operationDurationMin);
+			}
+	});
+	$scope.$watch("operationHistoryToEdit.operationDurationMin", function handleChange( newValue, oldValue ) {
+		if(newValue != null)
+			setEndOperation(newValue);
+	});
+
 	$scope.$watch("operationCodeCtrl.seekIcd", function handleChange( newValue, oldValue ) {
 		if(newValue != null && newValue.length > 0){
 			var seekText = newValue.replace(".","-");
@@ -375,16 +452,6 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.operationHistoryToEdit = operationHistory;
 		console.log($scope.operationHistoryToEdit);
 		console.log($scope.openedToEdit);
-	}
-	$scope.calcOperationDurationHHmm = function(operation){
-		initDurationOp(operation);
-		var free_min = Math.ceil(operation.durationOpMin%60);
-		var h = Math.floor((operation.durationOpMin)/60);
-		operation.durationOpHHmm = "";
-		if(h>0)
-			operation.durationOpHHmm = h+" год. ";
-		operation.durationOpHHmm += free_min+" хв.";
-		return operation.durationOpHHmm;
 	}
 
 	var initDurationOp = function(operation){
