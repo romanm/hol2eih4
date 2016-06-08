@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import hol2eih4.AppConfig;
-
 @Controller
 public class IxRest extends IxBasicRest{
 	private static final Logger logger = LoggerFactory.getLogger(IxRest.class);

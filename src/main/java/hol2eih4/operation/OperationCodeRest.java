@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class OperationCodeRest extends IxBasicRest{
 	private static final Logger logger = LoggerFactory.getLogger(OperationCodeRest.class);
 		@Autowired NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
-		@Autowired JdbcTemplate hol1EihJdbcTemplate;
 		
 		@RequestMapping(value = "/insertOperationHistory", method = RequestMethod.POST)
 		public  @ResponseBody Map<String, Object> insertOperationHistory(@RequestBody Map<String, Object> insertOperationHistory) {
@@ -127,6 +126,9 @@ public class OperationCodeRest extends IxBasicRest{
 			sqlParam.put("historyId", historyId);
 			map.put("sqlParam", sqlParam);
 			map.put("historyMap", hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihHistoryId, sqlParam));
+			logger.info("\n ------------------------- Start /ix/"
+					+ historyId
+					+ "\n"+sqlHol1EihOperationHistoryHistoryId);
 			List<Map<String, Object>> operationHistoryList 
 			= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihOperationHistoryHistoryId, sqlParam);
 			System.out.println(operationHistoryList);

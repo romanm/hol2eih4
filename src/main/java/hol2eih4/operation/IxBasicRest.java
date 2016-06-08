@@ -1,10 +1,14 @@
 package hol2eih4.operation;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.ui.Model;
@@ -14,6 +18,14 @@ import hol2eih4.AppConfig;
 public class IxBasicRest {
 	
 	private static final Logger logger = LoggerFactory.getLogger(IxBasicRest.class);
+	@Autowired JdbcTemplate hol1EihJdbcTemplate;
+	@Value("${sql.hol1.show-table.columns}") private String sqlHol1ShowTableColumns;
+
+	protected List<Map<String, Object>> getTableColumns(String tableName) {
+		List<Map<String, Object>> tableColumns
+		= hol1EihJdbcTemplate.queryForList(sqlHol1ShowTableColumns.replace(":tableName", tableName));
+		return tableColumns;
+	}
 	
 	protected void initModel(Model model) {
 		model.addAttribute("staticUrlPrefix", AppConfig.staticUrlPrefix);

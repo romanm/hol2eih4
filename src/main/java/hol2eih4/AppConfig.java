@@ -5,15 +5,16 @@ import org.joda.time.DateTime;
 
 public class AppConfig {
 	//product server /home/hol2/db-h2
-	final static String applicationFolderPfad	= "/home/hol2/server4/hol2eih4/";
-	final static String applicationExcelFolderPfad	= "/home/hol2/db-h2/excel/";
-	public final static String  staticUrlPrefix = "http://192.168.4.10";
+//	final static String applicationFolderPfad	= "/home/hol2/server4/hol2eih4/";
+//	final static String applicationExcelFolderPfad	= "/home/hol2/db-h2/excel/";
+//	public final static String  staticUrlPrefix = "http://192.168.4.10";
 	//development server /home/roman/algoritmed.com/h2-server
-//	final static String applicationFolderPfad = "/home/roman/dev-20160518/research_2/hol2eih4/";
-//	final static String applicationExcelFolderPfad = "/home/roman/db-java/h2-server/db-hol2-eih-excel/";
-//	public final static String  staticUrlPrefix = "http://127.0.0.1";
+	final static String applicationFolderPfad = "/home/roman/dev-20160518/research_2/hol2eih4/";
+	final static String applicationExcelFolderPfad = "/home/roman/db-java/h2-server/db-hol2-eih-excel/";
+	public final static String staticUrlPrefix = "http://127.0.0.1";
+	
+	
 //	public final static String  staticUrlPrefix = "http://localhost";
-
 	public final static SimpleDateFormat yyyyMMddDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	public final static SimpleDateFormat ddMMyyyDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	public final static SimpleDateFormat yyyyMMddHHmmssDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

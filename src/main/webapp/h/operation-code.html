@@ -160,12 +160,12 @@ var viewTab = "editOperation";
 								<span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
 								<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 								 -->
-							<span class="alert-danger" ng-if="!operation.procedure_id">
+							<span class="alert-danger" ng-if="!operation.procedure_id || operation.procedure_id == 8">
 								<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
 								Невідмінно
 							</span> <span ng-if="operation.procedure_id"> <b>{{operation.procedure_code}}</b>:
 								{{operation.procedure_name}} <br />
-							</span> <strike> <b> {{operation.operation_code}} </b>
+							</span> <strike ng-if="operation.operation_code != 'moz'"> <b> {{operation.operation_code}} </b>
 								{{operation.operation_name}}
 							</strike>
 							<div>{{operation.operation_additional}}</div>
