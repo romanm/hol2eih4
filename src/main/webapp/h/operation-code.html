@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html ng-app="hol2eih3App" ng-controller="OperationCodeCtrl as operationCodeCtrl">
+<html 
+	ng-app="hol2eih3App" ng-controller="OperationCodeCtrl as operationCodeCtrl">
 <head>
 <meta charset="utf-8" />
+<link rel="prefetch" href="http://localhost:8081/"></link>
+<link rel="dns-prefetch" href="http://localhost:8081/"></link>
+
 <link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
 <link rel="stylesheet" href="/v/lib/css/bootstrap-datepicker3.min.css"></link>
 <link rel='stylesheet prefetch' href='/v/lib/css/font-awesome.min.css' />
@@ -24,7 +28,7 @@ var viewTab = "editOperation";
 				<li>
 					<div class="tooltip2">
 						<a href="#"> <i class="fa fa-angle-double-down"
-							aria-hidden="true"></i> список пацієнтів
+							aria-hidden="true"></i> Список пацієнтів
 						</a>
 						<div class="tooltiptext2">
 							<div
@@ -51,20 +55,34 @@ var viewTab = "editOperation";
 		<div class="container">
 			<div class="navbar-header">
 				<span title="Хмельницька обласна лікарня"> <i
-					class="fa fa-home" aria-hidden="true"></i> ХОЛ
-				</span> <span ng-if="ix.historyMap.patient_surname"> <i class="fa fa-angle-double-right"
-					aria-hidden="true"></i>
+					class="fa fa-home" aria-hidden="true"></i> <a href="/"> ХОЛ </a>
+				</span> <span ng-if="param.ix"><i class="fa fa-angle-double-right"
+					aria-hidden="true"></i> <a href="?"> Кодування о-цій </a> </span> <span
+					ng-if="ix.historyMap.patient_surname"> <i
+					class="fa fa-angle-double-right" aria-hidden="true"></i>
 					{{ix.historyMap.history_no}}:<b>
-					{{ix.historyMap.patient_surname}}
-					{{ix.historyMap.patient_name}}
-					{{ix.historyMap.patient_patronnymic}}
-					</b>
+						{{ix.historyMap.patient_surname}} {{ix.historyMap.patient_name}}
+						{{ix.historyMap.patient_patronnymic}} </b>
 				</span>
 			</div>
 		</div>
 	</nav>
 	<div class="container">
-		<div class="row">
+		<h1 ng-if="!param.ix">
+		Кодування операцій
+		</h1>
+		<div class="row" ng-if="!param.ix">
+			<div class="col-md-7"></div>
+			<div class="col-md-5">
+				<h2>Список пацієнтів</h2>
+				<div
+					ng-repeat="patient in model.departmentPatient.departmentPatients">
+					<a href="?ix={{patient.history_id}}" title="{{$index + 1}}">
+						{{patient.history_no}} : {{patient.name}} </a>
+				</div>
+			</div>
+		</div>
+		<div class="row" ng-if="param.ix">
 			<div class="col-md-12">
 			<!-- 
 				<h1>Електронна історія хвороби</h1>
@@ -78,16 +96,14 @@ var viewTab = "editOperation";
 						href="/h/operation-code.html{{param.ix?'?ix='+param.ix:''}}">Кодування
 							операція </a></li>
 				</ul>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
+			<div >
 				Кількість Операцій: {{ix.operationHistoryList.length}} | <a
 					ng-click="addOperation()"> Додати операцію </a> <span
 					ng-bind="OperationSaveTimerMessage"></span> | <span></span>
 			</div>
+			</div>
 		</div>
-		<div class="row">
+		<div class="row" ng-if="param.ix">
 			<div class="col-md-6">
 			<!-- 
 				<h2>Перегляд</h2>
@@ -482,6 +498,7 @@ var viewTab = "editOperation";
 				&nbsp; </span>
 			<ol class="list-inline navbar-right">
 				<li>|
+	{{staticUrlPrefix}}
 				{{model.authority.principal.name}}
 				</li>
 				<li data-ng-if="!model.principal"><span

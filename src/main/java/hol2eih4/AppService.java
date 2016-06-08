@@ -558,6 +558,7 @@ Types.INTEGER
 					System.out.println("-----------------------");
 				}else{
 					final List<String> sqls = (List<String>) map.get("sqls");
+					if(sqls != null)
 					for (String sql : sqls) {
 						if(sql.indexOf("sql_update")>0){
 							System.out.println(sql);

@@ -7,10 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.ui.Model;
+
+import hol2eih4.AppConfig;
 
 public class IxBasicRest {
 	
 	private static final Logger logger = LoggerFactory.getLogger(IxBasicRest.class);
+	
+	protected void initModel(Model model) {
+		model.addAttribute("staticUrlPrefix", AppConfig.staticUrlPrefix);
+	}
 	
 	void useAuthorityRole(Principal principal, Map<String, Object> model) {
 		for (GrantedAuthority grantedAuthority : ((Authentication) principal).getAuthorities()) {

@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +26,21 @@ public class OperationCodeRest extends IxBasicRest{
 	private static final Logger logger = LoggerFactory.getLogger(OperationCodeRest.class);
 		@Autowired NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 		@Autowired JdbcTemplate hol1EihJdbcTemplate;
+		
+		@RequestMapping(value = "/insertOperationHistory", method = RequestMethod.POST)
+		public  @ResponseBody Map<String, Object> insertOperationHistory(@RequestBody Map<String, Object> insertOperationHistory) {
+			logger.info("\n ------------------------- Start "
+					+ "insertOperationHistory"
+					);
+			System.out.println(insertOperationHistory);
+			/*
+			fileService.saveJsonToFile(commonContentJavaObject,propertiConfig.fileCommonContent);
+			logger.debug("2");
+			fileService.backup(propertiConfig.fileCommonContent);
+			logger.debug("3");
+			 * */
+			return insertOperationHistory;
+		}
 
 		@Value("${sql.hol1.department.operation}") private String sqlHol1DepartmentOperation;
 		@Value("${sql.hol1.surgery}") private String sqlHol1Surgery;

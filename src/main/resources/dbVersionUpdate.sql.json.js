@@ -1360,6 +1360,17 @@
 ]},{"dbVersionId" : 32, "mysqls" : [
 "ALTER TABLE procedure_moz ADD COLUMN procedure_parent_name varchar(150)"
 ,"UPDATE procedure_moz p left join procedure_moz pp on pp.procedure_id=p.procedure_parent_id SET p.procedure_parent_name = pp.procedure_name WHERE LENGTH(p.procedure_code)- LENGTH(REPLACE(p.procedure_code,'.',''))=2"
+,"2016-06-09"
+,"ALTER TABLE operation_history ADD COLUMN procedure_id int"
+,"UPDATE operation_history SET procedure_id=8"
+,"ALTER TABLE operation_history ALTER COLUMN procedure_id SET DEFAULT 8"
+,"ALTER TABLE operation_history ADD CONSTRAINT procedure_id FOREIGN KEY (procedure_id) REFERENCES procedure_moz(procedure_id)"
+,"ALTER TABLE operation_history MODIFY procedure_id INT NOT NULL"
+,"INSERT INTO operation (operation_subgroup_id, operation_code, operation_name) VALUES (1,'moz','Перехід до МОЗ ДБ')"
+,"ALTER TABLE operation_history ALTER COLUMN operation_id SET DEFAULT 1079;"
+,"ALTER TABLE operation_history ALTER COLUMN operation_subgroup_id SET DEFAULT 1;"
+,"ALTER TABLE operation_history ALTER COLUMN operation_group_id SET DEFAULT 1;"
+,""
 ]},{"dbVersionId" : 33, "sqls" : [
 "ALTER TABLE  list.procedure ADD COLUMN IF NOT EXISTS procedure_parent_name varchar(150)"
 ,"UPDATE list.procedure p SET (p.procedure_parent_name ) = (SELECT procedure_name FROM list.procedure pp WHERE pp.procedure_id=p.procedure_parent_id) WHERE LENGTH(p.procedure_code)- LENGTH(REPLACE(p.procedure_code,'.',''))=2"

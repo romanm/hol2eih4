@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import hol2eih4.AppConfig;
 
 @Controller
 public class IxRest extends IxBasicRest{
@@ -39,6 +39,7 @@ public class IxRest extends IxBasicRest{
 	@RequestMapping("/v/eix")
 	public String ixStaart(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
 		logger.info("\n ------------------------- Start /v/eix/"+name);
+		initModel(model);
 		model.addAttribute("name", name);
 		System.out.println(model);
 		return "ix";
@@ -46,11 +47,19 @@ public class IxRest extends IxBasicRest{
 	@RequestMapping("/v/eix/{id}")
 	public String ixWithId(@PathVariable Integer id, Model model) {
 		logger.info("\n ------------------------- Start /v/eix/"+id);
-		model.addAttribute("name", "xyz");
+		initModel(model);
 		model.addAttribute("ix", id);
 		System.out.println(model);
 		return "ix";
 	}
+	@RequestMapping("/")
+	public String home(Model model) {
+		logger.info("\n ------------------------- Start /");
+		initModel(model);
+		System.out.println(model);
+		return "home";
+	}
+
 	private String addQueryString(HttpServletRequest request, String redirectUrl) {
 		if(request.getQueryString()!=null)
 			if(request.getQueryString().length()>0)
