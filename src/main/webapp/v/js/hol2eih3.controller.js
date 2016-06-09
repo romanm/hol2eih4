@@ -200,6 +200,14 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	
 	$scope.openToEdit = function(fieldName){
 		$scope.openedToEdit = fieldName;
+		if($scope.openedToEdit = 'icd'){
+			if($scope.operationCodeCtrl.seekIcd == null){
+				if($scope.operationCodeCtrl.seekOperation != null){
+					$scope.operationCodeCtrl.seekIcd =
+						$scope.operationCodeCtrl.seekOperation;
+				}
+			}
+		}
 	}
 	//------procedure------Operation-----------
 	$scope.changeAnesthetist = function(newValue){
@@ -269,7 +277,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			$scope.OperationSaveTimerMessage += " Витрачено часу. " + time;
 		}, 2700);
 	};
-	
+
 	$scope.StopOperationSaveTimer = function () {
 		$scope.OperationSaveTimerMessage = "Timer stopped.";
 		if (angular.isDefined($scope.OperationSaveTimer)) {
@@ -285,25 +293,24 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			if(!$scope.ix.operationHistoryList[i].operation_history_id)
 				return;
 		console.log("----------------");
-		var newOperationHistory = {};
-		$scope.ix.operationHistoryList.push(newOperationHistory);
+		$scope.operationHistoryToEdit = {};
+		$scope.ix.operationHistoryList.push($scope.operationHistoryToEdit);
 		//створити запис операції з інформації про колонки таблиці operation_history
 		angular.forEach($scope.showTablesColumns.tables.operation_history, function(oh, key) {
-			newOperationHistory[oh.Field] = null;
+			$scope.operationHistoryToEdit[oh.Field] = null;
 		});
-		$scope.operationHistoryToEdit = newOperationHistory;
 		//додати дату операції як поточна дата
-		var nd = new Date()
-		newOperationHistory.operationHistoryStart = new Date();
-		newOperationHistory.operation_history_start = newOperationHistory.operationHistoryStart.getTime();
+		$scope.operationHistoryToEdit.history_id = $scope.param.ix;
+		$scope.operationHistoryToEdit.operationHistoryStart = new Date();
+		$scope.operationHistoryToEdit.operation_history_start = $scope.operationHistoryToEdit.operationHistoryStart.getTime();
 		$scope.operationHistoryToEdit.operationDurationMin = 1;
 		setEndOperation($scope.operationHistoryToEdit.operationDurationMin);
 		console.log($scope.operationHistoryToEdit.operation_history_end);
-		newOperationHistory.personal_id = $scope.model.authority.personal.personal_id;
-		newOperationHistory.surgery_name = $scope.model.authority.personal.personal_username;
-		newOperationHistory.department_id = $scope.model.authority.department.department_id;
-		newOperationHistory.department_name = $scope.model.authority.department.department_name;
-		newOperationHistory.operationDuration = 1;
+		$scope.operationHistoryToEdit.personal_id = $scope.model.authority.personal.personal_id;
+		$scope.operationHistoryToEdit.surgery_name = $scope.model.authority.personal.personal_username;
+		$scope.operationHistoryToEdit.department_id = $scope.model.authority.department.department_id;
+		$scope.operationHistoryToEdit.department_name = $scope.model.authority.department.department_name;
+		$scope.operationHistoryToEdit.operationDuration = 1;
 		$scope.StartOperationSaveTimer();
 	}
 	
@@ -380,8 +387,11 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	
 	//------procedure------Operation-----------END
 	$scope.toSaveIcd = function (icd){
+		console.log(icd);
 		$scope.icdToSave = icd;
 		$scope.operationHistoryToEdit.icd_id = icd.icd_id;
+		$scope.operationHistoryToEdit.icd_start = icd.icd_start;
+		$scope.operationHistoryToEdit.icd_end = icd.icd_end;
 		$scope.operationHistoryToEdit.icd_code = icd.icd_code;
 		$scope.operationHistoryToEdit.icd_name = icd.icd_name;
 	}
@@ -406,14 +416,14 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 
 	var setEndOperation = function(valueInMin){
 		var min = valueInMin;
-		var msec = min*60*1000;
 		var hour = (min - min%60)/60;
 		var hourStr = (hour<10?"0":"")+hour;
 		var minRest = min - hour*60;
 		var minStr = (minRest<10?"0":"")+minRest;
 		$scope.operationHistoryToEdit.durationHHMM = hourStr+":"+minStr; 
 		$scope.operationHistoryToEdit.operation_history_end = 
-		$scope.operationHistoryToEdit.operation_history_start + msec;
+			$scope.operationHistoryToEdit.operation_history_start + min*60*1000;
+		$scope.operationHistoryToEdit.operation_history_duration = min*60;
 	}
 	$scope.$watch("operationHistoryToEdit.operationHistoryStart", function handleChange( newValue, oldValue ) {
 		if($scope.operationHistoryToEdit != null)

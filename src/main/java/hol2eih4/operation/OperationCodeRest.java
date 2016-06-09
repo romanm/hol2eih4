@@ -7,11 +7,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -32,6 +32,37 @@ public class OperationCodeRest extends IxBasicRest{
 					+ "insertOperationHistory"
 					);
 			System.out.println(insertOperationHistory);
+			String tableName = "operation_history";
+			List<Map<String, Object>> tableColumns = getTableColumns(tableName);
+			System.out.println(tableColumns);
+			String variable="", value ="";
+			for (Map<String, Object> columnMap : tableColumns) {
+				System.out.println(columnMap);
+				String field = (String) columnMap.get("Field");
+				String type = (String) columnMap.get("Type");
+				if(insertOperationHistory.containsKey(field)){
+					Object fieldValue = insertOperationHistory.get(field);
+					if(fieldValue == null)
+						continue;
+					variable += ", "+field;
+					if(type.contains("datetime")){
+						java.sql.Timestamp timestamp = new java.sql.Timestamp((long) fieldValue);
+						value += ", '" + timestamp + "' ";
+					}else
+					if(type.contains("varchar"))
+						value += ", '" + fieldValue + "' ";
+					else
+						value += ", " + fieldValue + " ";
+				}
+			}
+			String insert = "INSERT INTO "
+					+ tableName
+					+ " ("
+					+ variable.substring(1)
+					+ ") VALUES ("
+					+ value.substring(1)
+					+ ")";
+			System.out.println(insert);
 			/*
 			fileService.saveJsonToFile(commonContentJavaObject,propertiConfig.fileCommonContent);
 			logger.debug("2");

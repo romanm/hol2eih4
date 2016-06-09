@@ -6,6 +6,7 @@
 	color: #ffffff;
 }
 
+.yellow-button:hover,
 div.code-item > .code:hover,
 ul.code-item li > span:hover{
 	background-color: yellow;
