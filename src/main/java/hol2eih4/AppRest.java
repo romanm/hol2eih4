@@ -51,23 +51,6 @@ public class AppRest {
 		model.put("principal", principal);
 		return model;
 	}
-	@RequestMapping(value = "/readMoveTodayPatients", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readMoveTodayPatients(Principal principal, HttpServletRequest request) {
-		logger.info("\n ------------------------- Start /readMoveTodayPatients");
-		DateTime today = new DateTime();
-		Integer sessionYear = (Integer) request.getSession().getAttribute("year");
-		if(sessionYear != null)
-		{
-			today = today.withYear(sessionYear);
-		}
-		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(today);
-		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
-		moveTodayPatients.put("moveTodayPatientsList", moveTodayPatientsList);
-		moveTodayPatients.put("today", today.toDate());
-		moveTodayPatients.put("principal", principal);
-		return moveTodayPatients;
-	}
-
 	@RequestMapping(value = "/session-year/{yyyy}", method = RequestMethod.GET)
 	public String readMoveyyyymmddPatients(
 			@PathVariable Integer yyyy, HttpServletRequest request ) {
@@ -230,12 +213,38 @@ public class AppRest {
 		logger.debug("---------------- 2");
 		return map;
 	}
-	
+
+	// 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
+	// 2.1  Зчитування руху хворих за останні 7 днів – readMovePatients
+	@RequestMapping(value = "/readMovePatients", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readMovePatients( Principal userPrincipal) {
+		logger.info("\n Start /readMovePatients");
+		Map<String, Object> readMovePatients = appService.readMovePatients();
+		return readMovePatients;
+	}
+
+	@RequestMapping(value = "/readMoveTodayPatients", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readMoveTodayPatients(Principal principal, HttpServletRequest request) {
+		logger.info("\n ------------------------- Start /readMoveTodayPatients");
+		DateTime today = new DateTime();
+		Integer sessionYear = (Integer) request.getSession().getAttribute("year");
+		if(sessionYear != null)
+		{
+			today = today.withYear(sessionYear);
+		}
+		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(today);
+		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
+		moveTodayPatients.put("moveTodayPatientsList", moveTodayPatientsList);
+		moveTodayPatients.put("today", today.toDate());
+		moveTodayPatients.put("principal", principal);
+		return moveTodayPatients;
+	}
+
 	//  1.1  Зчитування надходження/виписки хворих на дату – readTodayMovePatients
 	@RequestMapping(value = "/readMove-{yyyy}-{mm}-{dd}-Patients", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readMoveyyyymmddPatients(
 			@PathVariable Integer yyyy , @PathVariable Integer mm, @PathVariable Integer dd
-			,Principal userPrincipal) {
+			,Principal principal) {
 		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
 		DateTime dateTime = new DateTime(yyyy,mm,dd,0,0);
 		logger.info("\n Start /readMove-"
@@ -244,6 +253,7 @@ public class AppRest {
 		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
 		moveTodayPatients.put("moveTodayPatientsList", moveTodayPatientsList);
 		moveTodayPatients.put("today", dateTime.toDate());
+		moveTodayPatients.put("principal", principal);
 		return moveTodayPatients;
 	}
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
@@ -341,15 +351,7 @@ public class AppRest {
 		logger.debug(moveTodayPatients2.toString());
 		return moveTodayPatients2;
 	}
-	// 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
-	// 2.1  Зчитування руху хворих за останні 7 днів – readMovePatients
-	@RequestMapping(value = "/readMovePatients", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readMovePatients( Principal userPrincipal) {
-		logger.info("\n Start /readMovePatients");
-		Map<String, Object> readMovePatients = appService.readMovePatients();
-		return readMovePatients;
-	}
-	// 3  План операцій – operationsPlan.html
+		// 3  План операцій – operationsPlan.html
 	// 3.1  Запис плану операцій на завтра – saveTomorrowOperationsPlan
 	@RequestMapping(value = "/saveTomorrowOperationsPlan", method = RequestMethod.POST)
 	public  @ResponseBody Map<String, Object> saveTomorrowOperationsPlan(@RequestBody Map<String, Object> tomorrowOperationsPlan, Principal userPrincipal) {

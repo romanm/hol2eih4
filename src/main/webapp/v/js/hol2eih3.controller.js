@@ -7,6 +7,7 @@ var initController = function($scope, $http, $filter){
 //	initDocCookie($scope);
 	
 	var isRole = function(role){
+		console.log($scope.moveTodayPatients);
 		angular.forEach($scope.moveTodayPatients.principal.authorities, function(authoritie, key) {
 			if(authoritie.authority.indexOf(role) >= 0){
 				$scope.isRoleRuh = true;
@@ -29,6 +30,7 @@ var initController = function($scope, $http, $filter){
 			$scope.moveTodayPatients = data;
 			initDateVariables();
 			isRole("ruh");
+			isRole("рух");
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
