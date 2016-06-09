@@ -30,7 +30,6 @@ var initController = function($scope, $http, $filter){
 			$scope.moveTodayPatients = data;
 			initDateVariables();
 			isRole("ruh");
-			isRole("рух");
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
@@ -87,6 +86,7 @@ var initController = function($scope, $http, $filter){
 		return myDate;
 	}
 }
+
 var initCtrl = function($scope, $http){
 	$scope.viewTab = viewTab;
 	$scope.error = [];
@@ -126,7 +126,6 @@ var initCtrl = function($scope, $http){
 	$http({ method : 'GET', url : "/v/readAuthorityUser"
 	}).success(function(model, status, headers, config) {
 		$scope.model.authority = model;
-		console.log($scope.model.authority);
 		if($scope.model.authority.departmentId){
 			$http({ method : 'GET', url : "/v/department-patient/"+$scope.model.authority.departmentId
 			}).success(function(model, status, headers, config) {
@@ -262,18 +261,23 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			}else if(!$scope.operationHistoryToEdit.operation_history_id){
 				if(!fixFirstSave)
 					fixFirstSave = $filter('date')(new Date() - stopwatch, 'HH:mm:ss')
-				$scope.OperationSaveTimerMessage += " Пішов запис після (" + fixFirstSave + ").";
+					$scope.OperationSaveTimerMessage += " Пішов запис після (" + fixFirstSave + ").";
 				if(!$scope.operationHistoryToEdit.sendetToSave){
 					$scope.operationHistoryToEdit.sendetToSave = true;
 					$http.post('/insertOperationHistory', $scope.operationHistoryToEdit).
 					then(function(response) {
 						console.log("---insertOperationHistory------success--------");
+						$scope.operationHistoryToEdit = response.data;
+						$scope.operationHistoryToEdit.operationHistoryStart = new Date($scope.operationHistoryToEdit.operation_history_start);
+						console.log($scope.operationHistoryToEdit);
 					}, function(response) {
 						console.log("---insertOperationHistory-------erros-------");
 					});
 				}else{
 					$scope.OperationSaveTimerMessage += " Очікування."  ;
 				}
+			}else{
+				$scope.OperationSaveTimerMessage += " Операція записана (" + fixFirstSave + ").";
 			}
 			var time = $filter('date')(new Date() - stopwatch, 'HH:mm:ss');
 			$scope.OperationSaveTimerMessage += " Витрачено часу. " + time;

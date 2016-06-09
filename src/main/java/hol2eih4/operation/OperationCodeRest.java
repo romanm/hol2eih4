@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +31,24 @@ public class OperationCodeRest extends IxBasicRest{
 					+ "insertOperationHistory"
 					);
 			System.out.println(insertOperationHistory);
-			String tableName = "operation_history";
+			String insertIntoTableOperationHistory = insertIntoTable(insertOperationHistory, "operation_history");
+			System.out.println(insertIntoTableOperationHistory);
+			hol1EihJdbcTemplate.execute(insertIntoTableOperationHistory);
+			Integer historyId = Integer.parseInt((String) insertOperationHistory.get("history_id"));
+			String sql = sqlHol1EihOperationHistoryHistoryId+"  ORDER BY operation_history_id DESC LIMIT 1";
+			System.out.println(sql.replace(":historyId", ""+historyId));
+//			Map<String, Object> historyIdOperationHistory = hol1EihJdbcTemplate.queryForMap(sql.replace(":historyId", ""+historyId));
+			Map<String, Object> historyIdOperationHistory = hol1EihParamJdbcTemplate.queryForMap(sql, new MapSqlParameterSource("historyId",historyId));
+			System.out.println(historyIdOperationHistory);
+			return historyIdOperationHistory;
+		}
+
+		private String insertIntoTable(Map<String, Object> insertOperationHistory, String tableName) {
 			List<Map<String, Object>> tableColumns = getTableColumns(tableName);
 			System.out.println(tableColumns);
 			String variable="", value ="";
 			for (Map<String, Object> columnMap : tableColumns) {
-				System.out.println(columnMap);
+//				System.out.println(columnMap);
 				String field = (String) columnMap.get("Field");
 				String type = (String) columnMap.get("Type");
 				if(insertOperationHistory.containsKey(field)){
@@ -62,14 +73,7 @@ public class OperationCodeRest extends IxBasicRest{
 					+ ") VALUES ("
 					+ value.substring(1)
 					+ ")";
-			System.out.println(insert);
-			/*
-			fileService.saveJsonToFile(commonContentJavaObject,propertiConfig.fileCommonContent);
-			logger.debug("2");
-			fileService.backup(propertiConfig.fileCommonContent);
-			logger.debug("3");
-			 * */
-			return insertOperationHistory;
+			return insert;
 		}
 
 		@Value("${sql.hol1.department.operation}") private String sqlHol1DepartmentOperation;
@@ -162,7 +166,6 @@ public class OperationCodeRest extends IxBasicRest{
 					+ "\n"+sqlHol1EihOperationHistoryHistoryId);
 			List<Map<String, Object>> operationHistoryList 
 			= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihOperationHistoryHistoryId, sqlParam);
-			System.out.println(operationHistoryList);
 			map.put("operationHistoryList", operationHistoryList);
 			return map;
 		}
@@ -171,17 +174,23 @@ public class OperationCodeRest extends IxBasicRest{
 
 		@RequestMapping(value = "/v/department-patient/{departmentId}", method = RequestMethod.GET)
 		public @ResponseBody Map<String, Object> seekOperation(@PathVariable Integer departmentId) {
+			logger.info("\n ------------------------- Start "
+					+ "/v/department-patient/"+departmentId);
+			System.out.println("---------------");
 			HashMap<String, Object> map = new HashMap<>();
 			HashMap<String, Integer> sqlParam = new HashMap<>();
 			sqlParam.put("departmentId", departmentId);
 			map.put("sqlParam", sqlParam);
-			
+
+			System.out.println("---------------");
 			List<Map<String, Object>> departmentPatients 
 				= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihDepartmentPatient, sqlParam);
+			System.out.println("---------------");
+			System.out.println(departmentPatients);
 			map.put("departmentPatients", departmentPatients);
+			System.out.println("---------------");
 			
 			return map;
 		}
-		
 
 }

@@ -201,7 +201,7 @@ public class AppRest {
 		map.put("department", department);
 		return map;
 	}
-	
+
 	@RequestMapping(value = "/r/readBedDayReception-{mm}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readBedDayReception(
 			@PathVariable Integer mm
@@ -256,6 +256,7 @@ public class AppRest {
 		moveTodayPatients.put("principal", principal);
 		return moveTodayPatients;
 	}
+
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
 	@RequestMapping(value = "/saveMoveTodayPatients", method = RequestMethod.POST)
 	public  @ResponseBody Map<String, Object> saveMoveTodayPatients(@RequestBody Map<String, Object> moveTodayPatients, Principal userPrincipal) {

@@ -44,10 +44,10 @@ var viewTab = "editOperation";
 					</div>
 				</li>
 				<li>| {{model.authority.principal.name}}</li>
-				<li data-ng-if="!model.principal"><span
+				<li data-ng-if="!model.authority.principal"><span
 					class="glyphicon glyphicon-log-in"></span> 
 					<a href="{{loginToThisPage()}}"> Ввійти </a></li>
-				<li data-ng-show="model.principal" class="ng-binding ng-hide"><span
+				<li data-ng-show="model.authority.principal" class="ng-binding ng-hide"><span
 					class="glyphicon glyphicon-log-out"></span> : <a
 					href="/logout"> Вийти </a></li>
 			</ul>
@@ -493,13 +493,12 @@ var viewTab = "editOperation";
 				&nbsp; </span>
 			<ol class="list-inline navbar-right">
 				<li>|
-	{{staticUrlPrefix}}
 				{{model.authority.principal.name}}
 				</li>
-				<li data-ng-if="!model.principal"><span
+				<li data-ng-if="!model.authority.principal"><span
 					class="glyphicon glyphicon-log-in"></span>
 					<a href="{{loginToThisPage()}}"> Ввійти </a></li>
-				<li data-ng-show="model.principal" class="ng-binding ng-hide"><span
+				<li data-ng-show="model.authority.principal" class="ng-binding ng-hide"><span
 					class="glyphicon glyphicon-log-out"></span> : <a
 					href="/logout"> Вийти </a></li>
 			</ol>

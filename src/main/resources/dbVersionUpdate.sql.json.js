@@ -1361,7 +1361,7 @@
 "ALTER TABLE procedure_moz ADD COLUMN procedure_parent_name varchar(150)"
 ,"UPDATE procedure_moz p left join procedure_moz pp on pp.procedure_id=p.procedure_parent_id SET p.procedure_parent_name = pp.procedure_name WHERE LENGTH(p.procedure_code)- LENGTH(REPLACE(p.procedure_code,'.',''))=2"
 ,"2016-06-09"
-,"INSERT INTO operation (operation_subgroup_id, operation_code, operation_name) VALUES (1,'moz','Перехід до МОЗ ДБ')"
+,"INSERT INTO operation (operation_subgroup_id, operation_code, operation_name) VALUES (1,'moz','Перехід до МОЗ БД')"
 ,"ALTER TABLE operation_history ALTER COLUMN operation_id SET DEFAULT 1079;"
 ,"ALTER TABLE operation_history ALTER COLUMN operation_subgroup_id SET DEFAULT 1;"
 ,"ALTER TABLE operation_history ALTER COLUMN operation_group_id SET DEFAULT 1;"
