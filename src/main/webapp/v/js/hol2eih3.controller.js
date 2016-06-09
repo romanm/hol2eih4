@@ -167,6 +167,7 @@ var initCtrl = function($scope, $http){
 		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix+window.location.search
 		}).success(function(model, status, headers, config) {
 			$scope.ix = model;
+			console.log($scope.ix);
 		}).error(function(model, status, headers, config) {
 			$scope.error.push(model);
 		});
@@ -184,7 +185,7 @@ hol2eih3App.controller('IxCtrl', function ($scope, $http, $filter, $sce, $interv
 hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce', '$interval'
 		, function ($scope, $http, $filter, $sce, $interval) {
 	console.log("OperationCodeCtrl");
-	$scope.fieldsOperationNotNull = ["procedure_id","icd_id","anestesia_id","operation_result_id"];
+	$scope.fieldsOperationNotNull = ["procedure_moz_id","icd_id","anestesia_id","operation_result_id"];
 	$scope.fieldsOperation = {
 		operation : "Операція"
 		,icd : "Діагноз при операції"
@@ -323,7 +324,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	$scope.isProcedureGroup = function (code){
 		return !isNaN(code.substring(0,1));
 	}
-	$scope.procedureOperation = {procedure_id:3552};// group 7 -- хірургічні операції
+	$scope.procedureOperation = {procedure_moz_id:3552};// group 7 -- хірургічні операції
 	$scope.openChild = function (procedure){
 		procedure.open = !procedure.open;
 	}
@@ -333,14 +334,14 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 	checkToSaveProcedure = function (procedure){
 		if((procedure.PROCEDURE_CODE && procedure.PROCEDURE_CODE.split(".").length == 2)
-				|| (procedure.procedure_code && procedure.procedure_code.split(".").length == 2)){
+				|| (procedure.procedure_moz_code && procedure.procedure_moz_code.split(".").length == 2)){
 			$scope.toSaveProcedure(procedure)
 		}
 	}
 	$scope.openChildProcedureDb = function (procedure){
 		$scope.openChild(procedure);
 		if(procedure.procedure == null){
-			var siblingLevel = procedure.procedure_id;
+			var siblingLevel = procedure.procedure_moz_id;
 			$http.get("/v/siblingProcedureOperation/"+siblingLevel).success(function(response) {
 				procedure.procedure = response;
 				if(response.length == 0){
@@ -368,10 +369,10 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 	var openProcedureTreeTo = function (code, level, procedureList){
 		angular.forEach(procedureList, function(procedure) {
-			if(procedure.procedure_code == code.substring(0,level)){
+			if(procedure.procedure_moz_code == code.substring(0,level)){
 				$scope.openChild(procedure);
 				if(procedure.procedure == null){
-					$http.get("/v/siblingProcedureOperation/"+procedure.procedure_id).success(function(response) {
+					$http.get("/v/siblingProcedureOperation/"+procedure.procedure_moz_id).success(function(response) {
 						procedure.procedure = response;
 						if(procedure.procedure.length != 0){
 							if(code.length > level){
@@ -407,14 +408,14 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 	$scope.$watch("procedureToSave", function handleChange( newValue, oldValue ) {
 		if(newValue != null){
-			if(newValue.procedure_id){
-				$scope.operationHistoryToEdit.procedure_id = newValue.procedure_id;
-				$scope.operationHistoryToEdit.procedure_name = newValue.procedure_name;
-				$scope.operationHistoryToEdit.procedure_code = newValue.procedure_code;
+			if(newValue.procedure_moz_id){
+				$scope.operationHistoryToEdit.procedure_moz_id = newValue.procedure_moz_id;
+				$scope.operationHistoryToEdit.procedure_moz_name = newValue.procedure_moz_name;
+				$scope.operationHistoryToEdit.procedure_moz_code = newValue.procedure_moz_code;
 			}else
 			if(newValue.PROCEDURE_ID){
-				$scope.operationHistoryToEdit.procedure_id = newValue.PROCEDURE_ID;
-				$scope.operationHistoryToEdit.procedure_name = newValue.PROCEDURE_NAME;
+				$scope.operationHistoryToEdit.procedure_moz_id = newValue.PROCEDURE_ID;
+				$scope.operationHistoryToEdit.procedure_moz_name = newValue.PROCEDURE_NAME;
 				$scope.operationHistoryToEdit.PROCEDURE_CODE = newValue.PROCEDURE_CODE;
 			}
 		}

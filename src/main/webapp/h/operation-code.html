@@ -158,11 +158,11 @@ var viewTab = "editOperation";
 								<span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
 								<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 								 -->
-							<span class="alert-danger" ng-if="!operation.procedure_id || operation.procedure_id == 8">
+							<span class="alert-danger" ng-if="!operation.procedure_moz_id || operation.procedure_moz_id == 8">
 								<i class="fa fa-exclamation-circle" aria-hidden="true"></i>
 								Невідмінно
-							</span> <span ng-if="operation.procedure_id"> <b>{{operation.procedure_code}}</b>:
-								{{operation.procedure_name}} <br />
+							</span> <span ng-if="operation.procedure_moz_id"> <b>{{operation.procedure_moz_code}}</b>:
+								{{operation.procedure_moz_name}} <br />
 							</span> <strike ng-if="operation.operation_code != 'moz'"> <b> {{operation.operation_code}} </b>
 								{{operation.operation_name}}
 							</strike>
@@ -361,10 +361,10 @@ var viewTab = "editOperation";
 							{{procedureToSave.PROCEDURE_NAME}}
 						</span>
 					</div>
-					<div ng-if="procedureToSave.procedure_id>0">
+					<div ng-if="procedureToSave.procedure_moz_id>0">
 						<span class="selected-to-save"> <b>
-								{{procedureToSave.procedure_code}}: </b>
-							{{procedureToSave.procedure_name}}
+								{{procedureToSave.procedure_moz_code}}: </b>
+							{{procedureToSave.procedure_moz_name}}
 						</span>
 					</div>
 					<table class="column">
@@ -413,42 +413,42 @@ var viewTab = "editOperation";
 							ng-if="procedureViewType == 'navigation' || operationCodeCtrl.seekOperation == null || operationCodeCtrl.seekOperation.length == 0">
 							<ul class="code-item">
 								<li ng-repeat="medprocedure in procedureOperation.procedure"
-									title="{{medprocedure.procedure_id}}"><span
+									title="{{medprocedure.procedure_moz_id}}"><span
 									ng-click="openChildProcedureDb(medprocedure)">
-										{{medprocedure.procedure_code}} :
-										{{medprocedure.procedure_name}} </span>
+										{{medprocedure.procedure_moz_code}} :
+										{{medprocedure.procedure_moz_name}} </span>
 									<ul ng-if="medprocedure.open">
 										<li ng-repeat="medprocedure2 in medprocedure.procedure"
-											title="{{medprocedure2.procedure_id}}"><span
+											title="{{medprocedure2.procedure_moz_id}}"><span
 											ng-click="openChildProcedureDb(medprocedure2)">
-												{{medprocedure2.procedure_code}} :
-												{{medprocedure2.procedure_name}} </span>
+												{{medprocedure2.procedure_moz_code}} :
+												{{medprocedure2.procedure_moz_name}} </span>
 											<ul ng-if="medprocedure2.open">
 												<li ng-repeat="medprocedure3 in medprocedure2.procedure"
-													title="{{medprocedure3.procedure_id}}"><span
+													title="{{medprocedure3.procedure_moz_id}}"><span
 													ng-click="openChildProcedureDb(medprocedure3)">
-														{{medprocedure3.procedure_code}} :
-														{{medprocedure3.procedure_name}} </span>
+														{{medprocedure3.procedure_moz_code}} :
+														{{medprocedure3.procedure_moz_name}} </span>
 													<ul ng-if="medprocedure3.open">
 														<li ng-repeat="medprocedure4 in medprocedure3.procedure"
-															title="{{medprocedure4.procedure_id}}"><span
+															title="{{medprocedure4.procedure_moz_id}}"><span
 															ng-class="{'selected-to-save':isToSaveProcedure(medprocedure4)}"
 															ng-click="openChildProcedureDb(medprocedure4)">
-																{{medprocedure4.procedure_code}} :
-																{{medprocedure4.procedure_name}} </span>
+																{{medprocedure4.procedure_moz_code}} :
+																{{medprocedure4.procedure_moz_name}} </span>
 															<ul ng-if="medprocedure4.open">
 																<li ng-repeat="medprocedure5 in medprocedure4.procedure"
-																	title="{{medprocedure5.procedure_id}}"><span
+																	title="{{medprocedure5.procedure_moz_id}}"><span
 																	ng-click="openChildProcedureDb(medprocedure5)">
-																		{{medprocedure5.procedure_code}} :
-																		{{medprocedure5.procedure_name}} </span>
+																		{{medprocedure5.procedure_moz_code}} :
+																		{{medprocedure5.procedure_moz_name}} </span>
 																	<ul ng-if="medprocedure5.open">
 																		<li
 																			ng-repeat="medprocedure6 in medprocedure5.procedure"
-																			title="{{medprocedure6.procedure_id}}"><span
+																			title="{{medprocedure6.procedure_moz_id}}"><span
 																			ng-click="openChildProcedureDb(medprocedure6)">
-																				{{medprocedure6.procedure_code}} :
-																				{{medprocedure6.procedure_name}} </span></li>
+																				{{medprocedure6.procedure_moz_code}} :
+																				{{medprocedure6.procedure_moz_name}} </span></li>
 																	</ul></li>
 															</ul></li>
 													</ul></li>
