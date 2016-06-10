@@ -223,8 +223,8 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			currentPosition = list.length;
 		}
 		var previous = list[currentPosition - 1];
-		console.log("openToEditNext "+$scope.openedToEdit+"/"+list.length+"/"+currentPosition);
-		$scope.openedToEdit = previous;
+		console.log("openToEditPrevious"+$scope.openedToEdit+"/"+list.length+"/"+currentPosition);
+		$scope.openToEdit(previous);
 	}
 	
 	$scope.openToEditNext = function(){
@@ -232,12 +232,15 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		var currentPosition = list.indexOf($scope.openedToEdit);
 		var next = list[currentPosition + 1];
 		console.log("openToEditNext "+$scope.openedToEdit+"/"+list.length+"/"+currentPosition);
-		$scope.openedToEdit = next;
+		$scope.openToEdit(next);
 	}
 
 	$scope.openToEdit = function(fieldName){
 		$scope.openedToEdit = fieldName;
 		console.log($scope.openedToEdit);
+		if($scope.openedToEdit == 'operation'){
+			$scope.openChildProcedureDb($scope.procedureOperation);
+		}else
 		if($scope.openedToEdit == 'icd'){
 			if($scope.operationCodeCtrl.seekIcd == null){
 				if($scope.operationCodeCtrl.seekOperation != null){
@@ -335,10 +338,6 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	$scope.openChild = function (procedure){
 		procedure.open = !procedure.open;
 	}
-	$scope.editOperation = function(){
-		$scope.openedToEdit = "operation";
-		$scope.openChildProcedureDb($scope.procedureOperation);
-	}
 	checkToSaveProcedure = function (procedure){
 		if((procedure.PROCEDURE_CODE && procedure.PROCEDURE_CODE.split(".").length == 2)
 				|| (procedure.procedure_moz_code && procedure.procedure_moz_code.split(".").length == 2)){
@@ -428,6 +427,14 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		}
 	});
 
+	//--------update---operation_history--db----------------------
+	$scope.$watch("operationHistoryToEdit.procedure_moz_id", function handleChange( newValue, oldValue ) {
+		console.log("operationHistoryToEdit.procedure_moz_id");
+	});
+	$scope.$watch("operationHistoryToEdit.icd_id", function handleChange( newValue, oldValue ) {
+		console.log("operationHistoryToEdit.icd_id");
+	});
+	//--------update---operation_history--db----------------------END
 
 	var setEndOperation = function(min){
 		$scope.setDurationHHMM($scope.operationHistoryToEdit, min);
