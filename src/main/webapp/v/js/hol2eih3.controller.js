@@ -163,11 +163,27 @@ var initCtrl = function($scope, $http){
 		}
 	});
 
+	$scope.setDurationHHMM = function(oh, min){
+		var hour = (min - min%60)/60;
+		var hourStr = (hour<10?"0":"")+hour;
+		var minRest = min - hour*60;
+		var minStr = (minRest<10?"0":"")+minRest;
+		oh.durationHHMM = hourStr+":"+minStr; 
+		oh.operationDurationMin = min;
+	}
+	$scope.initOperation = function(operation){
+		console.log(operation);
+		$scope.setDurationHHMM(operation, operation.operation_history_duration/60);
+	}
+
 	if($scope.param.ix){
 		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix+window.location.search
 		}).success(function(model, status, headers, config) {
 			$scope.ix = model;
 			console.log($scope.ix);
+			angular.forEach($scope.ix.operationHistoryList, function(oh, key) {
+				$scope.initOperation(oh);
+			});
 		}).error(function(model, status, headers, config) {
 			$scope.error.push(model);
 		});
@@ -187,22 +203,42 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	console.log("OperationCodeCtrl");
 	$scope.fieldsOperationNotNull = ["procedure_moz_id","icd_id","anestesia_id","operation_result_id"];
 	$scope.fieldsOperation = {
-		operation : "Операція"
+		beginOp: "Дата/почато - закінчено/тривалість"
+		,surgery: "Хірург"
+		,operation : "Операція"
 		,icd : "Діагноз при операції"
 		,department : "Відділення"
-		,surgery: "Хірург"
 		,anesthetist: "Анестезіолог"
 		,anestesia: "Анестезія"
 		,result: "Результат"
 		,complication: "Ускладнення"
-		,beginOp: "Дата/почато - закінчено/тривалість"
 	};
 
 	initCtrl($scope, $http);
+
+	$scope.openToEditPrevious = function(){
+		var list = Object.keys($scope.fieldsOperation);
+		var currentPosition = list.indexOf($scope.openedToEdit);
+		if(currentPosition == 0){
+			currentPosition = list.length;
+		}
+		var previous = list[currentPosition - 1];
+		console.log("openToEditNext "+$scope.openedToEdit+"/"+list.length+"/"+currentPosition);
+		$scope.openedToEdit = previous;
+	}
 	
+	$scope.openToEditNext = function(){
+		var list = Object.keys($scope.fieldsOperation);
+		var currentPosition = list.indexOf($scope.openedToEdit);
+		var next = list[currentPosition + 1];
+		console.log("openToEditNext "+$scope.openedToEdit+"/"+list.length+"/"+currentPosition);
+		$scope.openedToEdit = next;
+	}
+
 	$scope.openToEdit = function(fieldName){
 		$scope.openedToEdit = fieldName;
-		if($scope.openedToEdit = 'icd'){
+		console.log($scope.openedToEdit);
+		if($scope.openedToEdit == 'icd'){
 			if($scope.operationCodeCtrl.seekIcd == null){
 				if($scope.operationCodeCtrl.seekOperation != null){
 					$scope.operationCodeCtrl.seekIcd =
@@ -292,35 +328,6 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		}
 	};
 	//-------------OperationSaveTimer-------------------------END
-	$scope.addOperation = function(){
-		console.log("----------------");
-		$scope.openedToEdit = "beginOp";
-		//перевірка на наявність відкритої і не збереженої операції
-		for (var i = 0; i < $scope.ix.operationHistoryList.length; i++)
-			if(!$scope.ix.operationHistoryList[i].operation_history_id)
-				return;
-		console.log("----------------");
-		$scope.operationHistoryToEdit = {};
-		$scope.ix.operationHistoryList.push($scope.operationHistoryToEdit);
-		//створити запис операції з інформації про колонки таблиці operation_history
-		angular.forEach($scope.showTablesColumns.tables.operation_history, function(oh, key) {
-			$scope.operationHistoryToEdit[oh.Field] = null;
-		});
-		//додати дату операції як поточна дата
-		$scope.operationHistoryToEdit.history_id = $scope.param.ix;
-		$scope.operationHistoryToEdit.operationHistoryStart = new Date();
-		$scope.operationHistoryToEdit.operation_history_start = $scope.operationHistoryToEdit.operationHistoryStart.getTime();
-		$scope.operationHistoryToEdit.operationDurationMin = 1;
-		setEndOperation($scope.operationHistoryToEdit.operationDurationMin);
-		console.log($scope.operationHistoryToEdit.operation_history_end);
-		$scope.operationHistoryToEdit.personal_id = $scope.model.authority.personal.personal_id;
-		$scope.operationHistoryToEdit.surgery_name = $scope.model.authority.personal.personal_username;
-		$scope.operationHistoryToEdit.department_id = $scope.model.authority.department.department_id;
-		$scope.operationHistoryToEdit.department_name = $scope.model.authority.department.department_name;
-		$scope.operationHistoryToEdit.operationDuration = 1;
-		$scope.StartOperationSaveTimer();
-	}
-	
 	$scope.isProcedureGroup = function (code){
 		return !isNaN(code.substring(0,1));
 	}
@@ -421,13 +428,9 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		}
 	});
 
-	var setEndOperation = function(valueInMin){
-		var min = valueInMin;
-		var hour = (min - min%60)/60;
-		var hourStr = (hour<10?"0":"")+hour;
-		var minRest = min - hour*60;
-		var minStr = (minRest<10?"0":"")+minRest;
-		$scope.operationHistoryToEdit.durationHHMM = hourStr+":"+minStr; 
+
+	var setEndOperation = function(min){
+		$scope.setDurationHHMM($scope.operationHistoryToEdit, min);
 		$scope.operationHistoryToEdit.operation_history_end = 
 			$scope.operationHistoryToEdit.operation_history_start + min*60*1000;
 		$scope.operationHistoryToEdit.operation_history_duration = min*60;
@@ -444,6 +447,34 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			setEndOperation(newValue);
 	});
 
+	$scope.addOperation = function(){
+		console.log("----------------");
+		$scope.openedToEdit = "beginOp";
+		//перевірка на наявність відкритої і не збереженої операції
+		for (var i = 0; i < $scope.ix.operationHistoryList.length; i++)
+			if(!$scope.ix.operationHistoryList[i].operation_history_id)
+				return;
+		console.log("----------------");
+		$scope.operationHistoryToEdit = {};
+		$scope.ix.operationHistoryList.push($scope.operationHistoryToEdit);
+		//створити запис операції з інформації про колонки таблиці operation_history
+		angular.forEach($scope.showTablesColumns.tables.operation_history, function(oh, key) {
+			$scope.operationHistoryToEdit[oh.Field] = null;
+		});
+		//додати дату операції як поточна дата
+		$scope.operationHistoryToEdit.history_id = $scope.param.ix;
+		$scope.operationHistoryToEdit.operationHistoryStart = new Date();
+		$scope.operationHistoryToEdit.operation_history_start = $scope.operationHistoryToEdit.operationHistoryStart.getTime();
+		$scope.operationHistoryToEdit.operation_history_duration = 60; //1m=60s
+		console.log($scope.operationHistoryToEdit.operation_history_end);
+		$scope.operationHistoryToEdit.personal_id = $scope.model.authority.personal.personal_id;
+		$scope.operationHistoryToEdit.surgery_name = $scope.model.authority.personal.personal_username;
+		$scope.operationHistoryToEdit.department_id = $scope.model.authority.department.department_id;
+		$scope.operationHistoryToEdit.department_name = $scope.model.authority.department.department_name;
+		$scope.StartOperationSaveTimer();
+		$scope.initOperation($scope.operationHistoryToEdit);
+	}
+	
 	$scope.$watch("operationCodeCtrl.seekIcd", function handleChange( newValue, oldValue ) {
 		if(newValue != null && newValue.length > 0){
 			var seekText = newValue.replace(".","-");
@@ -593,7 +624,7 @@ fileUploadApp.controller('fileUploadCtrl', ['$scope', 'Upload', '$timeout', '$ht
 //hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 //                                                         , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$scope', '$http', '$filter', '$sce'
-                                                       , function ( $scope, $http, $filter, $sce) {
+		, function ( $scope, $http, $filter, $sce) {
 	console.log("DepartmentMonthMovementH2Ctrl");
 	var url = "/r/readBedDayH2-2-2";
 	$http({ method : 'GET', url : url
