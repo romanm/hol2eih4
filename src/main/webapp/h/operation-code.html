@@ -262,7 +262,7 @@ var viewTab = "editOperation";
 					</div>
 				</div>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-6 editor-eix2">
 				<h2 class="editor-head">
 					Редагування <small ng-if="openedToEdit" class="selected-to-save">{{fieldsOperation[openedToEdit]}}</small>
 				</h2>
@@ -377,7 +377,7 @@ var viewTab = "editOperation";
 
 				<div ng-if="openedToEdit == 'complication'">
 					<div class="selected-to-save">
-						<span ng-if="!operationHistoryToEdit.operation_result_name">|</span>
+						<span ng-if="!operationHistoryToEdit.operation_complication_id">|</span>
 						{{operationHistoryToEdit.operation_complication_name}}
 					</div>
 
