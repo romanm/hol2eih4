@@ -408,31 +408,47 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.operationHistoryToEdit.icd_code = icd.icd_code;
 		$scope.operationHistoryToEdit.icd_name = icd.icd_name;
 	}
-	$scope.toSaveProcedure = function (procedure){
-		$scope.procedureToSave = procedure;
-		console.log($scope.procedureToSave);
-	}
-	$scope.$watch("procedureToSave", function handleChange( newValue, oldValue ) {
-		if(newValue != null){
-			if(newValue.procedure_moz_id){
-				$scope.operationHistoryToEdit.procedure_moz_id = newValue.procedure_moz_id;
-				$scope.operationHistoryToEdit.procedure_moz_name = newValue.procedure_moz_name;
-				$scope.operationHistoryToEdit.procedure_moz_code = newValue.procedure_moz_code;
-			}else
-			if(newValue.PROCEDURE_ID){
-				$scope.operationHistoryToEdit.procedure_moz_id = newValue.PROCEDURE_ID;
-				$scope.operationHistoryToEdit.procedure_moz_name = newValue.PROCEDURE_NAME;
-				$scope.operationHistoryToEdit.PROCEDURE_CODE = newValue.PROCEDURE_CODE;
-			}
+	$scope.toSaveProcedure = function (newValue){
+		if(newValue.procedure_moz_id){
+			$scope.operationHistoryToEdit.procedure_moz_id = newValue.procedure_moz_id;
+			$scope.operationHistoryToEdit.procedure_moz_name = newValue.procedure_moz_name;
+			$scope.operationHistoryToEdit.procedure_moz_code = newValue.procedure_moz_code;
+		}else
+		if(newValue.PROCEDURE_ID){
+			$scope.operationHistoryToEdit.procedure_moz_id = newValue.PROCEDURE_ID;
+			$scope.operationHistoryToEdit.procedure_moz_name = newValue.PROCEDURE_NAME;
+			$scope.operationHistoryToEdit.procedure_moz_code = newValue.PROCEDURE_CODE;
 		}
-	});
+	}
 
 	//--------update---operation_history--db----------------------
 	$scope.$watch("operationHistoryToEdit.procedure_moz_id", function handleChange( newValue, oldValue ) {
 		console.log("operationHistoryToEdit.procedure_moz_id");
+		if($scope.operationHistoryToEdit){
+			if($scope.operationHistoryToEdit.operation_history_id){
+				console.log($scope.operationHistoryToEdit);
+				var putUrl = "/updateOperationHistory/" +
+				$scope.operationHistoryToEdit.operation_history_id +
+				"/" +
+				$scope.operationHistoryToEdit.procedure_moz_id;
+				console.log(putUrl);
+				$http.put(putUrl).then(function(response) {
+					console.log(putUrl + "--------success--------");
+					console.log(response.data);
+				}, function(response) {
+					console.log(putUrl + "--------erros-------");
+				});
+			}
+		}
 	});
+
 	$scope.$watch("operationHistoryToEdit.icd_id", function handleChange( newValue, oldValue ) {
 		console.log("operationHistoryToEdit.icd_id");
+		if($scope.operationHistoryToEdit){
+			if($scope.operationHistoryToEdit.operation_history_id){
+				console.log($scope.operationHistoryToEdit);
+			}
+		}
 	});
 	//--------update---operation_history--db----------------------END
 
@@ -508,8 +524,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 
 	$scope.useOperation = function(operationHistory){
 		$scope.operationHistoryToEdit = operationHistory;
-		console.log($scope.operationHistoryToEdit);
-		console.log($scope.openedToEdit);
+		console.log("useOperation");
 	}
 
 	var initDurationOp = function(operation){

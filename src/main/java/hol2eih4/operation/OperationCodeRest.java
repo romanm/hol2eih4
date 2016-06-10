@@ -24,7 +24,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class OperationCodeRest extends IxBasicRest{
 	private static final Logger logger = LoggerFactory.getLogger(OperationCodeRest.class);
 		@Autowired NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
-		
+
+		@Value("${sql.hol1Eih.update.operation_history.procedure_moz}") private String sqlHol1EihUpdateOperationHistoryProcedureMoz;
+		@RequestMapping(value = "/updateOperationHistory/{operationHistoryId}/{procedureMozId}", method = RequestMethod.PUT)
+		public @ResponseBody Map<String, Object> updateOperationHistory(@PathVariable Integer operationHistoryId, @PathVariable Integer procedureMozId) {
+			logger.info("\n ------------------------- Start "
+					+ "/updateOperationHistory/"
+					+ operationHistoryId
+					+ "/"
+					+ procedureMozId
+					);
+			MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+			namedParameters.addValue("operationHistoryId", operationHistoryId);
+			namedParameters.addValue("procedureMozId", procedureMozId);
+			int update = hol1EihParamJdbcTemplate.update(sqlHol1EihUpdateOperationHistoryProcedureMoz, namedParameters);
+			logger.info("\n --------"
+					+ update
+					);
+			logger.info("\n --------"
+					+ namedParameters.getValues()
+					);
+			return namedParameters.getValues();
+		}
+
 		@RequestMapping(value = "/insertOperationHistory", method = RequestMethod.POST)
 		public  @ResponseBody Map<String, Object> insertOperationHistory(@RequestBody Map<String, Object> insertOperationHistory) {
 			logger.info("\n ------------------------- Start "
