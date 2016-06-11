@@ -172,11 +172,11 @@ var initCtrl = function($scope, $http){
 		oh.operationDurationMin = min;
 	}
 	$scope.initOperation = function(operation){
-		console.log(operation);
 		$scope.setDurationHHMM(operation, operation.operation_history_duration/60);
 	}
 
 	if($scope.param.ix){
+		console.log("/v/ix/"+$scope.param.ix+window.location.search);
 		$http({ method : 'GET', url : "/v/ix/"+$scope.param.ix+window.location.search
 		}).success(function(model, status, headers, config) {
 			$scope.ix = model;
@@ -422,32 +422,37 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 
 	//--------update---operation_history--db----------------------
-	$scope.$watch("operationHistoryToEdit.procedure_moz_id", function handleChange( newValue, oldValue ) {
-		console.log("operationHistoryToEdit.procedure_moz_id");
+	var updateOperationHistory = function(groupName, fieldName){
 		if($scope.operationHistoryToEdit){
 			if($scope.operationHistoryToEdit.operation_history_id){
-				console.log($scope.operationHistoryToEdit);
-				var putUrl = "/updateOperationHistory/" +
-				$scope.operationHistoryToEdit.operation_history_id +
-				"/" +
-				$scope.operationHistoryToEdit.procedure_moz_id;
+				var putUrl = "/operation-history-set-" +
+				groupName +
+				"-" + $scope.operationHistoryToEdit[fieldName] +
+				"-where-" +
+				$scope.operationHistoryToEdit.operation_history_id;
 				console.log(putUrl);
 				$http.put(putUrl).then(function(response) {
 					console.log(putUrl + "--------success--------");
-					console.log(response.data);
+					console.log(response);
 				}, function(response) {
 					console.log(putUrl + "--------erros-------");
+					console.log(response);
 				});
 			}
+		}
+	}
+
+	$scope.$watch("operationHistoryToEdit.procedure_moz_id", function handleChange( newValue, oldValue ) {
+		if(oldValue != null){
+			console.log("operationHistoryToEdit.procedure_moz_id");
+			updateOperationHistory("procedure", "procedure_moz_id");
 		}
 	});
 
 	$scope.$watch("operationHistoryToEdit.icd_id", function handleChange( newValue, oldValue ) {
-		console.log("operationHistoryToEdit.icd_id");
-		if($scope.operationHistoryToEdit){
-			if($scope.operationHistoryToEdit.operation_history_id){
-				console.log($scope.operationHistoryToEdit);
-			}
+		if(oldValue != null){
+			console.log("operationHistoryToEdit.icd_id");
+			updateOperationHistory("icd", "icd_id");
 		}
 	});
 	//--------update---operation_history--db----------------------END
