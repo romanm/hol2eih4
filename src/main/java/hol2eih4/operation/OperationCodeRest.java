@@ -46,6 +46,33 @@ public class OperationCodeRest extends IxBasicRest{
 					);
 			return result;
 		}
+		
+		@Value("${sql.hol1Eih.update.operation_history.int.variable.value}") private String sqlHol1EihUpdateOperationHistoryIntFieldValue;
+		@RequestMapping(value = "/operation-history-int-set-{fieldName}-{valueInt}-where-{operationHistoryId}", method = RequestMethod.PUT)
+		public @ResponseBody Map<String, Object> updateOperationHistoryIntField(
+				@PathVariable String fieldName, @PathVariable Integer valueInt , @PathVariable Integer operationHistoryId ) {
+			logger.info("\n ------------------------- Start "
+					+ "/operation-history-int-set-" + fieldName
+					+ "-" + valueInt
+					+ "-where-" + operationHistoryId
+					);
+			String sql = sqlHol1EihUpdateOperationHistoryIntFieldValue.replace(":fieldInt", fieldName);
+			logger.info("\n --------"
+					+ sql
+					);
+			MapSqlParameterSource updateParameters = new MapSqlParameterSource();
+			updateParameters.addValue("operationHistoryId", operationHistoryId);
+			updateParameters.addValue("valueInt", valueInt);
+			int update = hol1EihParamJdbcTemplate.update(sql, updateParameters);
+			Map<String, Object> result = new HashMap<>();
+			result.put("updateParameters", updateParameters.getValues());
+			result.put("update", update);
+			logger.info("\n --------"
+					+ result
+					);
+			return result;
+		}
+		
 		@Value("${sql.hol1Eih.update.operation_history.procedure_moz}") private String sqlHol1EihUpdateOperationHistoryProcedureMoz;
 		@RequestMapping(value = "/operation-history-set-procedure-{procedureMozId}-where-{operationHistoryId}", method = RequestMethod.PUT)
 		public @ResponseBody Map<String, Object> updateOperationHistoryProcedureMoz(@PathVariable Integer procedureMozId , @PathVariable Integer operationHistoryId ) {

@@ -252,32 +252,44 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	}
 	//------procedure------Operation-----------
 	$scope.changeAnesthetist = function(newValue){
+		console.log(newValue);
 		$scope.operationHistoryToEdit.anesthetist_id = newValue.personal_id;
+		if(newValue.anesthetist_id)
+			$scope.operationHistoryToEdit.anesthetist_id = newValue.anesthetist_id;
 		$scope.operationHistoryToEdit.anesthetist_name = newValue.personal_username;
+		console.log($scope.operationHistoryToEdit);
+		updateOperationHistory(null, "anesthetist_id", "int");
 	}
 	$scope.changeAnesthesia = function(newValue){
 		$scope.operationHistoryToEdit.anestesia_id = newValue.anestesia_id;
 		$scope.operationHistoryToEdit.anestesia_name = newValue.anestesia_name;
+		updateOperationHistory(null, "anestesia_id", "int");
 	}
 	$scope.changeComplication = function(newValue){
 		console.log("-----------");
+		console.log(newValue);
 		$scope.openedToEdit = "complication";
-		$scope.operationHistoryToEdit.operation_complication_id = newValue.operation_complication_result_id;
+		$scope.operationHistoryToEdit.operation_complication_id = newValue.operation_complication_id;
+//		$scope.operationHistoryToEdit.operation_complication_id = newValue.operation_complication_result_id;
 		$scope.operationHistoryToEdit.operation_complication_name = newValue.operation_complication_name;
 		console.log($scope.operationHistoryToEdit);
+		updateOperationHistory(null, "operation_complication_id", "int");
 	}
 	$scope.changeResult = function(newValue){
 		$scope.operationHistoryToEdit.operation_result_id = newValue.result_id;
 		$scope.operationHistoryToEdit.operation_result_name = newValue.result_name;
+		updateOperationHistory(null, "operation_result_id", "int");
 	}
 	$scope.changeDepartment = function(newValue){
 		$scope.operationHistoryToEdit.department_id = newValue.department_id;
 		$scope.operationHistoryToEdit.department_name = newValue.department_name;
+		updateOperationHistory(null, "department_id", "int");
 	}
 	$scope.changeSurgery = function(newValue){
 		if($scope.operationHistoryToEdit){
 			$scope.operationHistoryToEdit.personal_id = newValue.personal_id;
 			$scope.operationHistoryToEdit.surgery_name = newValue.personal_username;
+			updateOperationHistory(null, "personal_id", "int");
 		}
 	}
 	//-------------OperationSaveTimer-------------------------
@@ -407,6 +419,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.operationHistoryToEdit.icd_end = icd.icd_end;
 		$scope.operationHistoryToEdit.icd_code = icd.icd_code;
 		$scope.operationHistoryToEdit.icd_name = icd.icd_name;
+		updateOperationHistory("icd", "icd_id");
 	}
 	$scope.toSaveProcedure = function (newValue){
 		if(newValue.procedure_moz_id){
@@ -419,40 +432,67 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			$scope.operationHistoryToEdit.procedure_moz_name = newValue.PROCEDURE_NAME;
 			$scope.operationHistoryToEdit.procedure_moz_code = newValue.PROCEDURE_CODE;
 		}
+		updateOperationHistory("procedure", "procedure_moz_id");
 	}
 
 	//--------update---operation_history--db----------------------
-	var updateOperationHistory = function(groupName, fieldName){
-		if($scope.operationHistoryToEdit){
-			if($scope.operationHistoryToEdit.operation_history_id){
-				var putUrl = "/operation-history-set-" +
-				groupName +
-				"-" + $scope.operationHistoryToEdit[fieldName] +
-				"-where-" +
-				$scope.operationHistoryToEdit.operation_history_id;
-				console.log(putUrl);
-				$http.put(putUrl).then(function(response) {
-					console.log(putUrl + "--------success--------");
-					console.log(response);
-				}, function(response) {
-					console.log(putUrl + "--------erros-------");
-					console.log(response);
-				});
+	var updateOperationHistory = function(groupName, fieldName, fieldType){
+		if($scope.operationHistoryToEdit && $scope.operationHistoryToEdit.operation_history_id){
+			var putUrl = "/operation-history";
+			if(fieldType == "int"){
+				putUrl += "-int-set-"+fieldName + "-"
+				+ $scope.operationHistoryToEdit[fieldName] +
+				"-where-" + $scope.operationHistoryToEdit.operation_history_id;
+			}else{
+				putUrl += "-set-"+ groupName + "-" 
+				+ $scope.operationHistoryToEdit[fieldName] +
+				"-where-" + $scope.operationHistoryToEdit.operation_history_id;
 			}
+			console.log(putUrl);
+			$http.put(putUrl).then(function(response) {
+				console.log(putUrl + "--------success--------");
+				console.log(response);
+			}, function(response) {
+				console.log(putUrl + "--------erros-------");
+				console.log(response);
+			});
 		}
 	}
 
-	$scope.$watch("operationHistoryToEdit.procedure_moz_id", function handleChange( newValue, oldValue ) {
+	$scope.$watch("operationHistoryToEdit.p.rocedure_moz_id", function handleChange( newValue, oldValue ) {
 		if(oldValue != null){
 			console.log("operationHistoryToEdit.procedure_moz_id");
 			updateOperationHistory("procedure", "procedure_moz_id");
 		}
 	});
 
-	$scope.$watch("operationHistoryToEdit.icd_id", function handleChange( newValue, oldValue ) {
+	$scope.$watch("operationHistoryToEdit.i.cd_id", function handleChange( newValue, oldValue ) {
 		if(oldValue != null){
 			console.log("operationHistoryToEdit.icd_id");
 			updateOperationHistory("icd", "icd_id");
+		}
+	});
+	var operationHistoryIntGroup = [
+	                            	"operationHistoryToEdit.operation_complication_id"
+	                            	,"operationHistoryToEdit.anestesia_id"
+	                            	]; 
+	$scope.$watchGroup(operationHistoryIntGroup, function handleChange( newValues, oldValues ) {
+		console.log("--watch--operationHistoryToEdit---int----");
+		if(newValues != null){
+			for (var i = 0; i < newValues.length; i++){
+				if(oldValues[i] != null){
+					if(newValues[i] != oldValues[i]){
+						console.log(i+"/"+newValues[i]+"/"+oldValues[i]);
+					}
+				}
+			}
+		}
+	});
+	$scope.$watch("operationHistoryToEdit.o.peration_complication_id", function handleChange( newValue, oldValue ) {
+		console.log("--watch-----operation_complication_id----");
+		if(oldValue != null){
+			console.log("operationHistoryToEdit.operation_complication_id");
+			updateOperationHistory(null, "operation_complication_id", "int");
 		}
 	});
 	//--------update---operation_history--db----------------------END
@@ -1061,3 +1101,4 @@ hol2eih3App.controller('DepartmentOperationsListCtrl', [ '$scope', '$http', '$fi
 	}
 	$scope.readListOperationsPlan();
 }]);
+
