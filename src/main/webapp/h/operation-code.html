@@ -96,12 +96,12 @@ var viewTab = "editOperation";
 					<li><a ng-class="{'active': viewTab == 'editOperation'}"
 						title="Кодування хірургічних (оперативних) втручаннь."
 						href="/h/operation-code.html{{param.ix?'?ix='+param.ix:''}}">Кодування
-							операція </a></li>
+							операцій </a></li>
 					<li><a href="#">
 							<!-- only for space -->
 					</a></li>
 					<li><span
-						ng-bind="OperationSaveTimerMessage"></span></li>
+						ng-bind="OperationSaveTimerMessage.message"></span></li>
 				</ul>
 			</div>
 		</div>
@@ -117,6 +117,7 @@ var viewTab = "editOperation";
 				<div>
 					<hr/>
 					<div ng-repeat="operation in ix.operationHistoryList"
+					ng-class="{'vertical-line': operation.operation_history_id == operationHistoryToEdit.operation_history_id}"
 						ng-click="useOperation(operation)">
 						<table>
 						<tr>

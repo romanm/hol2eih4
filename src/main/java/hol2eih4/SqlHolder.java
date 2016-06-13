@@ -1051,7 +1051,7 @@ public class SqlHolder {
 			+"                         FROM every_day \n"
 			+"                         WHERE month(daydate)  >= :min_month  \n"
 			+"                           AND month(daydate)  <= :max_month  \n"
-			+"                           AND year(daydate) = 2016 \n"
+			+"                           AND year(daydate) = 2015 \n"
 			+"                         GROUP BY month(daydate)) month_days) bed_day_plan \n"
 			+"             GROUP BY department_id ) d \n"
 			+"       LEFT JOIN (-- поступивші в лікарню \n"
@@ -1126,7 +1126,7 @@ public class SqlHolder {
 			+"                           FROM every_day \n"
 			+"                           WHERE month(daydate)  >= :min_month  \n"
 			+"                             AND month(daydate)  <= :max_month  \n"
-			+"                             AND year(daydate) = 2016) daydate \n"
+			+"                             AND year(daydate) = 2015) daydate \n"
 			+"                        WHERE daydate>=dh.department_history_in \n"
 			+"                          AND daydate<=dh.department_history_out \n"
 			+"                        GROUP BY department_id, \n"
@@ -1202,12 +1202,12 @@ public class SqlHolder {
 			+"             GROUP BY DEPARTMENT_ID) summ ON d.DEPARTMENT_id=summ.DEPARTMENT_id "
 			+"          ORDER BY d.DEPARTMENT_id) calc1, "
 			+"         (SELECT day(dateadd(dd,-day(ym_next),ym_next)) month_days, "
-			+"                 CASE WHEN 2016%4 =0 THEN 366 ELSE 365 END yd, "
+			+"                 CASE WHEN 2015%4 =0 THEN 366 ELSE 365 END yd, "
 			+"                                                           280 k "
 			+"          FROM "
 			+"            (SELECT DATEADD(m,1,ym) ym_next "
 			+"             FROM "
-			+"               (SELECT parsedatetime(concat(2016,'-',1,'-1'),'yyyy-MM-dd') ym)ym)ym)ym) calc2)calc3 "
+			+"               (SELECT parsedatetime(concat(2015,'-',1,'-1'),'yyyy-MM-dd') ym)ym)ym)ym) calc2)calc3 "
 ;
 
 }

@@ -6,6 +6,9 @@ div.editor-eix2 textarea{
 	margin-top: 0;
 	margin-bottom: 1px;
 }
+.vertical-line {
+	border-left: thick solid #4CAF50;
+}
 .selected-to-save{
 /*
 	background-color: green;

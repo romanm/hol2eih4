@@ -1,9 +1,11 @@
 package hol2eih4.operation;
 
 import java.security.Principal;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,16 +49,40 @@ public class OperationCodeRest extends IxBasicRest{
 			return result;
 		}
 		
-		@Value("${sql.hol1Eih.update.operation_history.int.variable.value}") private String sqlHol1EihUpdateOperationHistoryIntFieldValue;
-		@RequestMapping(value = "/operation-history-int-set-{fieldName}-{valueInt}-where-{operationHistoryId}", method = RequestMethod.PUT)
-		public @ResponseBody Map<String, Object> updateOperationHistoryIntField(
-				@PathVariable String fieldName, @PathVariable Integer valueInt , @PathVariable Integer operationHistoryId ) {
+		@Value("${sql.hol1Eih.update.operation_history.type.variable.value}") private String sqlHol1EihUpdateOperationHistoryTypeFieldValue;
+		@RequestMapping(value = "/operation-history-strfield-where-{operationHistoryId}", method = RequestMethod.PUT)
+		public @ResponseBody Map<String, Object> updateOperationHistoryStringField( @PathVariable Integer operationHistoryId , @RequestBody Map<String, Object> insertOperationHistory) {
 			logger.info("\n ------------------------- Start "
-					+ "/operation-history-int-set-" + fieldName
+					+ "/operation-history-strfield-where-" + operationHistoryId
+					+"\n --------"
+					+ insertOperationHistory
+					);
+			String fieldStr = (String) insertOperationHistory.get("field");
+			String sql = sqlHol1EihUpdateOperationHistoryTypeFieldValue.replace(":field", fieldStr);
+			logger.info("\n --------"
+					+ sql
+					);
+			MapSqlParameterSource updateParameters = new MapSqlParameterSource();
+			updateParameters.addValue("operationHistoryId", operationHistoryId);
+			updateParameters.addValue("value", (String) insertOperationHistory.get("value"));
+			int update = hol1EihParamJdbcTemplate.update(sql, updateParameters);
+			Map<String, Object> result = new HashMap<>();
+			result.put("updateParameters", updateParameters.getValues());
+			result.put("update", update);
+			logger.info("\n --------"
+					+ result
+					);
+			return result;
+		}
+		@RequestMapping(value = "/operation-history-int-set-{fieldInt}-{valueInt}-where-{operationHistoryId}", method = RequestMethod.PUT)
+		public @ResponseBody Map<String, Object> updateOperationHistoryIntField(
+				@PathVariable String fieldInt, @PathVariable Integer valueInt , @PathVariable Integer operationHistoryId ) {
+			logger.info("\n ------------------------- Start "
+					+ "/operation-history-int-set-" + fieldInt
 					+ "-" + valueInt
 					+ "-where-" + operationHistoryId
 					);
-			String sql = sqlHol1EihUpdateOperationHistoryIntFieldValue.replace(":fieldInt", fieldName);
+			String sql = sqlHol1EihUpdateOperationHistoryTypeFieldValue.replace(":field", fieldInt);
 			logger.info("\n --------"
 					+ sql
 					);
@@ -73,6 +99,51 @@ public class OperationCodeRest extends IxBasicRest{
 			return result;
 		}
 		
+		@Value("${sql.hol1Eih.update.operation_history.operation_history_start}") private String sqlHol1EihUpdateOperationHistoryStart;
+		@Value("${sql.hol1Eih.update.operation_history.operation_history_end}") private String sqlHol1EihUpdateOperationHistoryEnd;
+		@RequestMapping(value = "/operation-history-set-start-{operationHistoryStart}-where-{operationHistoryId}", method = RequestMethod.PUT)
+		public @ResponseBody Map<String, Object> updateOperationHistoryStart(@PathVariable Long operationHistoryStart , @PathVariable Integer operationHistoryId ) {
+			logger.info("\n ------------------------- Start "
+					+ "/operation-history-set-start-"
+					+ operationHistoryStart
+					+ "-where-"
+					+ operationHistoryId
+					);
+			MapSqlParameterSource updateParameters = new MapSqlParameterSource();
+			Timestamp operationHistoryStartTS = new Timestamp(operationHistoryStart);
+			updateParameters.addValue("operationHistoryStartTS", operationHistoryStartTS);
+			updateParameters.addValue("operationHistoryId", operationHistoryId);
+			int update = hol1EihParamJdbcTemplate.update(sqlHol1EihUpdateOperationHistoryStart, updateParameters);
+			update += hol1EihParamJdbcTemplate.update(sqlHol1EihUpdateOperationHistoryEnd, new MapSqlParameterSource("operationHistoryId", operationHistoryId));
+			Map<String, Object> result = new HashMap<>();
+			result.put("updateParameters", updateParameters.getValues());
+			result.put("update", update);
+			logger.info("\n --------"
+					+ result
+					);
+			return result;
+		}
+		@Value("${sql.hol1Eih.update.operation_history.operation_history_duration}") private String sqlHol1EihUpdateOperationHistoryDuration;
+		@RequestMapping(value = "/operation-history-set-duration-{operationHistoryDuration}-where-{operationHistoryId}", method = RequestMethod.PUT)
+		public @ResponseBody Map<String, Object> updateOperationHistoryDuration(@PathVariable Integer operationHistoryDuration , @PathVariable Integer operationHistoryId ) {
+			logger.info("\n ------------------------- Start "
+					+ "/operation-history-set-duration-"
+					+ operationHistoryDuration
+					+ "-where-"
+					+ operationHistoryId
+					);
+			MapSqlParameterSource updateParameters = new MapSqlParameterSource();
+			updateParameters.addValue("operationHistoryId", operationHistoryId);
+			updateParameters.addValue("operationHistoryDuration", operationHistoryDuration);
+			int update = hol1EihParamJdbcTemplate.update(sqlHol1EihUpdateOperationHistoryDuration, updateParameters);
+			Map<String, Object> result = new HashMap<>();
+			result.put("updateParameters", updateParameters.getValues());
+			result.put("update", update);
+			logger.info("\n --------"
+					+ result
+					);
+			return result;
+		}
 		@Value("${sql.hol1Eih.update.operation_history.procedure_moz}") private String sqlHol1EihUpdateOperationHistoryProcedureMoz;
 		@RequestMapping(value = "/operation-history-set-procedure-{procedureMozId}-where-{operationHistoryId}", method = RequestMethod.PUT)
 		public @ResponseBody Map<String, Object> updateOperationHistoryProcedureMoz(@PathVariable Integer procedureMozId , @PathVariable Integer operationHistoryId ) {
