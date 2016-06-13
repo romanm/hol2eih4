@@ -1,0 +1,30 @@
+<div class="selected-to-save">
+	{{operationHistoryToEdit.operation_history_start | date:'dd-MMM-yyyy,
+	HH:mm'}} {{operationHistoryToEdit.operation_history_end | date:' -
+	HH:mm'}} ({{operationHistoryToEdit.durationHHMM}})</div>
+<div>
+	<label for="intNumber">Тривалість операцій --
+		{{operationHistoryToEdit.durationHHMM}} </label>
+	<table width="100%">
+		<tr> <td>0</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> </tr>
+	</table>
+	<input id="intNumber"
+		data-ng-model="operationHistoryToEdit.operationDurationMin"
+		type="range" step="5" min="0" max="480" />
+</div>
+
+<table class="column">
+	<tr>
+		<th>Дата - початку операції</th>
+		<th>години:хвилини</th>
+	</tr>
+	<tr>
+		<td><uib-datepicker
+				data-ng-model="operationHistoryToEdit.operationHistoryStart"
+				data-date-format="dd MM yyyy - HH:mm" show-weeks="true"
+				class="well well-sm"></uib-datepicker></td>
+		<td><uib-timepicker
+				ng-model="operationHistoryToEdit.operationHistoryStart"
+				hour-step="1" minute-step="5" show-meridian="false"></uib-timepicker></td>
+	</tr>
+</table>

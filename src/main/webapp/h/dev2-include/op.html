@@ -1,0 +1,38 @@
+<!doctype html>
+<html ng-app="includeExample" ng-controller="ExampleController">
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
+<link rel="stylesheet" href="/v/lib/css/bootstrap-datepicker3.min.css"></link>
+<link rel='stylesheet prefetch' href='/v/lib/css/font-awesome.min.css' />
+
+<link rel="stylesheet" href="/v/css/navbar_horizontal_gray.css" />
+<link rel="stylesheet" href="/v/css/ui.css"></link>
+<script src="/v/lib/js/angular.min.js"></script>
+<script src="op.js"></script>
+<script src="ix-angular.js"></script>
+
+<title>op</title>
+</head>
+<body>
+	<div class="container">
+		<div ng-include="'ui/navbar_horizontal_gray.html'"></div>
+		<div class="row">
+			<div class="col-md-6">
+				op
+				<hr />
+				<div ng-repeat="value in fieldsOperation">
+					<a ng-click="openToEdit(objectKeys(fieldsOperation)[$index])"
+						href="#">{{value}} </a>
+				</div>
+			</div>
+			<div class="col-md-6">
+				openedToEdit= {{openedToEdit}}
+				<div ng-if="openedToEdit"
+					ng-include="'db/operation_history/'+openedToEdit+'/editor.html'"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

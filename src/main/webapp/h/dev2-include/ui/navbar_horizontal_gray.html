@@ -1,0 +1,12 @@
+<ul class="navbar_horizontal_gray">
+	<li><a ng-class="{'active': viewTab == 'editIx'}" href="ix.html">Виписка</a></li>
+	<li><a ng-class="{'active': viewTab == 'editOperation'}"
+		title="Кодування хірургічних (оперативних) втручаннь." href="op.html">Кодування
+			операція </a></li>
+	<li><a href="#"> <!-- only for space -->
+	</a></li>
+	<li><span ng-bind="OperationSaveTimerMessage"></span></li>
+</ul>
+--
+{{viewTab}}
+--

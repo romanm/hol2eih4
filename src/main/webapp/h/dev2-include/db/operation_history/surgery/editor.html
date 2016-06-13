@@ -1,0 +1,9 @@
+<div class="selected-to-save">
+	{{operationHistoryToEdit.surgery_name}}</div>
+<input ng-model="operationCodeCtrl.seekSurgery" />
+<div class="scroll-large">
+	<div
+		ng-repeat="value in model.operationEditLists.surgery | filter: operationCodeCtrl.seekSurgery">
+		<a ng-click="changeSurgery(value)" href="#"> {{value.name}} </a>
+	</div>
+</div>
