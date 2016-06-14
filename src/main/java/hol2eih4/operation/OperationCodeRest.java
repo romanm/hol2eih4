@@ -88,7 +88,7 @@ public class OperationCodeRest extends IxBasicRest{
 					);
 			MapSqlParameterSource updateParameters = new MapSqlParameterSource();
 			updateParameters.addValue("operationHistoryId", operationHistoryId);
-			updateParameters.addValue("valueInt", valueInt);
+			updateParameters.addValue("value", valueInt);
 			int update = hol1EihParamJdbcTemplate.update(sql, updateParameters);
 			Map<String, Object> result = new HashMap<>();
 			result.put("updateParameters", updateParameters.getValues());

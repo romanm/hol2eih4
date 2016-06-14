@@ -285,6 +285,10 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	$scope.StartOperationSaveTimer = function () {
 		$scope.OperationSaveTimerMessage = {};
 		$scope.OperationSaveTimerMessage.message = "Введення нової операції розпочато. ";
+		if($scope.operationHistoryToEdit.operation_history_id){
+			$scope.OperationSaveTimerMessage.message = " Внесення змін до операції. ";
+
+		}
 		var stopwatch = new Date();
 		var fixFirstSave = null;
 		stopwatch.setHours(stopwatch.getHours() - stopwatch.getTimezoneOffset()/60);
