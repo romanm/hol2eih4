@@ -215,7 +215,9 @@ var viewTab = "editOperation";
 								</span> {{operation.anesthetist_name}}, <span class="tooltip2">
 									<a ng-class="{'selected-to-save': openedToEdit == 'anestesia'}"
 									ng-click="openToEdit('anestesia')">{{fieldsOperation['anestesia']}}</a>:
-									<div class="tooltiptext3">
+									<div class="tooltiptext3"
+									ng-if="operation.operation_history_id == operationHistoryToEdit.operation_history_id"
+									>
 										<div
 											ng-repeat="anesthesia in model.operationEditLists.anesthesia">
 											<a ng-click="changeAnesthesia(anesthesia)"

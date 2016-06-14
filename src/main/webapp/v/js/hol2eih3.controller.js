@@ -169,9 +169,11 @@ var initCtrl = function($scope, $http){
 		}).success(function(model, status, headers, config) {
 			$scope.ix = model;
 			console.log($scope.ix);
-			angular.forEach($scope.ix.operationHistoryList, function(oh, key) {
-				$scope.initOperation(oh);
-			});
+			if(angular.isDefined($scope.initOperation)){
+				angular.forEach($scope.ix.operationHistoryList, function(oh, key) {
+					$scope.initOperation(oh);
+				});
+			}
 		}).error(function(model, status, headers, config) {
 			$scope.error.push(model);
 		});
@@ -204,6 +206,28 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 
 	initCtrl($scope, $http);
 
+	$scope.deleteOperationHistory = function(operationHistory){
+		$http.post('/deleteOperationHistory-'+operationHistory.operation_history_id).
+		then(function(response) {
+			console.log("---insertOperationHistory------success--------");
+			window.location.replace('/operation-code.html?ix='+$scope.param.ix);
+		}, function(response) {
+			console.log("---insertOperationHistory-------erros-------");
+		});		
+	}
+	$scope.removeOperationHistory = function(operationHistory){
+		console.log(operationHistory);
+		console.log($scope.operationHistoryIdToDelete+"=="+operationHistory.operation_history_id);
+		if(operationHistory.operation_history_id == null){
+			$scope.operationHistoryIdToDelete = 0;
+		}else
+		if($scope.operationHistoryIdToDelete == operationHistory.operation_history_id){
+			$scope.operationHistoryIdToDelete = null;
+		}else{
+			$scope.operationHistoryIdToDelete = operationHistory.operation_history_id;
+		}
+		console.log($scope.operationHistoryIdToDelete);
+	}
 	$scope.openToEditPrevious = function(){
 		var list = Object.keys($scope.fieldsOperation);
 		var currentPosition = list.indexOf($scope.openedToEdit);
@@ -223,9 +247,21 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.openToEdit(next);
 	}
 
+	$scope.selectedToSave = function(fieldName, operationHistory){
+		if($scope.operationHistoryToEdit){
+			if($scope.operationHistoryToEdit.operation_history_id == operationHistory.operation_history_id){
+				if($scope.openedToEdit){
+					if($scope.openedToEdit == fieldName){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	$scope.openToEdit = function(fieldName){
 		$scope.openedToEdit = fieldName;
-		console.log($scope.openedToEdit);
 		if($scope.openedToEdit == 'operation'){
 			$scope.openChildProcedureDb($scope.procedureOperation);
 		}else
@@ -284,6 +320,10 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	$scope.OperationSaveTimer = null;
 	$scope.StartOperationSaveTimer = function () {
 		$scope.OperationSaveTimerMessage = {};
+		$scope.OperationSaveTimerMessage.strObjects = {
+			oldValues: {operation_additional:null, icd_additional:null, operation_history_complication:null}
+			,lengthChange: {operation_additional:0, icd_additional:0, operation_history_complication:0}
+		};
 		$scope.OperationSaveTimerMessage.message = "Введення нової операції розпочато. ";
 		if($scope.operationHistoryToEdit.operation_history_id){
 			$scope.OperationSaveTimerMessage.message = " Внесення змін до операції. ";
@@ -499,13 +539,11 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.operationHistoryToEdit.operation_history_duration = min*60;
 	}
 	$scope.$watch("operationHistoryToEdit.operationHistoryStart", function handleChange( newValue, oldValue ) {
-		if(newValue != null){
-			if(oldValue != null){
-				if($scope.operationHistoryToEdit != null && $scope.operationHistoryToEdit.operation_history_start != null){
-					$scope.operationHistoryToEdit.operation_history_start = $scope.operationHistoryToEdit.operationHistoryStart.getTime();
-					setEndOperation($scope.operationHistoryToEdit.operationDurationMin);
-					updateOperationHistory("start", "operation_history_start");
-				}
+		if(newValue != null && oldValue != null){
+			if($scope.operationHistoryToEdit != null && $scope.operationHistoryToEdit.operation_history_start != null){
+				$scope.operationHistoryToEdit.operation_history_start = $scope.operationHistoryToEdit.operationHistoryStart.getTime();
+				setEndOperation($scope.operationHistoryToEdit.operationDurationMin);
+				updateOperationHistory("start", "operation_history_start");
 			}
 		}
 	});
@@ -517,11 +555,19 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			}
 		}
 	});
+	$scope.$watch("operationHistoryToEdit.icd_additional", function handleChange( newValue, oldValue ) {
+		if(newValue != null&& oldValue != null){
+			changeTextField("icd_additional", newValue)
+		}
+	});
+	$scope.$watch("operationHistoryToEdit.operation_additional", function handleChange( newValue, oldValue ) {
+		if(newValue != null&& oldValue != null){
+			changeTextField("operation_additional", newValue)
+		}
+	});
 	$scope.$watch("operationHistoryToEdit.operation_history_complication", function handleChange( newValue, oldValue ) {
-		if(newValue != null){
-			if(oldValue != null){
+		if(newValue != null&& oldValue != null){
 				changeTextField("operation_history_complication", newValue)
-			}
 		}
 	});
 	var changeTextField = function(fieldName, newValue){
@@ -541,8 +587,9 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			if(!$scope.ix.operationHistoryList[i].operation_history_id)
 				return;
 		console.log("----------------");
+		$scope.operationHistoryIdToDelete = 0;
 		$scope.operationHistoryToEdit = {};
-		$scope.ix.operationHistoryList.push($scope.operationHistoryToEdit);
+		$scope.ix.operationHistoryList.unshift($scope.operationHistoryToEdit);
 		//створити запис операції з інформації про колонки таблиці operation_history
 		angular.forEach($scope.showTablesColumns.tables.operation_history, function(oh, key) {
 			$scope.operationHistoryToEdit[oh.Field] = null;
@@ -552,7 +599,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.operationHistoryToEdit.operationHistoryStart = new Date();
 		$scope.operationHistoryToEdit.operation_history_start = $scope.operationHistoryToEdit.operationHistoryStart.getTime();
 		$scope.operationHistoryToEdit.operation_history_duration = 60; //1m=60s
-		$scope.setDurationHHMM(operation, operation.operation_history_duration/60);
+		setEndOperation($scope.operationHistoryToEdit.operation_history_duration/60);
 		console.log($scope.operationHistoryToEdit.operation_history_end);
 		$scope.operationHistoryToEdit.personal_id = $scope.model.authority.personal.personal_id;
 		$scope.operationHistoryToEdit.surgery_name = $scope.model.authority.personal.personal_username;
@@ -590,12 +637,6 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		console.log("useOperation");
 		if($scope.OperationSaveTimer == null){
 			$scope.StartOperationSaveTimer();
-			$scope.OperationSaveTimerMessage.strObjects = {
-				oldValues: {operation_additional:null, icd_additional:null, operation_history_complication:null}
-				,lengthChange: {operation_additional:0, icd_additional:0, operation_history_complication:0}
-			};
-			console.log($scope.OperationSaveTimerMessage);
-			console.log(angular.isDefined($scope.OperationSaveTimer));
 		}
 	}
 

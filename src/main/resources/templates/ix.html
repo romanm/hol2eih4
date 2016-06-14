@@ -53,7 +53,7 @@ var eixId = [[${ix}]];
 						<div class="tooltiptext2">
 							<div
 								ng-repeat="patient in model.departmentPatient.departmentPatients">
-								<a href="/v/eix/{{patient.history_id}}" title="{{$index + 1}}">
+								<a href="/eix/{{patient.history_id}}" title="{{$index + 1}}">
 									{{patient.history_no}} : {{patient.name}} </a>
 							</div>
 						</div>
@@ -106,7 +106,7 @@ var eixId = [[${ix}]];
 						ng-click="viewTab = 'linking'">Виписка</a></li>
 					<li><a ng-class="{'active': viewTab == 'editOperation'}"
 						title="Кодування хірургічних (оперативних) втручаннь."
-						href="/h/operation-code.html{{param.ix?'?ix='+param.ix:''}}">Кодування
+						href="/operation-code.html{{param.ix?'?ix='+param.ix:''}}">Кодування
 							операція </a></li>
 				</ul>
 			</div>
@@ -131,7 +131,7 @@ var eixId = [[${ix}]];
 				</li>
 				<li data-ng-if="!model.principal"><span
 					class="glyphicon glyphicon-log-in"></span>
-					<a href="/throughlogin/gotopage/v/eix/{{param.ix}}"> Ввійти </a></li>
+					<a href="/eix/{{param.ix}}"> Ввійти </a></li>
 				<li data-ng-show="model.principal" class="ng-binding ng-hide"><span
 					class="glyphicon glyphicon-log-out"></span> : <a
 					href="/logout"> Вийти </a></li>

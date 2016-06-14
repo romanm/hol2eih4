@@ -166,6 +166,17 @@ public class OperationCodeRest extends IxBasicRest{
 			return result;
 		}
 
+		@Value("${sql.hol1Eih.operation_history.delete}") private String sqlHol1EihOperationHistoryDelete;
+		@RequestMapping(value = "/deleteOperationHistory-{operationHistoryId}", method = RequestMethod.POST)
+		public  @ResponseBody Map<String, Object> deleteOperationHistory(@PathVariable Integer operationHistoryId) {
+			logger.info("\n ------------------------- Start "
+					+ "/deleteOperationHistory-"+operationHistoryId
+					);
+			int update = hol1EihParamJdbcTemplate.update(sqlHol1EihOperationHistoryDelete, new MapSqlParameterSource("operationHistoryId",operationHistoryId));
+			Map<String, Object> result = new HashMap<>();
+			result.put("update", update);
+			return result;
+		}
 		@RequestMapping(value = "/insertOperationHistory", method = RequestMethod.POST)
 		public  @ResponseBody Map<String, Object> insertOperationHistory(@RequestBody Map<String, Object> insertOperationHistory) {
 			logger.info("\n ------------------------- Start "
