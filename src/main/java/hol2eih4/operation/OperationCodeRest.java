@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,6 +26,24 @@ public class OperationCodeRest extends IxBasicRest{
 	private static final Logger logger = LoggerFactory.getLogger(OperationCodeRest.class);
 		@Autowired NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 
+		@Value("${sql.hol1Eih.update.icd.icd10uatree_with_parent_name}") private String sqlHol1EihUpdateIcd10uatreeWithParentName;
+		@RequestMapping(value = "/icd10uatree_with_parent_name/{icdId}", method = RequestMethod.PUT)
+		public @ResponseBody Map<String, Object> addGroupName(@PathVariable Integer icdId ) {
+			logger.info("\n ------------------------- Start "
+					+ "/icd10uatree_with_parent_name/"
+					+ icdId
+					);
+			MapSqlParameterSource updateParameters = new MapSqlParameterSource();
+			updateParameters.addValue("icdId", icdId);
+			int update = hol1EihParamJdbcTemplate.update(sqlHol1EihUpdateIcd10uatreeWithParentName, updateParameters);
+			Map<String, Object> result = new HashMap<>();
+			result.put("update", update);
+			result.put("updateParameters", updateParameters.getValues());
+			logger.info("\n --------"
+					+ result
+					);
+			return result;
+		}
 		@Value("${sql.hol1Eih.update.operation_history.icd}") private String sqlHol1EihUpdateOperationHistoryIcd;
 		@RequestMapping(value = "/operation-history-set-icd-{icdId}-where-{operationHistoryId}", method = RequestMethod.PUT)
 		public @ResponseBody Map<String, Object> updateOperationHistoryIcd(@PathVariable Integer icdId  , @PathVariable Integer operationHistoryId) {
@@ -318,17 +335,22 @@ public class OperationCodeRest extends IxBasicRest{
 			sqlParam.put("historyId", historyId);
 			result.put("sqlParam", sqlParam);
 			result.put("historyMap", hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihHistoryId, sqlParam));
-			logger.info("\n ------------------------- Start /ix/"
+			logger.info("\n ------338------------sql--"
 					+ historyId
-					+ "\n"+sqlHol1EihOperationHistoryHistoryId);
+					+ "\n"+sqlHol1EihOperationHistoryHistoryId.replace(":historyId", ""+historyId));
 			List<Map<String, Object>> operationHistoryList 
 			= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihOperationHistoryHistoryId, sqlParam);
+			logger.info(""+operationHistoryList);
 			result.put("operationHistoryList", operationHistoryList);
+			Map<String, Object> map = operationHistoryList.get(0);
+			System.out.println(map.get("icd_name"));
+			System.out.println(map.get("icd_code"));
+			System.out.println(map.get("icd10uatree_id"));
+			
 			return result;
 		}
 		
 		@Value("${sql.hol1Eih.department-patient}") private String sqlHol1EihDepartmentPatient;
-
 		@RequestMapping(value = "/v/department-patient/{departmentId}", method = RequestMethod.GET)
 		public @ResponseBody Map<String, Object> seekOperation(@PathVariable Integer departmentId) {
 			logger.info("\n ------------------------- Start "

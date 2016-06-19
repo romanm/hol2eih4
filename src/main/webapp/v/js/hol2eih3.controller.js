@@ -213,7 +213,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			window.location.replace('/operation-code.html?ix='+$scope.param.ix);
 		}, function(response) {
 			console.log("---insertOperationHistory-------erros-------");
-		});		
+		});
 	}
 	$scope.removeOperationHistory = function(operationHistory){
 		console.log(operationHistory);
@@ -671,9 +671,23 @@ declareIcdModule($scope, $http);
 var declareIcdModule = function($scope, $http){
 	console.log("----declareIcdModule-------------");
 	$scope.icdRoot = {};
+
+	$scope.icd10uatreeWithParentName = function (icdId){
+		$http.put('/icd10uatree_with_parent_name/'+icdId).
+		then(function(response) {
+			console.log("---addGroupName------success--------");
+		}, function(response) {
+			console.log("---addGroupName-------erros-------");
+		});
+	}
+	$scope.codeWithPoint = function (icdCode){
+		if(icdCode == null)
+			return false;
+		return icdCode.indexOf(".") > 0;
+	}
 	
 	$scope.icdViewType = 'navigation'
-	$scope.gotoNavigation = function (){
+	$scope.gotoNavigationIcd = function (){
 		console.log("----gotoNavigation---------------");
 		$scope.icdViewType = "navigation";
 	}

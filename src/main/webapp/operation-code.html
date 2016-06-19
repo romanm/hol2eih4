@@ -573,7 +573,18 @@ var viewTab = "editOperation";
 					<div class="row">
 						<div class="col-md-4" style="vertical-align: text-top;">
 							<input ng-model="operationCodeCtrl.seekTextIcd" /><br />
-							{{seekIcd.result.length}}
+							{{seekIcd.result.length}} <a
+								href="#"
+								ng-click="icd10uatreeWithParentName(operationHistoryToEdit.icd_id)"
+								ng-if="codeWithPoint(operationHistoryToEdit.icd_code)"
+								class="btn btn-xs yellow-button " role="button"
+								ng-class="{'btn-success':operationHistoryToEdit.icd10uatree_with_parent_name}">
+								<i class="fa fa-object-group" aria-hidden="true"></i> додати
+								ім'я групи
+							</a>
+							{{operationHistoryToEdit.icd_id}}
+							--
+							{{operationHistoryToEdit.icd_code}}
 						</div>
 						<div class="col-md-8">
 							<textarea rows="2" cols="40"
@@ -620,7 +631,8 @@ var viewTab = "editOperation";
 										ng-click="gotoIcdNavigationGroup(icd)" href="#"> <b>
 												{{icd.icd_code}} </b> {{icd.icd_name}}
 									</a>
-								</span> <span class="yellow-button" ng-if="!icd.cnt"> <i
+								</span> <span class="yellow-button" ng-if="!icd.cnt"
+									ng-click="toSaveIcd(icd)"> <i
 										class="fa fa-plus-square color-red" aria-hidden="true"></i>
 										{{icd.cnt}} <b> {{icd.icd_code}} </b> {{icd.icd_name}}
 								</span>
