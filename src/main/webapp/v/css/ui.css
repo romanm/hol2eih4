@@ -1,3 +1,8 @@
+.tree-group {
+	font-size: 75%;
+	font-weight: oblique;
+	text-decoration: underline;
+}
 div.editor-eix2 textarea{
 	width: 100%;
 }
@@ -8,6 +13,9 @@ div.editor-eix2 textarea{
 }
 .vertical-line {
 	border-left: thick solid #4CAF50;
+}
+.color-red{
+	color: red;
 }
 .selected-to-save{
 /*

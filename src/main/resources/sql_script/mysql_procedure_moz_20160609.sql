@@ -21,12 +21,13 @@ ALTER TABLE operation_history DROP FOREIGN KEY procedure_id;
 ALTER TABLE operation_history DROP COLUMN procedure_id;
 
 -- not notig
-ALTER TABLE `operation_history_moz` DROP FOREIGN KEY `operation_history_moz_ibfk_1`;
+-- ALTER TABLE `operation_history_moz` DROP FOREIGN KEY `operation_history_moz_ibfk_1`;
 
-ALTER TABLE `operation_history_moz` ADD CONSTRAINT `operation_history_moz_ibfk_1` FOREIGN KEY (`operation_history_moz_id`) REFERENCES `operation_history`(
-    `operation_history_id`
-) 
-    ON DELETE CASCADE 
-            ON UPDATE
-                RESTRICT;
+-- ALTER TABLE `operation_history_moz` ADD CONSTRAINT `operation_history_moz_ibfk_1` FOREIGN KEY (`operation_history_moz_id`) REFERENCES `operation_history`( `operation_history_id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+CREATE INDEX inx_procedure_moz_name ON procedure_moz(procedure_moz_name);
+CREATE INDEX inx_procedure_moz_code ON procedure_moz(procedure_moz_code);
+
+-- FULLTEXT search in icd table
+ALTER  TABLE icd ADD FULLTEXT  (icd_code,icd_name);
 

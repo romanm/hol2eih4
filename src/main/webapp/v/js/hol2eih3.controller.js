@@ -266,6 +266,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			$scope.openChildProcedureDb($scope.procedureOperation);
 		}else
 		if($scope.openedToEdit == 'icd'){
+			$scope.initIcd();
 			if($scope.operationCodeCtrl.seekIcd == null){
 				if($scope.operationCodeCtrl.seekOperation != null){
 					$scope.operationCodeCtrl.seekIcd =
@@ -459,9 +460,13 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 	$scope.toSaveIcd = function (icd){
 		console.log(icd);
 		$scope.icdToSave = icd;
-		$scope.operationHistoryToEdit.icd_id = icd.icd_id;
-		$scope.operationHistoryToEdit.icd_start = icd.icd_start;
-		$scope.operationHistoryToEdit.icd_end = icd.icd_end;
+		if(icd.icd_id){
+			$scope.operationHistoryToEdit.icd_id = icd.icd_id;
+			$scope.operationHistoryToEdit.icd_start = icd.icd_start;
+			$scope.operationHistoryToEdit.icd_end = icd.icd_end;
+		}else if(icd.icd10uatree_id){
+			$scope.operationHistoryToEdit.icd_id = icd.icd10uatree_id;
+		}
 		$scope.operationHistoryToEdit.icd_code = icd.icd_code;
 		$scope.operationHistoryToEdit.icd_name = icd.icd_name;
 		updateOperationHistory("icd", "icd_id");
@@ -471,8 +476,7 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 			$scope.operationHistoryToEdit.procedure_moz_id = newValue.procedure_moz_id;
 			$scope.operationHistoryToEdit.procedure_moz_name = newValue.procedure_moz_name;
 			$scope.operationHistoryToEdit.procedure_moz_code = newValue.procedure_moz_code;
-		}else
-		if(newValue.PROCEDURE_ID){
+		}else if(newValue.PROCEDURE_ID){
 			$scope.operationHistoryToEdit.procedure_moz_id = newValue.PROCEDURE_ID;
 			$scope.operationHistoryToEdit.procedure_moz_name = newValue.PROCEDURE_NAME;
 			$scope.operationHistoryToEdit.procedure_moz_code = newValue.PROCEDURE_CODE;
@@ -608,17 +612,27 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		$scope.StartOperationSaveTimer();
 	}
 	
-	$scope.$watch("operationCodeCtrl.seekIcd", function handleChange( newValue, oldValue ) {
+	$scope.$watch("operationCodeCtrl.seekTextIcd", function handleChange( newValue, oldValue ) {
 		if(newValue != null && newValue.length > 0){
-			var seekText = newValue.replace(".","-");
-			var getUrl = "/v/seekIcd/"+seekText;
+			$scope.icdViewType = "seek";
+			var seekTextIcd = newValue.replace(".","-");
+			var getUrl = "/v/icd/seek/"+seekTextIcd;
 			console.log(getUrl);
 			$http.get(getUrl).success(function(response) {
 				$scope.seekIcd = response;
 				console.log($scope.seekIcd);
 			});
+			/*
+			var getUrl = "/v/seekIcd/"+seekTextIcd;
+			console.log(getUrl);
+			$http.get(getUrl).success(function(response) {
+				$scope.seekIcd = response;
+				console.log($scope.seekIcd);
+			});
+			 * */
 		}
-	})
+	});
+
 	$scope.$watch("operationCodeCtrl.seekOperation", function handleChange( newValue, oldValue ) {
 		if(newValue != null && newValue.length > 0){
 			$scope.procedureViewType = 'seek';
@@ -650,7 +664,91 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		return "/throughlogin/gotopage/h/operation-code.html"+window.location.search;
 	};
 
+declareIcdModule($scope, $http);
+
 }]);
+
+var declareIcdModule = function($scope, $http){
+	console.log("----declareIcdModule-------------");
+	$scope.icdRoot = {};
+	
+	$scope.icdViewType = 'navigation'
+	$scope.gotoNavigation = function (){
+		console.log("----gotoNavigation---------------");
+		$scope.icdViewType = "navigation";
+	}
+	$scope.seekUpdateIcd = function (){
+		console.log("-----------seekUpdate--------");
+		$scope.icdViewType = "seek";
+	}
+	
+	
+	$scope.gotoIcdNavigationGroup = function (o){
+		console.log("----gotoIcdNavigationGroup---------------");
+		$scope.icdViewType = 'navigation'
+		console.log(o);
+		$http.get("/v/pathToRoot/"+o.icd_id).success(function(response) {
+			console.table(response);
+			openIcdTreeTo(response, 0, $scope.icdRoot.childs)
+		});
+	}
+
+	var openIcdTreeTo = function (pathToIcdNode, level, list){
+		if(level < pathToIcdNode.length){
+			var seekIcdElement = pathToIcdNode[level];
+			angular.forEach(list, function(checkIcd) {
+				if(checkIcd.icd10uatree_id == seekIcdElement.icd10uatree_id){
+					checkIcd.open = true;
+//					checkIcd.open = !checkIcd.open;
+					if(checkIcd.childs == null){
+						var parentId = checkIcd.icd10uatree_id;
+						console.log(parentId);
+						$http.get("/v/siblingIcd/"+parentId).success(function(response) {
+							checkIcd.childs= response;
+							openIcdTreeTo(pathToIcdNode, level + 1, checkIcd.childs)
+						});
+					}else{
+						openIcdTreeTo(pathToIcdNode, level + 1, checkIcd.childs)
+					}
+				}
+			});
+		}
+	}
+
+	$scope.isOpenIcd = function (o){
+		return o.open;
+	}
+
+	$scope.openChildIcd = function (o){
+		o.open = !o.open;
+		console.log(o);
+		openChildIcdDb(o);
+	}
+
+	var openChildIcdDb = function (o){
+		if(o.childs == null){
+			var parentId = o.icd10uatree_id;
+			$http.get("/v/siblingIcd/"+parentId).success(function(response) {
+				o.childs= response;
+				if(response.length == 0){
+					$scope.toSaveIcd(o);
+				}
+			});
+		}
+	}
+
+	$scope.initIcd = function(){
+		console.log("----declareIcdModule-----initIcd--------");
+		if($scope.icdViewType == null){
+			$scope.icdViewType = "navigation";
+		}
+		if(!$scope.icdRoot.childs){
+			console.log("----declareIcdModule---initIcd----2------");
+			$http.get("/v/rootSiblingIcd").success(function(response) {$scope.icdRoot.childs = response;});
+		}
+	}
+}
+
 // ------------OperationCodeCtrl END
 hol2eih3App.controller('HomeCtrl', ['$scope', '$http', '$filter', '$sce'
 		, function ($scope, $http, $filter, $sce) {

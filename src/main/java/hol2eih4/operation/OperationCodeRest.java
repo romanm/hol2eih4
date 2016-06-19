@@ -144,6 +144,7 @@ public class OperationCodeRest extends IxBasicRest{
 					);
 			return result;
 		}
+		@Value("${sql.hol1Eih.insert.operation_history.procedure_moz}") private String sqlHol1EihInsertOperationHistoryProcedureMoz;
 		@Value("${sql.hol1Eih.update.operation_history.procedure_moz}") private String sqlHol1EihUpdateOperationHistoryProcedureMoz;
 		@RequestMapping(value = "/operation-history-set-procedure-{procedureMozId}-where-{operationHistoryId}", method = RequestMethod.PUT)
 		public @ResponseBody Map<String, Object> updateOperationHistoryProcedureMoz(@PathVariable Integer procedureMozId , @PathVariable Integer operationHistoryId ) {
@@ -156,10 +157,14 @@ public class OperationCodeRest extends IxBasicRest{
 			MapSqlParameterSource updateParameters = new MapSqlParameterSource();
 			updateParameters.addValue("operationHistoryId", operationHistoryId);
 			updateParameters.addValue("procedureMozId", procedureMozId);
-			int update = hol1EihParamJdbcTemplate.update(sqlHol1EihUpdateOperationHistoryProcedureMoz, updateParameters);
+			int updateInsert = hol1EihParamJdbcTemplate.update(sqlHol1EihUpdateOperationHistoryProcedureMoz, updateParameters);
+			if(updateInsert == 0)
+			{
+				updateInsert = hol1EihParamJdbcTemplate.update(sqlHol1EihInsertOperationHistoryProcedureMoz, updateParameters);
+			}
 			Map<String, Object> result = new HashMap<>();
 			result.put("updateParameters", updateParameters.getValues());
-			result.put("update", update);
+			result.put("update", updateInsert);
 			logger.info("\n --------"
 					+ result
 					);
