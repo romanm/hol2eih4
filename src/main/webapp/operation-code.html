@@ -256,9 +256,9 @@ var viewTab = "editOperation";
 									ng-click="openToEdit('result')">{{fieldsOperation['result']}}</a>:
 									<div class="tooltiptext3"
 										ng-if="operation.operation_history_id == operationHistoryToEdit.operation_history_id">
-										<div ng-repeat="result in model.operationEditLists.result">
+										<div ng-repeat="result in model.operationEditLists.operation_result">
 											<a ng-click="changeResult(result)" title="{{result.cnt}}">
-												{{result.result_name}} </a>
+												{{result.operation_result_name}} </a>
 										</div>
 									</div>
 								</span> <span class="alert-danger"
@@ -387,9 +387,9 @@ var viewTab = "editOperation";
 						<span ng-if="!operationHistoryToEdit.operation_result_name">|</span>
 						{{operationHistoryToEdit.operation_result_name}}
 					</div>
-					<div ng-repeat="result in model.operationEditLists.result">
+					<div ng-repeat="result in model.operationEditLists.operation_result">
 						<a ng-click="changeResult(result)" title="{{result.cnt}}">
-							{{result.result_name}} </a>
+							{{result.operation_result_name}} </a>
 					</div>
 				</div>
 
@@ -636,13 +636,6 @@ var viewTab = "editOperation";
 										{{icd.cnt}} <b> {{icd.icd_code}} </b> {{icd.icd_name}}
 								</span>
 								</span>
-							</div>
-						</div>
-						<div ng-if="icdViewType == 'seek2' ">
-							<div class="code-item" ng-repeat="icd in seekIcd.result">
-								<a ng-click="toSaveIcd(icd)" href="#"> <b>
-										{{icd.icd_code}} </b> {{icd.icd_name}}
-								</a>
 							</div>
 						</div>
 					</div>

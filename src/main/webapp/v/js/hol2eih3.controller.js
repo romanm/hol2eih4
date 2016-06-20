@@ -143,6 +143,7 @@ var initCtrl = function($scope, $http){
 			$http({ method : 'GET', url : "/v/operation/start-lists"
 			}).success(function(model, status, headers, config) {
 				$scope.model.operationEditLists = model;
+				console.log($scope.model.operationEditLists);
 				if($scope.model.operationEditLists.principal){
 					for (var i = 0; i < $scope.model.operationEditLists.departmentOperation.length; i++) {
 						if( $scope.model.operationEditLists.departmentOperation[i].department_id == $scope.model.authority.departmentId ){
@@ -301,8 +302,8 @@ hol2eih3App.controller('OperationCodeCtrl', ['$scope', '$http', '$filter', '$sce
 		updateOperationHistory(null, "operation_complication_id", "int");
 	}
 	$scope.changeResult = function(newValue){
-		$scope.operationHistoryToEdit.operation_result_id = newValue.result_id;
-		$scope.operationHistoryToEdit.operation_result_name = newValue.result_name;
+		$scope.operationHistoryToEdit.operation_result_id = newValue.operation_result_id;
+		$scope.operationHistoryToEdit.operation_result_name = newValue.operation_result_name;
 		updateOperationHistory(null, "operation_result_id", "int");
 	}
 	$scope.changeDepartment = function(newValue){

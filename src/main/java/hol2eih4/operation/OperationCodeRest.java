@@ -199,12 +199,19 @@ public class OperationCodeRest extends IxBasicRest{
 			result.put("update", update);
 			return result;
 		}
+		@Value("${sql.hol1Eih.select.icd.start-end}") private String sqlHol1EihSelectIcdStartEnd;
 		@RequestMapping(value = "/insertOperationHistory", method = RequestMethod.POST)
 		public  @ResponseBody Map<String, Object> insertOperationHistory(@RequestBody Map<String, Object> insertOperationHistory) {
 			logger.info("\n ------------------------- Start "
 					+ "insertOperationHistory"
 					);
+			System.out.println("insertOperationHistory");
 			System.out.println(insertOperationHistory);
+			Map<String, Object> icdStartEnd 
+			= hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihSelectIcdStartEnd, new MapSqlParameterSource("icdId",insertOperationHistory.get("icd_id")));
+			insertOperationHistory.putAll(icdStartEnd);
+			System.out.println("icdStartEnd");
+			System.out.println(icdStartEnd);
 			String insertIntoTableOperationHistory = insertIntoTable(insertOperationHistory, "operation_history");
 			System.out.println(insertIntoTableOperationHistory);
 			hol1EihJdbcTemplate.execute(insertIntoTableOperationHistory);
@@ -256,7 +263,7 @@ public class OperationCodeRest extends IxBasicRest{
 		@Value("${sql.hol1.anesthetist}") private String sqlHol1Anesthetist;
 		@Value("${sql.hol1.anesthetist.department}") private String sqlHol1DepartmentAnesthetist;
 		@Value("${sql.hol1.anesthesia}") private String sqlHol1Anestesia;
-		@Value("${sql.hol1.result}") private String sqlHol1Result;
+		@Value("${sql.hol1.operation_result}") private String sqlHol1OperationResult;
 		@Value("${sql.hol1.complication}") private String sqlHol1Complication;
 		@Value("${sql.hol1.complication.department}") private String sqlHol1ComplicationDepartment;
 		@RequestMapping(value = "/v/operation/start-lists", method = RequestMethod.GET)
@@ -292,8 +299,8 @@ public class OperationCodeRest extends IxBasicRest{
 				model.put("anesthesia", anesthesia);
 				
 				List<Map<String, Object>> result 
-				= hol1EihJdbcTemplate.queryForList(sqlHol1Result);
-				model.put("result", result);
+				= hol1EihJdbcTemplate.queryForList(sqlHol1OperationResult);
+				model.put("operation_result", result);
 				
 				List<Map<String, Object>> complication 
 				= hol1EihJdbcTemplate.queryForList(sqlHol1Complication);
