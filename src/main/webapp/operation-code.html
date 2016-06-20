@@ -115,16 +115,19 @@ var viewTab = "editOperation";
 				<h2>Перегляд</h2>
 			 -->
 				<div>
-					<hr/>
 					<div ng-repeat="operation in ix.operationHistoryList"
 					ng-class="{'vertical-line': operation.operation_history_id == operationHistoryToEdit.operation_history_id}"
 						ng-click="useOperation(operation)">
+								<hr />
+						
 						<table width="100%">
 							<tr>
-								<td colspan="4"><a
+								<td colspan="4"><u> <b> Операція Nr
+											{{ix.operationHistoryList.length - $index}}</b></u> -
+											 <a
 									ng-class="{'selected-to-save': selectedToSave('beginOp', operation) }"
 									ng-click="openToEdit('beginOp')">{{fieldsOperation['beginOp']}}</a>
-									</td>
+								</td>
 								<td style="text-align: right;">
 									<div
 										ng-if="operation.operation_history_id == operationHistoryToEdit.operation_history_id">
@@ -184,10 +187,12 @@ var viewTab = "editOperation";
 							</span> <span ng-if="operation.procedure_moz_id"> <b>{{operation.procedure_moz_code}}</b>:
 								{{operation.procedure_moz_name}}.
 								{{operation.operation_additional}}
-							</span> <br /> <strike ng-if="operation.operation_code != 'moz'">
+							</span> <strike ng-if="operation.operation_code != 'moz'"><br />
 								<b> {{operation.operation_code}} </b>
 								{{operation.operation_name}}
-							</strike> <br /> <a
+							</strike>
+							<div>
+							<a
 								ng-class="{'selected-to-save': selectedToSave('icd', operation)}"
 								ng-click="openToEdit('icd')">{{fieldsOperation['icd']}}</a> : <span
 								class="alert-danger" ng-if="!operation.icd_code"> <i
@@ -195,6 +200,7 @@ var viewTab = "editOperation";
 								Невідмінно
 							</span> <b> {{operation.icd_code}} </b> {{operation.icd_name}}.
 							{{operation.icd_additional}}
+							</div>
 
 							<div>
 								<span class="tooltip2"> <a
@@ -282,7 +288,6 @@ var viewTab = "editOperation";
 								{{operation.operation_history_complication}}
 							</div>
 						</div>
-						<hr />
 					</div>
 				</div>
 			</div>
