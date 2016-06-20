@@ -672,13 +672,23 @@ var declareIcdModule = function($scope, $http){
 	console.log("----declareIcdModule-------------");
 	$scope.icdRoot = {};
 
-	$scope.icd10uatreeWithParentName = function (icdId){
-		$http.put('/icd10uatree_with_parent_name/'+icdId).
-		then(function(response) {
-			console.log("---addGroupName------success--------");
+	$scope.icd10uatreeWithParentName = function (operationHistoryToEdit){
+		var icdId = operationHistoryToEdit.icd_id;
+		$http.put('/icd10uatree_with_parent_name/'+icdId).then(function(response) {
+			$http.get("/v/ix-operation/"+operationHistoryToEdit.history_id).success(function(response) {
+				angular.forEach(response, function(oh, key) {
+					if(operationHistoryToEdit.operation_history_id = oh.operation_history_id){
+						operationHistoryToEdit.icd10uatree_with_parent_name = oh.icd10uatree_with_parent_name;
+						operationHistoryToEdit.icd_name = oh.icd_name;
+					}
+				});
+			});
 		}, function(response) {
 			console.log("---addGroupName-------erros-------");
+			console.log(response);
 		});
+		/*
+		 * */
 	}
 	$scope.codeWithPoint = function (icdCode){
 		if(icdCode == null)

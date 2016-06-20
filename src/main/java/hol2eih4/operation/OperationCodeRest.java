@@ -335,12 +335,7 @@ public class OperationCodeRest extends IxBasicRest{
 			sqlParam.put("historyId", historyId);
 			result.put("sqlParam", sqlParam);
 			result.put("historyMap", hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihHistoryId, sqlParam));
-			logger.info("\n ------338------------sql--"
-					+ historyId
-					+ "\n"+sqlHol1EihOperationHistoryHistoryId.replace(":historyId", ""+historyId));
-			List<Map<String, Object>> operationHistoryList 
-			= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihOperationHistoryHistoryId, sqlParam);
-			logger.info(""+operationHistoryList);
+			List<Map<String, Object>> operationHistoryList = getOperation(historyId);
 			result.put("operationHistoryList", operationHistoryList);
 			Map<String, Object> map = operationHistoryList.get(0);
 			System.out.println(map.get("icd_name"));
@@ -348,6 +343,16 @@ public class OperationCodeRest extends IxBasicRest{
 			System.out.println(map.get("icd10uatree_id"));
 			
 			return result;
+		}
+		@RequestMapping(value = "/v/ix-operation/{historyId}", method = RequestMethod.GET)
+		public @ResponseBody List<Map<String, Object>> getOperation(@PathVariable Integer historyId) {
+			logger.info("\n ------348------------sql--"
+					+ historyId
+					+ "\n"+sqlHol1EihOperationHistoryHistoryId.replace(":historyId", ""+historyId));
+			List<Map<String, Object>> operationHistoryList 
+			= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihOperationHistoryHistoryId, new MapSqlParameterSource("historyId", historyId));
+			logger.info(""+operationHistoryList);
+			return operationHistoryList;
 		}
 		
 		@Value("${sql.hol1Eih.department-patient}") private String sqlHol1EihDepartmentPatient;
