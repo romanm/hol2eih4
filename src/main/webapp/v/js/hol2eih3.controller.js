@@ -974,6 +974,7 @@ var initReport = function($scope){
 	$scope.isWaleMonth = function(month){
 		return month >= $scope.minMonth && month <= $scope.maxMonth;
 	}
+
 	$scope.setMonth = function(month){
 		console.log($scope.eqMonthType);
 		if($scope.eqMonthType == "month"){
@@ -1122,6 +1123,110 @@ eqMonth();
 
 }]);
 
+//GeneralReport
+hol2eih3App.controller('GeneralReportCtrl', [ '$scope', '$http', '$filter', '$sce'
+	, function ( $scope, $http, $filter, $sce) {
+		console.log("GeneralReportCtrl");
+		initReport($scope);
+		$scope.bedDayHead = [
+			{'key':'','name':'Показник'}
+			,{'key':'cnt_out','name':'Вибуло хворих з стаціонару','per_unit':'cnt_out'}
+			,{'key':'bed_day','name':'Проведено вибулими ліжкоднів'}
+			,{'key':'gender_m','name':'З них чоловіків','per_unit':'cnt_out'}
+			,{'key':'gender_f','name':'жінок','per_unit':'cnt_out'}
+			,{'key':'adult','name':'з них: дорослих','per_unit':'cnt_out'}
+			,{'key':'child','name':'дітей','per_unit':'cnt_out'}
+			,{'key':'dead','name':'Померло хворих','per_unit':'cnt_out'}
+			,{'key':'dead_adult','name':'з них: дорослих','per_unit':'cnt_out'}
+			,{'key':'dead_child','name':'дітей','per_unit':'cnt_out'}
+			,{'key':'h_planovo','name':'Госпіталізовано планово'}
+			,{'key':'h_terminovo','name':'Госпіталізовано терміново'}
+			,{'key':'h_terminovo6','name':'терміни: до 6 годин'}
+			,{'key':'h_terminovo7_24','name':'від 7 до 24 годин'}
+			,{'key':'h_terminovo24','name':'пізніше 24-х годин'}
+			,{'key':'powtorno','name':'Госпіталізовано повторно'}
+			,{'key':'move_other_hostital','name':'Переведено в інші стаціонари'}
+			,{'key':'healthy','name':'Особи, які виявилися здоровими'}
+			
+			,{'key':'iiww_participant','name':'Вибуло учасників ВВВ'}
+			,{'key':'iiww_participant_dead','name':'з них померло'}
+			,{'key':'iiww_participant_bed_day','name':'проведено вибулими ліжкоднів'}
+			,{'key':'iiww_invalid','name':'Вибуло інвалідів ВВВ'}
+			,{'key':'iiww_invalid_dead','name':'з них померло'}
+			,{'key':'iiww_invalid_bed_day','name':'проведено вибулими ліжкоднів'}
+			,{'key':'chernobyl','name':'Вибуло чорнобильців'}
+			,{'key':'chernobyl_dead','name':'з них померло'}
+			,{'key':'chernobyl_bed_day','name':'проведено вибулими ліжкоднів'}
+			
+			,{'key':'condition_passable','name':'З числа виписаних поступили в задовільному стані'}
+			,{'key':'condition_moderate','name':'середньої важкості'}
+			,{'key':'condition_serious','name':'важкому'}
+			,{'key':'condition_extremely','name':'вкрай важкому'}
+			,{'key':'condition_terminal','name':'термінальному'}
+			,{'key':'recovered','name':'З числа виписаних виписано з одужанням'}
+			,{'key':'recovered_adult','name':'з них: дорослих'}
+			,{'key':'recovered_child','name':'дітей'}
+			,{'key':'improved','name':'З числа виписаних виписано з покращенням'}
+			,{'key':'improved_adult','name':'з них: дорослих'}
+			,{'key':'improved_child','name':'дітей'}
+			,{'key':'unchanged','name':'З числа виписаних виписано без змін'}
+			,{'key':'unchanged_adult','name':'з них: дорослих'}
+			,{'key':'unchanged_child','name':'дітей'}
+			,{'key':'deterioration','name':'З числа виписаних виписано з погрішенням'}
+			,{'key':'deterioration_adult','name':'з них: дорослих'}
+			,{'key':'deterioration_child','name':'дітей'}
+		];
+
+		$scope.calcPart = function (h){
+			if($scope.generalReport){
+				var firstYear = $scope.generalReport.splitYears[$scope.years[0]];
+				var myField = firstYear[h.key];
+				if(myField){
+					if(h.per_unit){
+						var myFieldUnit = firstYear[h.per_unit];
+						var calcPart = Math.round(myField/myFieldUnit*1000)/10;
+						return calcPart + '%';
+					}
+				}
+			}
+			return '-';
+		};
+
+		$scope.calcProcent = function (year, key){
+			var calcProcent = Math.round(($scope.generalReport.splitYears[$scope.years[0]][key]/
+					$scope.generalReport.splitYears[year][key] - 1) * 1000)/10;
+			return calcProcent;
+		}
+
+		var url = '/r/report-general-'+$scope.minMonth+'-'+$scope.maxMonth;
+		console.log(url);
+		$http({ method : 'GET', url : url
+		}).success(function(data, status, headers, config) {
+			$scope.generalReport = data;
+			console.log($scope.generalReport);
+			initGeneralReport();
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+
+		/*
+		$http.get(url).success(function(response) {
+		}).error($scope.errorHandle);
+		 * */
+		function initGeneralReport(){
+			$scope.years = [];
+			$scope.generalReport.splitYears = {};
+			angular.forEach($scope.generalReport.reportGeneral, function(value, key) {
+				console.log(value);
+				console.log(value.year);
+				$scope.years.push(value.year);
+				$scope.generalReport.splitYears[value.year] = value;
+			});
+			console.log($scope.years);
+			console.log($scope.generalReport);
+		};
+}]);
+
 //hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 //                                                            , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', [ '$scope', '$http', '$filter', '$sce'
@@ -1139,9 +1244,9 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', [ '$scope', '$http', 
 		,{"title":"Переведено з інші відділення (люди)"
 			,"name":"П. з інші від.","key":"out_dep"}
 		,{"title":"Померло (люди)","name":"Померло","key":"dead"}
-		,{"title":"Лікарняна летальність (%)","name":"Л-на летальність","key":"mortality"}
+		,{"title":"Лікарняна летальність (%)","name":"% Л-на летальність","key":"mortality"}
 		,{"title":"Лікувалось хворих (люди)","name":"Лік. хворих","key":"TREAT"}
-		,{"title":"Проведено ліжкоднів (дні)","name":"Пр-но ліжкоднів","key":"bed_day"}
+		,{"title":"Проведено ліжкоднів (дні)","name":"Проведено ліжкоднів","key":"bed_day"}
 		,{"title":"План ліжкоднів (дні)","name":"Пл-н ліжкоднів","key":"bed_day_plan"}
 		,{"title":"Процент виконання плана ліжкоднів (%)","name":"% вик. плана","key":"bed_day_fulfil"}
 		,{"title":"Зайнятість ліжка (днів)","name":"З-ть ліжка","key":"bed_occupancy"}
@@ -1229,7 +1334,8 @@ hol2eih3App.controller('MvPatientInWeekDayCtrl', ['$scope', '$http', '$filter', 
 }]);
 
 // 2  Показ кількості надходжень/виписки хворих за останні 7 днів – movePatients.html.
-hol2eih3App.controller('MovePatientsCtrl', [ '$scope', '$http', '$filter', '$sce', function ($scope, $http, $filter, $sce) {
+hol2eih3App.controller('MovePatientsCtrl', [ '$scope', '$http', '$filter', '$sce'
+         , function ($scope, $http, $filter, $sce) {
 	console.log("/readMovePatients");
 	$scope.today = new Date();
 	$scope.last7day = [$scope.today];

@@ -13,7 +13,6 @@ public class AppConfig {
 	final static String applicationExcelFolderPfad = "/home/roman/db-java/h2-server/db-hol2-eih-excel/";
 	public final static String staticUrlPrefix = "http://127.0.0.1";
 	
-	
 //	public final static String  staticUrlPrefix = "http://localhost";
 	public final static SimpleDateFormat yyyyMMddDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	public final static SimpleDateFormat ddMMyyyDateFormat = new SimpleDateFormat("dd-MM-yyyy");
