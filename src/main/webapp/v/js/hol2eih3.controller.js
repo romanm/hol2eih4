@@ -1131,7 +1131,7 @@ hol2eih3App.controller('GeneralReportCtrl', [ '$scope', '$http', '$filter', '$sc
 		$scope.bedDayHead = [
 			{'key':'','name':'Показник'}
 			,{'key':'cnt_out','name':'Вибуло хворих з стаціонару','per_unit':'cnt_out'}
-			,{'key':'bed_day','name':'Проведено вибулими ліжкоднів'}
+			,{'key':'bed_day','name':'Проведено вибулими ліжкоднів','per_unit':'bed_day'}
 			,{'key':'gender_m','name':'З них чоловіків','per_unit':'cnt_out'}
 			,{'key':'gender_f','name':'жінок','per_unit':'cnt_out'}
 			,{'key':'adult','name':'з них: дорослих','per_unit':'cnt_out'}
@@ -1139,42 +1139,42 @@ hol2eih3App.controller('GeneralReportCtrl', [ '$scope', '$http', '$filter', '$sc
 			,{'key':'dead','name':'Померло хворих','per_unit':'cnt_out'}
 			,{'key':'dead_adult','name':'з них: дорослих','per_unit':'cnt_out'}
 			,{'key':'dead_child','name':'дітей','per_unit':'cnt_out'}
-			,{'key':'h_planovo','name':'Госпіталізовано планово'}
-			,{'key':'h_terminovo','name':'Госпіталізовано терміново'}
-			,{'key':'h_terminovo6','name':'терміни: до 6 годин'}
-			,{'key':'h_terminovo7_24','name':'від 7 до 24 годин'}
-			,{'key':'h_terminovo24','name':'пізніше 24-х годин'}
-			,{'key':'powtorno','name':'Госпіталізовано повторно'}
-			,{'key':'move_other_hostital','name':'Переведено в інші стаціонари'}
-			,{'key':'healthy','name':'Особи, які виявилися здоровими'}
+			,{'key':'h_planovo','name':'Госпіталізовано планово','per_unit':'cnt_out'}
+			,{'key':'h_terminovo','name':'Госпіталізовано терміново','per_unit':'cnt_out'}
+			,{'key':'h_terminovo6','name':'терміни: до 6 годин','per_unit':'cnt_out'}
+			,{'key':'h_terminovo7_24','name':'від 7 до 24 годин','per_unit':'cnt_out'}
+			,{'key':'h_terminovo24','name':'пізніше 24-х годин','per_unit':'cnt_out'}
+			,{'key':'powtorno','name':'Госпіталізовано повторно','per_unit':'cnt_out'}
+			,{'key':'move_other_hostital','name':'Переведено в інші стаціонари','per_unit':'cnt_out'}
+			,{'key':'healthy','name':'Особи, які виявилися здоровими','per_unit':'cnt_out'}
 			
-			,{'key':'iiww_participant','name':'Вибуло учасників ВВВ'}
-			,{'key':'iiww_participant_dead','name':'з них померло'}
-			,{'key':'iiww_participant_bed_day','name':'проведено вибулими ліжкоднів'}
-			,{'key':'iiww_invalid','name':'Вибуло інвалідів ВВВ'}
-			,{'key':'iiww_invalid_dead','name':'з них померло'}
-			,{'key':'iiww_invalid_bed_day','name':'проведено вибулими ліжкоднів'}
-			,{'key':'chernobyl','name':'Вибуло чорнобильців'}
-			,{'key':'chernobyl_dead','name':'з них померло'}
-			,{'key':'chernobyl_bed_day','name':'проведено вибулими ліжкоднів'}
+			,{'key':'iiww_participant','name':'Вибуло учасників ВВВ','per_unit':'cnt_out'}
+			,{'key':'iiww_participant_dead','name':'з них померло','per_unit':'cnt_out'}
+			,{'key':'iiww_participant_bed_day','name':'проведено вибулими ліжкоднів','per_unit':'bed_day'}
+			,{'key':'iiww_invalid','name':'Вибуло інвалідів ВВВ','per_unit':'cnt_out'}
+			,{'key':'iiww_invalid_dead','name':'з них померло','per_unit':'cnt_out'}
+			,{'key':'iiww_invalid_bed_day','name':'проведено вибулими ліжкоднів','per_unit':'bed_day'}
+			,{'key':'chernobyl','name':'Вибуло чорнобильців','per_unit':'cnt_out'}
+			,{'key':'chernobyl_dead','name':'з них померло','per_unit':'cnt_out'}
+			,{'key':'chernobyl_bed_day','name':'проведено вибулими ліжкоднів','per_unit':'bed_day'}
 			
-			,{'key':'condition_passable','name':'З числа виписаних поступили в задовільному стані'}
-			,{'key':'condition_moderate','name':'середньої важкості'}
-			,{'key':'condition_serious','name':'важкому'}
-			,{'key':'condition_extremely','name':'вкрай важкому'}
-			,{'key':'condition_terminal','name':'термінальному'}
-			,{'key':'recovered','name':'З числа виписаних виписано з одужанням'}
-			,{'key':'recovered_adult','name':'з них: дорослих'}
-			,{'key':'recovered_child','name':'дітей'}
-			,{'key':'improved','name':'З числа виписаних виписано з покращенням'}
-			,{'key':'improved_adult','name':'з них: дорослих'}
-			,{'key':'improved_child','name':'дітей'}
-			,{'key':'unchanged','name':'З числа виписаних виписано без змін'}
-			,{'key':'unchanged_adult','name':'з них: дорослих'}
-			,{'key':'unchanged_child','name':'дітей'}
-			,{'key':'deterioration','name':'З числа виписаних виписано з погрішенням'}
-			,{'key':'deterioration_adult','name':'з них: дорослих'}
-			,{'key':'deterioration_child','name':'дітей'}
+			,{'key':'condition_passable','name':'З числа виписаних поступили в задовільному стані','per_unit':'cnt_out'}
+			,{'key':'condition_moderate','name':'середньої важкості','per_unit':'cnt_out'}
+			,{'key':'condition_serious','name':'важкому','per_unit':'cnt_out'}
+			,{'key':'condition_extremely','name':'вкрай важкому','per_unit':'cnt_out'}
+			,{'key':'condition_terminal','name':'термінальному','per_unit':'cnt_out'}
+			,{'key':'recovered','name':'З числа виписаних виписано з одужанням','per_unit':'cnt_out'}
+			,{'key':'recovered_adult','name':'з них: дорослих','per_unit':'cnt_out'}
+			,{'key':'recovered_child','name':'дітей','per_unit':'cnt_out'}
+			,{'key':'improved','name':'З числа виписаних виписано з покращенням','per_unit':'cnt_out'}
+			,{'key':'improved_adult','name':'з них: дорослих','per_unit':'cnt_out'}
+			,{'key':'improved_child','name':'дітей','per_unit':'cnt_out'}
+			,{'key':'unchanged','name':'З числа виписаних виписано без змін','per_unit':'cnt_out'}
+			,{'key':'unchanged_adult','name':'з них: дорослих','per_unit':'cnt_out'}
+			,{'key':'unchanged_child','name':'дітей','per_unit':'cnt_out'}
+			,{'key':'deterioration','name':'З числа виписаних виписано з погрішенням','per_unit':'cnt_out'}
+			,{'key':'deterioration_adult','name':'з них: дорослих','per_unit':'cnt_out'}
+			,{'key':'deterioration_child','name':'дітей','per_unit':'cnt_out'}
 		];
 
 		$scope.calcPart = function (h){
