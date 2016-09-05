@@ -36,35 +36,40 @@
 	</nav>
 <div class="container-fluid">
 	<table class="table-bordered no-print">
-		<tr class="center">
-			<td>Вибрати <label> <input type="radio"
-					name="eqMonthType" value="month" ng-model="eqMonthType" /> місяць
-			</label>, <label> <input type="radio" name="eqMonthType"
-					value="period" ng-model="eqMonthType" /> період
-			</label></td>
-			<td ng-class="isWaleMonth(n) ? 'wale' : '' "
-				ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]"
-				ng-click="setMonth(n)"><a href="#">
-					{{n>9?'':'&nbsp;'}}{{n}} </a></td>
-			<td class="btn btn-sm btn-info" ng-click="eqMonth()">Виконати
-				запит</td>
-			<td ng-if="param.department_id > 0"><a
-				href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
-					Показати всі відділення </a></td>
-			<td>| |</td>
-			<td ng-if="param.department_id > 0"><a
-				href="/r/icd10.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">
-					МКХ10 </a></td>
-			<td ng-if="param.department_id > 0"><a
-				href="/r/adress.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">
-					по районах </a></td>
-			<td>| |</td>
-			<td ng-if="param.department_id > 0"><a
-				href="/r/motion.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">Журнал
-					руху хворих</a>
-					</td>
-		</tr>
-	</table>
+			<tr class="center">
+				<td>Вибрати <label> <input type="radio"
+						name="eqMonthType" value="month" ng-model="eqMonthType" /> місяць
+				</label>, <label> <input type="radio" name="eqMonthType"
+						value="period" ng-model="eqMonthType" /> період
+				</label></td>
+				<td ng-class="isWaleMonth(n) ? 'wale' : '' "
+					ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]"
+					ng-click="setMonth(n)"><a href="#">
+						{{n>9?'':'&nbsp;'}}{{n}} </a></td>
+				<td class="btn btn-sm btn-info" ng-click="eqMonth()">Виконати
+					запит</td>
+				<td ng-if="param.department_id > 0"><a
+					href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+						Показати всі відділення </a></td>
+				<td>| |</td>
+				<td ng-if="param.department_id > 0"><a
+					href="/r/icd10.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">
+						МКХ10 </a></td>
+				<td ng-if="param.department_id > 0"><a
+					href="/r/adress.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">
+						по районах </a></td>
+				<td>| |</td>
+				<td ng-if="param.department_id > 0"><a
+					href="/r/motion.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}&department_id={{param.department_id}}">Журнал
+						руху хворих</a></td>
+				<td><a
+					href="/r/general.html?department_id=1&m1=6&m2=6&type=month#">
+						Загальний звіт </a></td>
+				<td><a
+					href="/r/f20t3220.html?department_id=1&m1=6&m2=6&type=month#">
+						Ф.20 т.3220</a></td>
+			</tr>
+		</table>
 	<div ng-if="param.department_id > 0">
 			<table class="table table-bordered">
 				<caption>
