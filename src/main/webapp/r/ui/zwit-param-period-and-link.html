@@ -1,0 +1,39 @@
+<table class="table-bordered no-print">
+	<tr class="center">
+		<td>Вибрати
+
+			<div class="w3-dropdown-hover">
+				<button class="w3-btn w3-padding w3-light-grey">{{paramYear}}
+					р.</button>
+				<div class="w3-dropdown-content w3-border">
+					<a ng-repeat=" y in historyYears" href="#" title="{{y.cnt}}"
+						ng-click="setParamYear(y.year)"> {{y.year}} </a>
+				</div>
+			</div> <label> <input type="radio" name="eqMonthType" value="month"
+				ng-click="setMonthType('month')" ng-model="eqMonthType" /> місяць
+		</label>, <label> <input type="radio" name="eqMonthType"
+				ng-click="setMonthType('period')" value="period"
+				ng-model="eqMonthType" /> період
+		</label>
+		</td>
+		<td ng-class="isWaleMonth(n) ? 'wale' : '' "
+			ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12]" ng-click="setMonth(n)"><a
+			href="#"> {{n>9?'':'&nbsp;'}}{{n}} </a></td>
+		<td>&nbsp; <i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;</td>
+		<td class="btn btn-sm btn-info" ng-click="eqMonth()">Виконати
+			запит</td>
+		<td ng-if="param.department_id > 0"><a
+			href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
+				Показати всі відділення </a></td>
+		<td><span ng-if="dbDuration"> {{dbDuration}} </span><span ng-if="!dbDuration"> 0.0c </span></td>
+		<td>
+			<span title="Пошук по таблиці звіту"><a ng-click="openSeek = !openSeek"> <i
+					class="fa fa-search" aria-hidden="true"></i>
+			</a></span>
+			<span ng-if="openSeek"><input
+					ng-model="init.searchText"></span>
+
+		</td>
+	</tr>
+</table>
+

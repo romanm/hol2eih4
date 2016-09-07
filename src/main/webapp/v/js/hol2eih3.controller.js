@@ -924,7 +924,8 @@ eqMonth = function(){
 }
 }
 
-var initReport = function($scope){
+var initReport = function($scope, $http){
+	$scope.init = {searchText: ''};
 	$scope.param = parameters;
 	console.log($scope.param);
 	$scope.eqMonthType = "month";
@@ -945,6 +946,27 @@ var initReport = function($scope){
 			$scope.maxMonth = parameters.m2;
 		}
 	}
+
+	if(parameters.y){
+		$scope.paramYear = parameters.y;
+	}
+
+	$http({ method : 'GET', url : '/r/readHistoryYears'
+	}).success(function(data, status, headers, config) {
+		$scope.historyYears = data;
+		console.log($scope.historyYears);
+		if(!$scope.paramYear){
+			$scope.paramYear = $scope.historyYears[0].year;
+			console.log($scope.paramYear);
+		}
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+
+	$scope.setParamYear = function(year){
+		$scope.paramYear = year;
+	}
+	console.log($scope.paramYear);
 	
 	$scope.error = [];
 	
@@ -973,6 +995,10 @@ var initReport = function($scope){
 	
 	$scope.isWaleMonth = function(month){
 		return month >= $scope.minMonth && month <= $scope.maxMonth;
+	}
+
+	$scope.setMonthType = function(monthType){
+		$scope.eqMonthType = monthType;
 	}
 
 	$scope.setMonth = function(month){
@@ -1007,9 +1033,13 @@ var initReport = function($scope){
 	$scope.eqMonth = function(){
 		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
 //	eqMonth();
-		var url = "?department_id="+parameters.department_id + "&m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
+		var url = "?department_id="+parameters.department_id + "&m1="+$scope.minMonth+"&m2="+$scope.maxMonth
+		+ "&type="+$scope.eqMonthType;
 		if(!(parameters.department_id > 0))
 			url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&type="+$scope.eqMonthType;
+		if($scope.paramYear){
+			url = url + '&y=' + $scope.paramYear;
+		}
 //		window.open();
 		window.location.href = url;
 	}
@@ -1025,7 +1055,7 @@ var initReport = function($scope){
 hol2eih3App.controller('K1Icd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {
 	console.log("K1Icd10Ctrl");
-	initReport($scope);
+	initReport($scope, $http);
 	$scope.icd10Head = [
 		{"title":"","name":"МКХ-10","key":"ICD_CODE"}
 		,{"title":"","name":"Діагноз","key":"ICD_NAME"}
@@ -1056,7 +1086,7 @@ hol2eih3App.controller('DepartmentMotionCtrl', [ '$scope', '$http', '$filter', '
 		, function ( $scope, $http, $filter, $sce) {
 	console.log("DepartmentMotionCtrl");
 	$scope.url1 = "/r/readDepartmentMotion";
-	initReport($scope);
+	initReport($scope, $http);
 	initQuartal($scope, $http);
 
 	eqMonth();
@@ -1069,7 +1099,7 @@ hol2eih3App.controller('DepartmentAdressCtrl', ['$scope', '$http', '$filter', '$
 		, function ($scope, $http, $filter, $sce) {
 	console.log("DepartmentAdressCtrl");
 	$scope.url1 = "/r/readDepartmentAdress";
-	initReport($scope);
+	initReport($scope, $http);
 	initQuartal($scope, $http);
 	$scope.bedDayHead = [
  {"title":"","name":"Райони","key":""}
@@ -1090,7 +1120,7 @@ eqMonth();
 hol2eih3App.controller('DepartmentIcd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		, function ($scope, $http, $filter, $sce) {
 	console.log("DepartmentIcd10Ctrl");
-	initReport($scope);
+	initReport($scope, $http);
 	console.log($scope.param);
 	console.log($scope.param.showExpandIcd10==1);
 	$scope.url1 = $scope.param.showExpandIcd10==1?"/r/readDepartmentIcd10":"/r/readDepartmentIcd10Group";
@@ -1127,6 +1157,7 @@ eqMonth();
 hol2eih3App.controller('F20t3600Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		, function ( $scope, $http, $filter, $sce) {
 	console.log("F20t3600Ctrl");
+	initReport($scope, $http);
 	$scope.f20t3600Head = [
 		{'key':''
 			,'op':'оперовано'
@@ -1154,6 +1185,31 @@ hol2eih3App.controller('F20t3600Ctrl', [ '$scope', '$http', '$filter', '$sce'
 hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		, function ( $scope, $http, $filter, $sce) {
 	console.log("F20t3220Ctrl");
+	initReport($scope, $http);
+
+	var url = '/r/F20t3220-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
+	console.log(url);
+
+	$http({ method : 'GET', url : url
+	}).success(function(data, status, headers, config) {
+		$scope.f20t3220 = data;
+		$scope.dbDuration = data.duration;
+		initF20t3220();
+		console.log($scope.f20t3220);
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+
+	function initF20t3220(){
+		$scope.f20t3220.nrrIndexes = {};
+		$scope.f20t3220.list.forEach(function(f20t3220, i){
+			console.log(i);
+			console.log(f20t3220);
+			$scope.f20t3220.nrrIndexes[f20t3220.nrr] = i;
+		});
+		console.log($scope.f20t3220.nrrIndexes);
+	}
+
 	$scope.f20t3220Head = [
 		{'key':'','nrr':'Номер рядка','icd10':'Шифр відповідно до МКХ-10'
 			,'A':'А.Дорослі віком 18 років і старші'
@@ -1259,7 +1315,7 @@ hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 hol2eih3App.controller('GeneralReportCtrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {
 		console.log("GeneralReportCtrl");
-		initReport($scope);
+		initReport($scope, $http);
 		$scope.bedDayHead = [
 			{'key':'','name':'Показник'}
 			,{'key':'cnt_out','name':'Вибуло хворих з стаціонару','per_unit':'cnt_out'}
@@ -1364,7 +1420,7 @@ hol2eih3App.controller('GeneralReportCtrl', [ '$scope', '$http', '$filter', '$sc
 hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {
 	console.log("DepartmentMonthMovementCtrl");
-	initReport($scope);
+	initReport($scope, $http);
 	
 	$scope.bedDayHead = [
 		{"title":"","name":"Відділення","key":""}
