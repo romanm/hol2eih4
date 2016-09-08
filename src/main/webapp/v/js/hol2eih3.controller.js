@@ -927,7 +927,6 @@ eqMonth = function(){
 var initReport = function($scope, $http){
 	$scope.init = {searchText: ''};
 	$scope.param = parameters;
-	console.log($scope.param);
 	$scope.eqMonthType = "month";
 	if(parameters.type){
 		$scope.eqMonthType = parameters.type;
@@ -1029,10 +1028,8 @@ var initReport = function($scope, $http){
 		console.log(month+" - "+$scope.minMonth+" - "+$scope.maxMonth);
 		mmArray();
 	}
-	
-	$scope.eqMonth = function(){
-		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
-//	eqMonth();
+
+	function urlParam(){
 		var url = "?department_id="+parameters.department_id + "&m1="+$scope.minMonth+"&m2="+$scope.maxMonth
 		+ "&type="+$scope.eqMonthType;
 		if(!(parameters.department_id > 0))
@@ -1040,10 +1037,19 @@ var initReport = function($scope, $http){
 		if($scope.paramYear){
 			url = url + '&y=' + $scope.paramYear;
 		}
-//		window.open();
+		return url;
+	}
+
+	$scope.urlNrr = function(nrr){
+		var url = urlParam()+ '&nrr=' + nrr;
+		return url;
+	}
+
+	$scope.eqMonth = function(){
+		var url = urlParam();
 		window.location.href = url;
 	}
-	
+
 	$scope.months = {
 		'nominative': '_січень_лютий_березень_квітень_травень_червень_липень_серпень_вересень_жовтень_листопад_грудень'.split('_'),
 		'accusative': '_січня_лютого_березня_квітня_травня_червня_липня_серпня_вересня_жовтня_листопада_грудня'.split('_')
@@ -1186,6 +1192,10 @@ hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		, function ( $scope, $http, $filter, $sce) {
 	console.log("F20t3220Ctrl");
 	initReport($scope, $http);
+	
+	$scope.nrrData = function(h){
+		return $scope.f20t3220.list[$scope.f20t3220.nrrIndexes[h.nrr]];
+	}
 
 	var url = '/r/F20t3220-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
 	console.log(url);
@@ -1203,8 +1213,6 @@ hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	function initF20t3220(){
 		$scope.f20t3220.nrrIndexes = {};
 		$scope.f20t3220.list.forEach(function(f20t3220, i){
-			console.log(i);
-			console.log(f20t3220);
 			$scope.f20t3220.nrrIndexes[f20t3220.nrr] = i;
 		});
 		console.log($scope.f20t3220.nrrIndexes);
@@ -1309,6 +1317,11 @@ hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		,{'key':'N','nrr':'20.4','icd10':'T20-T32','name':'термічні та хімічні опіки'}
 		,{'key':'N','nrr':'20.5','icd10':'T36-T50','name':'отруєння ліками та біологічними речовинами'}
 		];
+	$scope.f20t3220HeadNrrIndexes = {};
+	$scope.f20t3220Head.forEach(function(h,i){
+		$scope.f20t3220HeadNrrIndexes[h.nrr] = i;
+	});
+	console.log($scope.f20t3220HeadNrrIndexes);
 }]);
 
 //GeneralReport

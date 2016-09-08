@@ -1,0 +1,13 @@
+<td title="{{h.title}}"><span ng-bind-html="h.name"></span></td>
+<td><a ng-if="!param.nrr" href="{{urlNrr(h.nrr)}}"> {{h.nrr}} </a>
+	<span ng-if="param.nrr"> {{h.nrr}} </span></td>
+<td>{{h.icd10}}</td>
+<td>{{nrrData(h).cnt}}</td>
+<td>{{nrrData(h).bedday}}</td>
+<td><span ng-if="nrrData(h).dead>0">{{nrrData(h).dead}}</span></td>
+
+<td><span ng-if="nrrData(h).age17>0">{{nrrData(h).age17}}</span></td>
+<td><span ng-if="nrrData(h).age1>0">{{nrrData(h).age1}}</span></td>
+<td><span ng-if="nrrData(h).bedday17>0">{{nrrData(h).bedday17}}</span></td>
+<td><span ng-if="nrrData(h).dead17>0">{{nrrData(h).dead17}}</span></td>
+<td><span ng-if="nrrData(h).dead1>0">{{nrrData(h).dead1}}</span></td>
