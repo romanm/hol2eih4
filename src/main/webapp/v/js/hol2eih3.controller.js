@@ -1194,12 +1194,24 @@ hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	initReport($scope, $http);
 	
 	$scope.nrrData = function(h){
-		return $scope.f20t3220.list[$scope.f20t3220.nrrIndexes[h.nrr]];
+		if($scope.f20t3220)
+			return $scope.f20t3220.list[$scope.f20t3220.nrrIndexes[h.nrr]];
 	}
 
-	var url = '/r/F20t3220-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
-	console.log(url);
 
+	var urlM1M2Year = '-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
+	if(parameters.nrr){
+		var urlM1M2YearNrr = urlM1M2Year + '-' + parameters.nrr.replace('.','_');
+		$http({ method : 'GET', url : '/r/F20t3220NrrPatienten' + urlM1M2YearNrr
+		}).success(function(data, status, headers, config) {
+			$scope.f20t3220NrrPatienten = data;
+			console.log($scope.f20t3220NrrPatienten);
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+	}
+	var url = '/r/F20t3220' + urlM1M2Year;
+	console.log(url);
 	$http({ method : 'GET', url : url
 	}).success(function(data, status, headers, config) {
 		$scope.f20t3220 = data;

@@ -9,9 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.StandardEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -29,30 +26,37 @@ public class ReportRestService {
 	@Autowired private JdbcTemplate hol1EihJdbcTemplate;
 	@Autowired private PropertyHolder propertyHolder;
 	
-	private @Value("${sql.hol1Eih.readHistoryYears}") String sqlHol1EihReadHistoryYears;
-	@RequestMapping(value = "/r/readHistoryYears", method = RequestMethod.GET)
-	public  @ResponseBody List<Map<String, Object>> readDepartmentMotion() {
-		logger.info("\n ------------------------- "
-				+ "/r/readHistoryYears"
-				);
-		String string = propertyHolder.get("sql.hol1Eih.f20t3220.all");
-		System.out.println(string);
-//		String sqlF20T3220Part = "2";
-//		System.out.println(propertyHolder.get("sql.hol1Eih.t22."+ sqlF20T3220Part));
-		List<Map<String, Object>> historyYears
-			= hol1EihJdbcTemplate.queryForList(sqlHol1EihReadHistoryYears);
-		return historyYears;
+	private @Value("${sql.hol1Eih.f20t3220.nrr_patients.year_month}") String sqlHol1EihF20t3220NrrPatientsYearMonth;
+	@RequestMapping(value = "/r/F20t3220NrrPatienten-{m1}-{m2}-{year}-{nrr}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readF20t3220NrrPatienten(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,@PathVariable String nrr
+			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("year", year);
+		logger.info("\n -------------------------  /r/F20t3220NrrPatienten- "+nrr + map);
+		String nrr_sql = propertyHolder.get("sql.hol1Eih.f20t3220.history_diagnos-icd." + nrr);
+		logger.info("\n "+nrr_sql);
+		String sql = sqlHol1EihF20t3220NrrPatientsYearMonth.replace(":nrr_sql", nrr_sql);
+		logger.info("\n "+sqlHol1EihF20t3220NrrPatientsYearMonth);
+		List<Map<String, Object>> list 
+			= hol1EihParamJdbcTemplate.queryForList(sql,map);
+		logger.info("\n -------------------------  /r/F20t3220NrrPatienten- "+nrr + map);
+		map.put("nrr", nrr);
+		map.put("list", list);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		return map;
 	}
 
-	private void test3220(Map<String, Object> mmp) {
-//		String sql = propertyHolder.get("sql.hol1Eih.history.year_month");
-		String sql = propertyHolder.get("sql.hol1Eih.f20t3220.year_month");
-		System.out.println(sql);
-		System.out.println(sql.length());
-		List<Map<String, Object>> queryForList = hol1EihParamJdbcTemplate.queryForList(sql,mmp);
-		mmp.put("list", queryForList);
-	}
-
+	private @Value("${sql.hol1Eih.f20t3220.year_month}") String sqlHol1EihF20t3220YearMonth;
 	@RequestMapping(value = "/r/F20t3220-{m1}-{m2}-{year}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readF20t3220(
 			@PathVariable Integer m1
@@ -66,11 +70,15 @@ public class ReportRestService {
 		map.put("max_month", m2);
 		map.put("year", year);
 		logger.info("\n -------------------------  /r/F20t3220- " + map);
-		test3220(map);
+		String property = "sql.hol1Eih.f20t3220.history_diagnos-icd.7_2";
+		logger.info("\n property: "+ property+ "\n " + propertyHolder.get(property)+ "\n " );
+		String sql = propertyHolder.get("sql.hol1Eih.f20t3220.year_month");
+		System.out.println(sql);
+		System.out.println(sql.length());
+		List<Map<String, Object>> queryForList = hol1EihParamJdbcTemplate.queryForList(sql,map);
+		map.put("list", queryForList);
 		map.put("m1", m1);
 		map.put("m2", m2);
-		
-//		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2);
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));
@@ -90,7 +98,6 @@ public class ReportRestService {
 		logger.info("\n -------------------------  /r/F20t3600-"+ map);
 		StopWatch watch = new StopWatch();
 		watch.start();
-//		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2);
 		List<Map<String, Object>> historyYears
 		= hol1EihJdbcTemplate.queryForList(sqlHol1EihReadHistoryYears);
 		watch.stop();
@@ -99,5 +106,15 @@ public class ReportRestService {
 		map.put("list", historyYears);
 		return map;
 	}
+
+	private @Value("${sql.hol1Eih.readHistoryYears}") String sqlHol1EihReadHistoryYears;
+	@RequestMapping(value = "/r/readHistoryYears", method = RequestMethod.GET)
+	public  @ResponseBody List<Map<String, Object>> readDepartmentMotion() {
+		String string = propertyHolder.get("sql.hol1Eih.f20t3220.all");
+		List<Map<String, Object>> historyYears
+			= hol1EihJdbcTemplate.queryForList(sqlHol1EihReadHistoryYears);
+		return historyYears;
+	}
+
 	
 }
