@@ -25,7 +25,7 @@ public class ReportRestService {
 	@Autowired private NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 	@Autowired private JdbcTemplate hol1EihJdbcTemplate;
 	@Autowired private PropertyHolder propertyHolder;
-	
+
 	private @Value("${sql.hol1Eih.f20t3220.nrr_patients.year_month}") String sqlHol1EihF20t3220NrrPatientsYearMonth;
 	@RequestMapping(value = "/r/F20t3220NrrPatienten-{m1}-{m2}-{year}-{nrr}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readF20t3220NrrPatienten(
@@ -42,9 +42,9 @@ public class ReportRestService {
 		map.put("year", year);
 		logger.info("\n -------------------------  /r/F20t3220NrrPatienten- "+nrr + map);
 		String nrr_sql = propertyHolder.get("sql.hol1Eih.f20t3220.history_diagnos-icd." + nrr);
-		logger.info("\n "+nrr_sql);
+//		logger.info("\n "+nrr_sql);
 		String sql = sqlHol1EihF20t3220NrrPatientsYearMonth.replace(":nrr_sql", nrr_sql);
-		logger.info("\n "+sqlHol1EihF20t3220NrrPatientsYearMonth);
+		logger.info("\n "+sql);
 		List<Map<String, Object>> list 
 			= hol1EihParamJdbcTemplate.queryForList(sql,map);
 		logger.info("\n -------------------------  /r/F20t3220NrrPatienten- "+nrr + map);

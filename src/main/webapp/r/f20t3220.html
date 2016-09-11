@@ -70,24 +70,37 @@
 					<th ng-repeat="n in [1,2,3,4,5,6,7,8]">{{n}}</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody ng-if="param.nrr"
+				ng-init="headNrrIndex = f20t3220HeadNrrIndexes[param.nrr];
+			h = f20t3220Head[headNrrIndex];
+			">
+				<tr ng-include="'ui/t3220-tbody.html'">
+				</tr>
+				<tr>
+					<th colspan="11">Пацієнти</th>
+				</tr>
+				<tr ng-repeat="h in f20t3220NrrPatienten.list">
+					<td colspan="4">{{h.patient_surname}}, {{h.patient_name}}
+						{{h.patient_patronnymic}}, {{h.patient_gender?'Ч':'Ж'}},
+						{{h.patient_dob}},
+						<b>
+						{{h.icd_code}}
+						</b>
+						ІХ-№-{{h.history_no}}
+						</td>
+					<td>{{h.bedday}}</td>
+					<td>{{h.dead}}</td>
+					<td>{{h.age17}}</td>
+					<td>{{h.age1}}</td>
+					<td>{{h.bedday17}}</td>
+					<td>{{h.dead17}}</td>
+					<td>{{h.dead1}}</td>
+				</tr>
+			</tbody>
+			<tbody ng-if="!param.nrr">
 				<tr ng-repeat="h in f20t3220Head | filter:init.searchText" ng-if="$index > 0"
-				ng-init="
-				nrrIndex = f20t3220.nrrIndexes[h.nrr];
-				nrrData = f20t3220.list[f20t3220.nrrIndexes[h.nrr]];"
+				ng-include="'ui/t3220-tbody.html'"
 				>
-					<td title="{{h.title}}" ng-bind-html="h.name"></td>
-					<td>{{h.nrr}}</td>
-					<td>{{h.icd10}}</td>
-					<td>{{f20t3220.list[f20t3220.nrrIndexes[h.nrr]].cnt}}</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
 				</tr>
 			</tbody>
 		</table>
