@@ -56,6 +56,17 @@ public class ReportRestService {
 		return map;
 	}
 
+	private @Value("${sql.hol1Eih.f20t3220.year_month2}") String sqlHol1EihF20t3220YearMonth2;
+	@RequestMapping(value = "/r/2_F20t3220-{m1}-{m2}-{year}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> read2_F20t3220(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,Principal userPrincipal) {
+		logger.info("\n -------------------------  /r/2_F20t3220");
+		return readSQL_FOR_F20t3220(m1, m2, year, sqlHol1EihF20t3220YearMonth2);
+	}
+
 	private @Value("${sql.hol1Eih.f20t3220.year_month}") String sqlHol1EihF20t3220YearMonth;
 	@RequestMapping(value = "/r/F20t3220-{m1}-{m2}-{year}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readF20t3220(
@@ -63,6 +74,12 @@ public class ReportRestService {
 			,@PathVariable Integer m2
 			,@PathVariable Integer year
 			,Principal userPrincipal) {
+		logger.info("\n -------------------------  /r/F20t3220");
+		return readSQL_FOR_F20t3220(m1, m2, year, sqlHol1EihF20t3220YearMonth);
+	}
+
+	private Map<String, Object> readSQL_FOR_F20t3220(Integer m1, Integer m2, Integer year,
+			String sqlHol1Eih_TO_F20t3220YearMonth) {
 		StopWatch watch = new StopWatch();
 		watch.start();
 		Map<String, Object> map = new HashMap<>();
@@ -70,12 +87,11 @@ public class ReportRestService {
 		map.put("max_month", m2);
 		map.put("year", year);
 		logger.info("\n -------------------------  /r/F20t3220- " + map);
-		String property = "sql.hol1Eih.f20t3220.history_diagnos-icd.7_2";
+		String property = "sql.hol1Eih.f20t3220.history_diagnos-icd.11_3";
 		logger.info("\n property: "+ property+ "\n " + propertyHolder.get(property)+ "\n " );
-		String sql = propertyHolder.get("sql.hol1Eih.f20t3220.year_month");
-		System.out.println(sql);
-		System.out.println(sql.length());
-		List<Map<String, Object>> queryForList = hol1EihParamJdbcTemplate.queryForList(sql,map);
+		System.out.println(sqlHol1Eih_TO_F20t3220YearMonth);
+		System.out.println(sqlHol1Eih_TO_F20t3220YearMonth.length());
+		List<Map<String, Object>> queryForList = hol1EihParamJdbcTemplate.queryForList(sqlHol1Eih_TO_F20t3220YearMonth,map);
 		map.put("list", queryForList);
 		map.put("m1", m1);
 		map.put("m2", m2);

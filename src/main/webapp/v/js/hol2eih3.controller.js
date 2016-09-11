@@ -1218,6 +1218,20 @@ hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		$scope.dbDuration = data.duration;
 		initF20t3220();
 		console.log($scope.f20t3220);
+		$http({ method : 'GET', url : '/r/2_F20t3220' + urlM1M2Year
+		}).success(function(data, status, headers, config) {
+			console.log($scope.f20t3220.list.length);
+			console.log(Object.keys($scope.f20t3220.nrrIndexes).length);
+			console.log(data);
+			data.list.forEach(function(f20t3220){
+				var i = $scope.f20t3220.list.length;
+				console.log(i+'/'+f20t3220.nrr);
+				$scope.f20t3220.list.push(f20t3220);
+				$scope.f20t3220.nrrIndexes[f20t3220.nrr] = i;
+			});
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
 	}).error(function(data, status, headers, config) {
 		$scope.error = data;
 	});
@@ -1291,11 +1305,11 @@ hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		,{'key':'N','nrr':'12.3','icd10':'K25-K27','name':'виразка шлунка та 12-палої кишки'}
 		,{'key':'N','nrr':'12.4','icd10':'K25.1, 2, 5, 6; K26.1, 2, 5, 6','name':'у тому числі проривна виразка шлунка та 12-палої кишки'}
 		,{'key':'N','nrr':'12.5','icd10':'K29','name':'гастрит та дуоденіт'}
-		,{'key':'N','nrr':'12.6','icd10':'K29.0.1','name':'у тому числі гострий геморагічний та інші гострі гастрити'}
+		,{'key':'N','nrr':'12.6','icd10':'K29.0, K29.1','name':'у тому числі гострий геморагічний та інші гострі гастрити'}
 		,{'key':'N','nrr':'12.7','icd10':'K30','name':'диспепсія'}
 		,{'key':'N','nrr':'12.8','icd10':'K35','name':'гострий апендицит'}
 		,{'key':'N','nrr':'12.9','icd10':'K40-K46','name':'грижа'}
-		,{'key':'N','nrr':'12.10','icd10':'K40.0, 1, 3, 4, K41.0, 1, 3, 4, K42.0,1- K46.0, 1','name':'у тому числі защемлена грижа (з непрохідністю, гангреною)'}
+		,{'key':'N','nrr':'12.10','icd10':'K40.0,1,3,4, K41.0,1,3,4, K42.0,1,3,4 - K46.0,1,3,4','name':'у тому числі защемлена грижа (з непрохідністю, гангреною)'}
 		,{'key':'N','nrr':'12.11','icd10':'K50','name':'хвороба Крона'}
 		,{'key':'N','nrr':'12.12','icd10':'K51','name':'неспецифічний виразковий коліт'}
 		,{'key':'N','nrr':'12.13','icd10':'K58','name':'синдром подразнення кишечника'}
