@@ -6,7 +6,17 @@
 div.editor-eix2 textarea{
 	width: 100%;
 }
-
+.signal-R, .signal-O, .signal-Y, .signal-G, .signal-W, .signal-B
+{
+	color:#fff;
+	font-weight: bold;
+}
+.signal-R{background-color:#a02128;}
+.signal-O{background-color:#d4652f;}
+.signal-Y{background-color:#f7ba0b;}
+.signal-G{background-color:#317f43;}
+.signal-W{background-color:#f4f4f4;color:#fff;}
+.signal-B{background-color:#154889;}
 .editor-head{
 	margin-top: 0;
 	margin-bottom: 1px;

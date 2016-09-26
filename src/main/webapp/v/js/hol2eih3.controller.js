@@ -1164,6 +1164,27 @@ hol2eih3App.controller('F20t3600Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		, function ( $scope, $http, $filter, $sce) {
 	console.log("F20t3600Ctrl");
 	initReport($scope, $http);
+	
+	var urlM1M2Year = '-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
+	var url = '/r/F20t3600' + urlM1M2Year;
+	console.log(url);
+
+	$http({ method : 'GET', url : url
+	}).success(function(data, status, headers, config) {
+		$scope.f20t3600 = data;
+		console.log($scope.f20t3600);
+		$scope.dbDuration = data.duration;
+		$scope.f20t3600.nrrIndexes = {};
+		$scope.f20t3600.list.forEach(function(f20t3600, i){
+			console.log(f20t3600);
+			$scope.f20t3600.nrrIndexes['row_' + f20t3600.nrr] = i;
+		});
+		console.log($scope.f20t3600.nrrIndexes);
+		console.log($scope.f20t3600.nrrIndexes.row_3);
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+	
 	$scope.f20t3600Head = [
 		{'key':''
 			,'op':'оперовано'
@@ -1176,7 +1197,7 @@ hol2eih3App.controller('F20t3600Ctrl', [ '$scope', '$http', '$filter', '$sce'
 			,'nrr':'Номер рядка'
 			,'name':'Наіменування операцій'}
 		,{'key':'N','name':'Гостра непрохідність'}
-		,{'key':'N','name':'Гостра апендицит'}
+		,{'key':'N','name':'Гострий апендицит'}
 		,{'key':'N','name':'Проривна виразка шлунка та 12-палої кишки'}
 		,{'key':'N','name':'Шлунково кишкова кровотеча'}
 		,{'key':'N','name':'Защемлена грижа'}
@@ -1200,6 +1221,9 @@ hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 
 
 	var urlM1M2Year = '-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
+	var url = '/r/F20t3220' + urlM1M2Year;
+	console.log(url);
+
 	if(parameters.nrr){
 		var urlM1M2YearNrr = urlM1M2Year + '-' + parameters.nrr.replace('.','_');
 		$http({ method : 'GET', url : '/r/F20t3220NrrPatienten' + urlM1M2YearNrr
@@ -1210,8 +1234,7 @@ hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 			$scope.error = data;
 		});
 	}
-	var url = '/r/F20t3220' + urlM1M2Year;
-	console.log(url);
+
 	$http({ method : 'GET', url : url
 	}).success(function(data, status, headers, config) {
 		$scope.f20t3220 = data;

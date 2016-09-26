@@ -73,15 +73,48 @@
 					<th ng-repeat="n in [1,2,3,4,5,6,7,8]">{{n}}</th>
 				</tr>
 			</thead>
-			<tbody ng-repeat="h in f20t3600Head" ng-if="$index > 0">
+			<tbody ng-repeat="h in f20t3600Head" ng-if="$index > 0"
+				ng-init="
+			nrr_all = $index * 2 - 1;
+			nrr_24 = $index * 2;
+			">
 				<tr>
 					<td rowspan="2">{{h.name}}</td>
 					<td>{{f20t3600Head[0].all}}</td>
-					<td>{{$index * 2 - 1}}</td>
+					<td>{{nrr_all}}</td>
+					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].op_no_1 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].op_no_1:''}}</td>
+					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].op_no_17_2 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_'
+						+ nrr_all]].op_no_17_2:''}}</td>
+					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].dead_op_no_3 >0 ?
+						f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].dead_op_no_3:''}}</td>
+					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].dead_op_no_17_4 >0 ?
+						f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].dead_op_no_17_4:''}}</td>
+					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].op_yes_5 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].op_yes_5:''}}</td>
+					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].op_yes_17_6 >0 ?
+						f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].op_yes_17_6:''}}</td>
+					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].dead_op_yes_7 >0 ?
+						f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].dead_op_yes_7:''}}</td>
+					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].dead_op_yes_17_8 >0 ?
+						f20t3600.list[f20t3600.nrrIndexes['row_' +
+						nrr_all]].dead_op_yes_17_8:''}}</td>
 				</tr>
 				<tr>
 					<td>{{f20t3600Head[0].after24}}</td>
-					<td>{{$index * 2}}</td>
+					<td>{{nrr_24}}</td>
 				</tr>
 			</tbody>
 		</table>

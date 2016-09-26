@@ -82,12 +82,8 @@
 				<tr ng-repeat="h in f20t3220NrrPatienten.list">
 					<td colspan="4">{{h.patient_surname}}, {{h.patient_name}}
 						{{h.patient_patronnymic}}, {{h.patient_gender?'Ч':'Ж'}},
-						{{h.patient_dob}},
-						<b>
-						{{h.icd_code}}
-						</b>
-						ІХ-№-{{h.history_no}}
-						</td>
+						{{h.patient_dob}}, <b> {{h.icd_code}} </b> ІХ-№-{{h.history_no}}
+					</td>
 					<td>{{h.bedday}}</td>
 					<td>{{h.dead}}</td>
 					<td>{{h.age17}}</td>
