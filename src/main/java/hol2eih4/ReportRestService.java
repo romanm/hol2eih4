@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StopWatch;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,8 +27,37 @@ public class ReportRestService {
 	@Autowired private JdbcTemplate hol1EihJdbcTemplate;
 	@Autowired private PropertyHolder propertyHolder;
 
+	@GetMapping("/r/F20t3600NrrPatienten-{m1}-{m2}-{year}-{nrr}")
+	public  @ResponseBody Map<String, Object> readF20t3600NrrPatienten(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,@PathVariable String nrr
+			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("year", year);
+		logger.info("\n -------------------------  /r/F20t3600NrrPatienten- "+nrr + map);
+		String nrr_sql = propertyHolder.get("sql.hol1Eih.f20t3600.row." + nrr);
+		logger.info("\n "+nrr_sql);
+		String sql = sqlHol1EihF20t3600NrrPatientsYearMonth.replace(":nrr_sql", nrr_sql);
+		logger.info("\n "+sql.replace(":min_month", ""+m1).replace(":max_month", ""+m2).replace(":year", ""+year));
+		List<Map<String, Object>> list = hol1EihParamJdbcTemplate.queryForList(sql,map);
+		map.put("nrr", nrr);
+		map.put("list", list);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+	private @Value("${sql.hol1Eih.f20t3600.nrr_patients.year_month}") String sqlHol1EihF20t3600NrrPatientsYearMonth;
 	private @Value("${sql.hol1Eih.f20t3220.nrr_patients.year_month}") String sqlHol1EihF20t3220NrrPatientsYearMonth;
-	@RequestMapping(value = "/r/F20t3220NrrPatienten-{m1}-{m2}-{year}-{nrr}", method = RequestMethod.GET)
+
+	@GetMapping("/r/F20t3220NrrPatienten-{m1}-{m2}-{year}-{nrr}")
 	public  @ResponseBody Map<String, Object> readF20t3220NrrPatienten(
 			@PathVariable Integer m1
 			,@PathVariable Integer m2
@@ -87,8 +117,6 @@ public class ReportRestService {
 		map.put("max_month", m2);
 		map.put("year", year);
 		logger.info("\n -------------------------  /r/F20t3220- " + map);
-		String property = "sql.hol1Eih.f20t3220.history_diagnos-icd.11_3";
-		logger.info("\n property: "+ property+ "\n " + propertyHolder.get(property)+ "\n " );
 		System.out.println(sqlHol1Eih_TO_F20t3220YearMonth);
 		System.out.println(sqlHol1Eih_TO_F20t3220YearMonth.length());
 		List<Map<String, Object>> queryForList = hol1EihParamJdbcTemplate.queryForList(sqlHol1Eih_TO_F20t3220YearMonth,map);
@@ -101,25 +129,31 @@ public class ReportRestService {
 		return map;
 	}
 
-	@RequestMapping(value = "/r/F20t3600-{m1}-{m2}-{year}", method = RequestMethod.GET)
+	private @Value("${sql.hol1Eih.f20t3600.year_month}") String sqlHol1EihF20t3600YearMonth;
+	@GetMapping("/r/F20t3600-{m1}-{m2}-{year}")
 	public  @ResponseBody Map<String, Object> readF20t3600(
 			@PathVariable Integer m1
 			,@PathVariable Integer m2
 			,@PathVariable Integer year
 			,Principal userPrincipal) {
 		Map<String, Object> map = new HashMap<>();
-		map.put("m1", m1);
-		map.put("m2", m2);
+		map.put("min_month", m1);
+		map.put("max_month", m2);
 		map.put("year", year);
 		logger.info("\n -------------------------  /r/F20t3600-"+ map);
+		String hym = propertyHolder.get("sql.hol1Eih.history.year_month");
+		System.out.println(hym);
 		StopWatch watch = new StopWatch();
 		watch.start();
-		List<Map<String, Object>> historyYears
-		= hol1EihJdbcTemplate.queryForList(sqlHol1EihReadHistoryYears);
+		System.out.println(sqlHol1EihF20t3600YearMonth);
+		List<Map<String, Object>> list
+			= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihF20t3600YearMonth,map);
+		System.out.println("duration = " + map.get("duration"));
+		map.put("list", list);
+		map.put("m1", m1);
+		map.put("m2", m2);
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
-		System.out.println("duration = " + map.get("duration"));
-		map.put("list", historyYears);
 		return map;
 	}
 

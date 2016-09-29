@@ -35,90 +35,67 @@
 	<div class="container-fluid">
 	<div 
 		ng-include="'ui/zwit-param-period-and-link.html'"></div>
-		Таблиця 3600
+		Таблиця 3600 — {{minMonth}}-{{maxMonth}}/{{paramYear}}
 		<h1>Термінова хірургічна допомога хворим, які вибули зі
 			стаціонару за звітний період</h1>
-		<table class="table table-striped">
-			<caption>
-				<span class="pull-right" style="font-size: small;">
-				{{f20t3600Head[0].old_0_17_full}}</span>
-			</caption>
-			<thead>
+		<div ng-if="param.nrr">
+			<a
+				href="?m1={{param.m1}}&m2={{param.m2}}&y={{param.y}}&type={{param.type}}">Показати
+				всю таблицю </a>
+			<table class="table table-striped">
+				<caption>
+					<span class="pull-right" style="font-size: small;">
+						{{f20t3600Head[0].old_0_17_full}}</span>
+				</caption>
+				<thead ng-include="'ui/f20t3600tHead.html'"></thead>
+				<tbody
+					ng-init="
+		nrr_all = param.nrr%2==1?param.nrr:param.nrr*1-1;
+		nrr_24 = param.nrr%2==0?param.nrr:param.nrr*1+1;
+		h = f20t3600Head[nrr_24/2];
+	"
+					ng-include="'ui/t3600-tbody.html'">
+				</tbody>
 				<tr>
-					<th rowspan="3">{{f20t3600Head[0].name}}</th>
-					<th rowspan="3">{{f20t3600Head[0].termin}}</th>
-					<th rowspan="3">{{f20t3600Head[0].nrr}}</th>
-					<th colspan="8">Доставлено хворих в стаціонар кількість</th>
+					<th colspan="11">Пацієнти</th>
 				</tr>
-				<tr>
-					<th colspan="2">не {{f20t3600Head[0].op}}</th>
-					<th colspan="2">{{f20t3600Head[0].dead}}</th>
-					<th colspan="2">{{f20t3600Head[0].op}}</th>
-					<th colspan="2">{{f20t3600Head[0].dead}}</th>
+				<tr ng-repeat="h in f20t3600NrrPatienten.list">
+					<td colspan="3">{{$index+1}}. {{h.patient_surname}},
+						{{h.patient_name}} {{h.patient_patronnymic}},
+						{{h.patient_gender?'Ч':'Ж'}}, {{h.patient_dob}}, <b
+						title="{{h.icd_name}}"> {{h.icd_code}} </b>
+						ІХ-№-{{h.history_no}},
+						вип.-{{h.history_out | date}}
+						<div>{{h.history_diagnos_additional}}</div>
+					</td>
+					<td>{{h.op_no_1}}</td>
+					<td>{{h.op_no_17_2}}</td>
+					<td>{{h.dead_op_no_3}}</td>
+					<td>{{h.dead_op_no_17_4}}</td>
+					<td>{{h.op_yes_5}}</td>
+					<td>{{h.op_yes_17_6}}</td>
+					<td>{{h.dead_op_yes_7}}</td>
+					<td>{{h.dead_op_yes_17_8}}</td>
 				</tr>
-				<tr>
-					<th>{{f20t3600Head[0].all}}</th>
-					<th>{{f20t3600Head[0].old_0_17}}</th>
-					<th>{{f20t3600Head[0].all}}</th>
-					<th>{{f20t3600Head[0].old_0_17}}</th>
-					<th>{{f20t3600Head[0].all}}</th>
-					<th>{{f20t3600Head[0].old_0_17}}</th>
-					<th>{{f20t3600Head[0].all}}</th>
-					<th>{{f20t3600Head[0].old_0_17}}</th>
-				</tr>
-				<tr>
-					<th>А</th>
-					<th>Б</th>
-					<th>В</th>
-					<th ng-repeat="n in [1,2,3,4,5,6,7,8]">{{n}}</th>
-				</tr>
-			</thead>
-			<tbody ng-repeat="h in f20t3600Head" ng-if="$index > 0"
-				ng-init="
+			</table>
+		</div>
+		<div ng-if="!param.nrr">
+			<table class="table table-striped">
+				<caption>
+					<span class="pull-right" style="font-size: small;">
+						{{f20t3600Head[0].old_0_17_full}}</span>
+				</caption>
+				<thead ng-include="'ui/f20t3600tHead.html'"></thead>
+				<tbody ng-repeat="h in f20t3600Head" ng-if="$index > 0"
+					ng-init="
 			nrr_all = $index * 2 - 1;
 			nrr_24 = $index * 2;
-			">
-				<tr>
-					<td rowspan="2">{{h.name}}</td>
-					<td>{{f20t3600Head[0].all}}</td>
-					<td>{{nrr_all}}</td>
-					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].op_no_1 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].op_no_1:''}}</td>
-					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].op_no_17_2 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_'
-						+ nrr_all]].op_no_17_2:''}}</td>
-					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].dead_op_no_3 >0 ?
-						f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].dead_op_no_3:''}}</td>
-					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].dead_op_no_17_4 >0 ?
-						f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].dead_op_no_17_4:''}}</td>
-					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].op_yes_5 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].op_yes_5:''}}</td>
-					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].op_yes_17_6 >0 ?
-						f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].op_yes_17_6:''}}</td>
-					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].dead_op_yes_7 >0 ?
-						f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].dead_op_yes_7:''}}</td>
-					<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].dead_op_yes_17_8 >0 ?
-						f20t3600.list[f20t3600.nrrIndexes['row_' +
-						nrr_all]].dead_op_yes_17_8:''}}</td>
-				</tr>
-				<tr>
-					<td>{{f20t3600Head[0].after24}}</td>
-					<td>{{nrr_24}}</td>
-				</tr>
-			</tbody>
-		</table>
-		
+			"
+					ng-include="'ui/t3600-tbody.html'">
+				</tbody>
+			</table>
+		</div>
+
 	</div>
 </body>
 <script src="/v/lib/js/jquery-2.2.4.min.js"></script>
