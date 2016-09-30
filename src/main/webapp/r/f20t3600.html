@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="hol2eih3App" ng-controller="F20t3600Ctrl" ng-cloak
-	class="ng-cloak">
+<html ng-app="hol2eih3App" ng-controller="F20t3600Ctrl" ng-cloak class="ng-cloak">
 <head>
 <meta charset="utf-8" />
 <link rel="stylesheet" href="/v/lib/css/w3.css"></link>
@@ -63,9 +62,9 @@
 					<td colspan="3">{{$index+1}}. {{h.patient_surname}},
 						{{h.patient_name}} {{h.patient_patronnymic}},
 						{{h.patient_gender?'Ч':'Ж'}}, {{h.patient_dob}}, <b
-						title="{{h.icd_name}}"> {{h.icd_code}} </b>
-						ІХ-№-{{h.history_no}},
-						вип.-{{h.history_out | date}}
+						title="{{h.icd_name}}"> {{h.icd_code}} </b> ІХ-№-{{h.history_no}}
+						(<small> {{h.history_id}} </small> ), вип.-{{h.history_out |
+						date}}
 						<div>{{h.history_diagnos_additional}}</div>
 					</td>
 					<td>{{h.op_no_1}}</td>

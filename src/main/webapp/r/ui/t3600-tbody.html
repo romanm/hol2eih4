@@ -1,7 +1,12 @@
 <tr>
 	<td rowspan="2">{{h.name}}
 	</td>
-	<td><a href="{{urlNrr(nrr_all)}}"> {{f20t3600Head[0].all}} </a></td>
+	<td><a href="{{urlNrr(nrr_all)}}"> 
+	<span
+		ng-if="param.nrr && param.nrr != nrr_all"> ☐ </span>
+	<span
+			ng-if="param.nrr == nrr_all"> ☑ </span> {{f20t3600Head[0].all}}
+	</a></td>
 	<td>{{nrr_all}}</td>
 	<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' + nrr_all]].op_no_1
 		>0 ? f20t3600.list[f20t3600.nrrIndexes['row_' + nrr_all]].op_no_1:''}}</td>
@@ -30,6 +35,34 @@
 		nrr_all]].dead_op_yes_17_8:''}}</td>
 </tr>
 <tr>
-	<td>{{f20t3600Head[0].after24}}</td>
+	<td><a href="{{urlNrr(nrr_24)}}"> <span
+			ng-if="param.nrr && param.nrr != nrr_24"> ☐ </span> <span
+			ng-if="param.nrr == nrr_24"> ☑ </span> {{f20t3600Head[0].after24}}
+	</a></td>
 	<td>{{nrr_24}}</td>
+	<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' + nrr_24]].op_no_1
+		>0 ? f20t3600.list[f20t3600.nrrIndexes['row_' + nrr_24]].op_no_1:''}}</td>
+	<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].op_no_17_2 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].op_no_17_2:''}}</td>
+	<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].dead_op_no_3 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].dead_op_no_3:''}}</td>
+	<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].dead_op_no_17_4 >0 ?
+		f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].dead_op_no_17_4:''}}</td>
+	<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].op_yes_5 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].op_yes_5:''}}</td>
+	<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].op_yes_17_6 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].op_yes_17_6:''}}</td>
+	<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].dead_op_yes_7 >0 ? f20t3600.list[f20t3600.nrrIndexes['row_'
+		+ nrr_24]].dead_op_yes_7:''}}</td>
+	<td>{{f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].dead_op_yes_17_8 >0 ?
+		f20t3600.list[f20t3600.nrrIndexes['row_' +
+		nrr_24]].dead_op_yes_17_8:''}}</td>
 </tr>

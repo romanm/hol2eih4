@@ -1166,21 +1166,29 @@ hol2eih3App.controller('F20t3600Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	initReport($scope, $http);
 	
 	var urlM1M2Year = '-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
-	var url = '/r/F20t3600' + urlM1M2Year;
-	console.log(url);
+	if(parameters.nrr){
+		var urlF20t3600NrrPatienten = '/r/F20t3600NrrPatienten' + urlM1M2Year + '-' + parameters.nrr;
+		console.log('-------------------------' + urlF20t3600NrrPatienten);
+		$http({ method : 'GET', url : urlF20t3600NrrPatienten
+		}).success(function(data, status, headers, config) {
+			$scope.f20t3600NrrPatienten = data;
+			console.log($scope.f20t3600NrrPatienten);
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+	}
 
-	$http({ method : 'GET', url : url
+	var urlF20t3600 = '/r/F20t3600' + urlM1M2Year;
+	$http({ method : 'GET', url : urlF20t3600
 	}).success(function(data, status, headers, config) {
 		$scope.f20t3600 = data;
 		console.log($scope.f20t3600);
 		$scope.dbDuration = data.duration;
 		$scope.f20t3600.nrrIndexes = {};
 		$scope.f20t3600.list.forEach(function(f20t3600, i){
-			console.log(f20t3600);
 			$scope.f20t3600.nrrIndexes['row_' + f20t3600.nrr] = i;
 		});
 		console.log($scope.f20t3600.nrrIndexes);
-		console.log($scope.f20t3600.nrrIndexes.row_3);
 	}).error(function(data, status, headers, config) {
 		$scope.error = data;
 	});
