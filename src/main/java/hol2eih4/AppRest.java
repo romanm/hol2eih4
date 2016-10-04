@@ -20,7 +20,11 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StopWatch;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,13 +38,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class AppRest {
 	private static final Logger logger = LoggerFactory.getLogger(AppRest.class);
+	@Autowired private NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 //	@Autowired private Hol1DbService hol1DbService;
 	@Autowired private AppService appService;
 	@Autowired private ExcelService2 excelService;
 	//  1  Запис надходжень/виписки хворих за сьогодні – saveMovePatients.html.
 	//  1.1  Зчитування надходження/виписки хворих на сьогодні – readTodayMovePatients
 	
-	@RequestMapping(value = "/v/readHome", method = RequestMethod.GET)
+	@GetMapping("/v/readHome")
 	public  @ResponseBody Map<String, Object> readHome(Principal principal, HttpServletRequest request) {
 		logger.info("\n ------------------------- Start /readHome");
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -77,24 +82,49 @@ public class AppRest {
 		return map;
 	}
 
-	@RequestMapping(value = "/r/readBedDayDepartmentMySql-{m1}-{m2}", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readBedDayDepartmentMySql(
-			@PathVariable Integer m1
-			,@PathVariable Integer m2
+	@GetMapping("/r/readBedDayMySql-{m1}-{m2}-{year}")
+	public  @ResponseBody Map<String, Object> readBedDayMySql(
+			 @PathVariable Integer m1
+			 ,@PathVariable Integer m2
+			 ,@PathVariable Integer year
 			,Principal userPrincipal) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("m1", m1);
 		map.put("m2", m2);
-		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2,year);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
+		return map;
+	}
+
+	@GetMapping("/r/readBedDayDepartmentMySql-{m1}-{m2}-{year}")
+	public  @ResponseBody Map<String, Object> readBedDayDepartmentMySql(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map = new HashMap<>();
+		map.put("m1", m1);
+		map.put("m2", m2);
+		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2,year);
 		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
 		if(m1 < m2) {
 			List<Object> arrayList = new ArrayList<>();
 			for (int i = m1; i <= m2; i++) {
-				List<Map<String, Object>> readBedDayOfMonthMySql = appService.readBedDayOfMonthMySql(i,i);
+				List<Map<String, Object>> readBedDayOfMonthMySql = appService.readBedDayOfMonthMySql(i,i,year);
 				arrayList.add(readBedDayOfMonthMySql);
 			}
 			map.put("bedDayDepartmentMySql", arrayList);
 		}
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
 		return map;
 	}
 
@@ -119,84 +149,133 @@ public class AppRest {
 		return map;
 	}
 
-	@RequestMapping(value = "/r/readBedDayMySql-{m1}-{m2}", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readBedDayMySql(
-			 @PathVariable Integer m1
-			 ,@PathVariable Integer m2
-			,Principal userPrincipal) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("m1", m1);
-		map.put("m2", m2);
-		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2);
-		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
-		return map;
-	}
 
-	@RequestMapping(value = "/r/readDepartmentMotion-{m1}-{m2}-{departmentId}", method = RequestMethod.GET)
+	private @Value("${sql.hol1Eih.departmentMotion}") String departmentMotion;
+	@GetMapping("/r/readDepartmentMotion-{year}-{m1}-{m2}-{departmentId}")
 	public  @ResponseBody Map<String, Object> readDepartmentMotion(
-			@PathVariable Integer m1
+			@PathVariable Integer year
+			,@PathVariable Integer m1
 			,@PathVariable Integer m2
 			,@PathVariable Integer departmentId
 			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
 		Map<String, Object> map = new HashMap<>();
-		map.put("m1", m1);
-		map.put("m2", m2);
-		map.put("departmentId", departmentId);
-		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentMotion(m1,m2, departmentId);
+		map.put("year", year);
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("department_id", departmentId);
+		logger.info("/r/readDepartmentMotion-{year}-{m1}-{m2}-{departmentId} \n"+ map);
+		List<Map<String, Object>> bedDayOfMonthMySql
+			= hol1EihParamJdbcTemplate.queryForList(departmentMotion, map);
+//		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentMotion(m1,m2, departmentId);
 		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
 		Map<String, Object> department = appService.readDepartment(departmentId);
 		map.put("department", department);
+		map.put("departmentId", departmentId);
+		map.put("m1", m1);
+		map.put("m2", m2);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
 		return map;
 	}
 
-	@RequestMapping(value = "/r/readDepartmentAdress-{m1}-{m2}-{departmentId}", method = RequestMethod.GET)
+	private @Value("${sql.hol1Eih.departmentAdress}") String departmentAdress;
+	@GetMapping("/r/readDepartmentAdress-{year}-{m1}-{m2}-{departmentId}")
 	public  @ResponseBody Map<String, Object> readDepartmentAdress(
-			@PathVariable Integer m1
+			@PathVariable Integer year
+			,@PathVariable Integer m1
 			,@PathVariable Integer m2
 			,@PathVariable Integer departmentId
 			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
 		Map<String, Object> map = new HashMap<>();
-		map.put("m1", m1);
-		map.put("m2", m2);
-		map.put("departmentId", departmentId);
-		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentAdress(m1,m2, departmentId);
+		map.put("year", year);
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("department_id", departmentId);
+		logger.info("/r/readDepartmentAdress-{year}-{m1}-{m2}-{departmentId} \n " + map);
+		System.out.println(departmentAdress.replace(":year", ""+year)
+				.replaceAll(":min_month", ""+m1)
+				.replaceAll(":max_month", ""+m2)
+				.replaceAll(":department_id", ""+departmentId)
+				);
+		List<Map<String, Object>> bedDayOfMonthMySql
+			= hol1EihParamJdbcTemplate.queryForList(departmentAdress, map);
+//		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentAdress(m1,m2, departmentId);
 		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
 		Map<String, Object> department = appService.readDepartment(departmentId);
 		map.put("department", department);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		map.put("departmentId", departmentId);
+		map.put("m1", m1);
+		map.put("m2", m2);
 		return map;
 	}
 
-	@RequestMapping(value = "/r/readDepartmentIcd10Group-{m1}-{m2}-{departmentId}", method = RequestMethod.GET)
+	private @Value("${sql.hol1Eih.departmentIcd10Group}") String departmentIcd10Group;
+	@GetMapping("/r/readDepartmentIcd10Group-{year}-{m1}-{m2}-{departmentId}")
 	public  @ResponseBody Map<String, Object> readDepartmentIcd10Group(
-			@PathVariable Integer m1
+			@PathVariable Integer year
+			,@PathVariable Integer m1
 			,@PathVariable Integer m2
 			,@PathVariable Integer departmentId
 			,Principal userPrincipal) {
 		Map<String, Object> map = new HashMap<>();
-		map.put("m1", m1);
-		map.put("m2", m2);
-		map.put("departmentId", departmentId);
-		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentIcd10Group(m1,m2, departmentId);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		map.put("year", year);
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("department_id", departmentId);
+		logger.info("/r/readDepartmentAdress-{year}-{m1}-{m2}-{departmentId} \n " + map);
+		List<Map<String, Object>> bedDayOfMonthMySql 
+		= hol1EihParamJdbcTemplate.queryForList(departmentIcd10Group, map);
+//		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentIcd10Group(m1,m2, departmentId);
 		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
 		Map<String, Object> department = appService.readDepartment(departmentId);
 		map.put("department", department);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		map.put("departmentId", departmentId);
+		map.put("m1", m1);
+		map.put("m2", m2);
 		return map;
 	}
 
-	@RequestMapping(value = "/r/readDepartmentIcd10-{m1}-{m2}-{departmentId}", method = RequestMethod.GET)
+	private @Value("${sql.hol1Eih.departmentIcd10}") String departmentIcd10;
+	@GetMapping("/r/readDepartmentIcd10-{year}-{m1}-{m2}-{departmentId}")
 	public  @ResponseBody Map<String, Object> readDepartmentIcd10(
-			@PathVariable Integer m1
+			@PathVariable Integer year
+			,@PathVariable Integer m1
 			,@PathVariable Integer m2
 			,@PathVariable Integer departmentId
 			,Principal userPrincipal) {
 		Map<String, Object> map = new HashMap<>();
-		map.put("m1", m1);
-		map.put("m2", m2);
-		map.put("departmentId", departmentId);
-		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentIcd10(m1,m2, departmentId);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		map.put("year", year);
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("department_id", departmentId);
+		logger.info("/r/readDepartmentAdress-{year}-{m1}-{m2}-{departmentId} \n " + map);
+		List<Map<String, Object>> bedDayOfMonthMySql 
+		= hol1EihParamJdbcTemplate.queryForList(departmentIcd10, map);
+//		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentIcd10(m1,m2, departmentId);
 		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
 		Map<String, Object> department = appService.readDepartment(departmentId);
 		map.put("department", department);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		map.put("departmentId", departmentId);
+		map.put("m1", m1);
+		map.put("m2", m2);
 		return map;
 	}
 

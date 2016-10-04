@@ -32,8 +32,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AppService {
 	private static final Logger logger = LoggerFactory.getLogger(AppService.class);
 	@Autowired private JdbcTemplate hol2EihH2JdbcTemplate;
-	private JdbcTemplate mySqlJdbcTemplate;
-	private NamedParameterJdbcTemplate mySqlParamJdbcTemplate;
+	@Autowired private JdbcTemplate hol1EihJdbcTemplate;
+	@Autowired private NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 	private NamedParameterJdbcTemplate k1JdbcTemplate;
 	private int cnt_repetable;
 	private int cnt_update;
@@ -47,7 +47,7 @@ public class AppService {
 		System.out.println("-----------------------------------");
 		System.out.println(sql);
 		System.out.println("-----------------------------------");
-		List<Map<String, Object>> userRoleList = mySqlJdbcTemplate.queryForList(sql);
+		List<Map<String, Object>> userRoleList = hol1EihJdbcTemplate.queryForList(sql);
 		for (Map<String, Object> map : userRoleList) {
 			final String username = (String) map.get("username");
 			final String role = (String) map.get("role");
@@ -78,63 +78,64 @@ public class AppService {
 		Map<String, Integer> mmp = new HashMap<>();
 		mmp.put("department_id", departmentId);
 		logger.debug(mmp+" "+SqlHolder.department);
-		Map<String, Object> queryForMap = mySqlParamJdbcTemplate.queryForMap(SqlHolder.department,mmp);
+		Map<String, Object> queryForMap = hol1EihParamJdbcTemplate.queryForMap(SqlHolder.department,mmp);
 		return queryForMap;
 	}
 
-	public List<Map<String, Object>> readDepartmentMotion(Integer m1, Integer m2, Integer departmentId) {
-		Map<String, Integer> mmp = new HashMap<>();
-		mmp.put("min_month", m1);
-		mmp.put("max_month", m2);
-		mmp.put("department_id", departmentId);
-		addCommonParameter(mmp);
-		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentMotion.length());
-		List<Map<String, Object>> bedDayOfMonthMySql
-		= mySqlParamJdbcTemplate.queryForList(SqlHolder.departmentMotion, mmp);
-		return bedDayOfMonthMySql;
-	}
-	public List<Map<String, Object>> readDepartmentAdress(Integer m1, Integer m2, Integer departmentId) {
-		Map<String, Integer> mmp = new HashMap<>();
-		mmp.put("min_month", m1);
-		mmp.put("max_month", m2);
-		mmp.put("department_id", departmentId);
-		addCommonParameter(mmp);
-		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentAdress.length());
-		List<Map<String, Object>> bedDayOfMonthMySql
-		= mySqlParamJdbcTemplate.queryForList(SqlHolder.departmentAdress, mmp);
-		return bedDayOfMonthMySql;
-	}
+//	public List<Map<String, Object>> readDepartmentMotion(Integer m1, Integer m2, Integer departmentId) {
+//		Map<String, Integer> mmp = new HashMap<>();
+//		mmp.put("min_month", m1);
+//		mmp.put("max_month", m2);
+//		mmp.put("department_id", departmentId);
+//		addCommonParameter(mmp);
+//		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentMotion.length());
+//		List<Map<String, Object>> bedDayOfMonthMySql
+//		= hol1EihParamJdbcTemplate.queryForList(SqlHolder.departmentMotion, mmp);
+//		return bedDayOfMonthMySql;
+//	}
+//	public List<Map<String, Object>> readDepartmentAdress(Integer m1, Integer m2, Integer departmentId) {
+//		Map<String, Integer> mmp = new HashMap<>();
+//		mmp.put("min_month", m1);
+//		mmp.put("max_month", m2);
+//		mmp.put("department_id", departmentId);
+//		addCommonParameter(mmp);
+//		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentAdress.length());
+//		List<Map<String, Object>> bedDayOfMonthMySql
+//		= hol1EihParamJdbcTemplate.queryForList(SqlHolder.departmentAdress, mmp);
+//		return bedDayOfMonthMySql;
+//	}
 
-	public List<Map<String, Object>> readDepartmentIcd10Group(Integer m1, Integer m2, Integer departmentId) {
-		Map<String, Integer> mmp = new HashMap<>();
-		mmp.put("min_month", m1);
-		mmp.put("max_month", m2);
-		mmp.put("department_id", departmentId);
-		addCommonParameter(mmp);
-		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentIcd10Group.length());
-		List<Map<String, Object>> bedDayOfMonthMySql 
-		= mySqlParamJdbcTemplate.queryForList(SqlHolder.departmentIcd10Group, mmp);
-		return bedDayOfMonthMySql;
-	}
-	public List<Map<String, Object>> readDepartmentIcd10(Integer m1, Integer m2, Integer departmentId) {
-		Map<String, Integer> mmp = new HashMap<>();
-		mmp.put("min_month", m1);
-		mmp.put("max_month", m2);
-		mmp.put("department_id", departmentId);
-		addCommonParameter(mmp);
-		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentIcd10.length());
-		List<Map<String, Object>> bedDayOfMonthMySql 
-		= mySqlParamJdbcTemplate.queryForList(SqlHolder.departmentIcd10, mmp);
-//		String departmentIcd10 = SqlHolder.departmentIcd10
-//		.replaceAll(":year", mmp.get("year").toString())
-//		.replaceAll(":min_month", mmp.get("min_month").toString())
-//		.replaceAll(":max_month", mmp.get("max_month").toString())
-//		.replaceAll(":department_id", mmp.get("department_id").toString());
-//		logger.debug(departmentIcd10);
+//	public List<Map<String, Object>> readDepartmentIcd10Group(Integer m1, Integer m2, Integer departmentId) {
+//		Map<String, Integer> mmp = new HashMap<>();
+//		mmp.put("min_month", m1);
+//		mmp.put("max_month", m2);
+//		mmp.put("department_id", departmentId);
+//		addCommonParameter(mmp);
+//		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentIcd10Group.length());
 //		List<Map<String, Object>> bedDayOfMonthMySql 
-//		= mySqlJdbcTemplate.queryForList(departmentIcd10);
-		return bedDayOfMonthMySql;
-	}
+//		= hol1EihParamJdbcTemplate.queryForList(SqlHolder.departmentIcd10Group, mmp);
+//		return bedDayOfMonthMySql;
+//	}
+	
+//	public List<Map<String, Object>> readDepartmentIcd10(Integer m1, Integer m2, Integer departmentId) {
+//		Map<String, Integer> mmp = new HashMap<>();
+//		mmp.put("min_month", m1);
+//		mmp.put("max_month", m2);
+//		mmp.put("department_id", departmentId);
+//		addCommonParameter(mmp);
+//		logger.debug(" \n "+mmp.toString()+" \n SQL length "+SqlHolder.departmentIcd10.length());
+//		List<Map<String, Object>> bedDayOfMonthMySql 
+//		= hol1EihParamJdbcTemplate.queryForList(SqlHolder.departmentIcd10, mmp);
+////		String departmentIcd10 = SqlHolder.departmentIcd10
+////		.replaceAll(":year", mmp.get("year").toString())
+////		.replaceAll(":min_month", mmp.get("min_month").toString())
+////		.replaceAll(":max_month", mmp.get("max_month").toString())
+////		.replaceAll(":department_id", mmp.get("department_id").toString());
+////		logger.debug(departmentIcd10);
+////		List<Map<String, Object>> bedDayOfMonthMySql 
+////		= mySqlJdbcTemplate.queryForList(departmentIcd10);
+//		return bedDayOfMonthMySql;
+//	}
 
 	private void addCommonParameter(Map<String, Integer> mmp) {
 		int year = new DateTime().year().get();
@@ -142,18 +143,19 @@ public class AppService {
 //		mmp.put("year", 2015);
 	}
 
-	public List<Map<String, Object>> readBedDayOfMonthMySql(Integer m1, Integer m2) {
+	public List<Map<String, Object>> readBedDayOfMonthMySql(Integer m1, Integer m2, Integer year) {
 		Map<String, Integer> mmp = new HashMap<>();
 		mmp.put("min_month", m1);
 		mmp.put("max_month", m2);
 //		mmp.put("year", m2);
-		addCommonParameter(mmp);
+//		addCommonParameter(mmp);
+		mmp.put("year", year);
 //		String sql ="SELECT d.*, round(if(d.dead IS NULL, 0, d.dead/TREAT*100),2) mortality, round(bed_day * 100 / bed_day_plan,2) bed_day_fulfil, round(bed_day  / department_bed,2)  bed_occupancy, round(bed_day  / TREAT,1) treat_avg, round((bed_day  / department_bed)/( bed_day / TREAT ),2)  bed_turnover, round((d.in_clinic+ifnull(d.dead,0))/d.department_bed,2)  bed_turnover2 FROM (SELECT d.*, round((d.in_clinic+ifnull(d.in_dep,0)+d.out_clinic+ifnull(d.out_dep,0)+ifnull(d.dead,0))/2) TREAT FROM (SELECT d.department_id dp_id, d.department_name, d.department_bed, if(d.department_id=14,310,340) bd_key, bed_day_plan, in_clinic.in_clinic, in_dep.in_dep, out_clinic.out_clinic, out_dep.out_dep, out_to_clinic.out_to_clinic, dead.dead, bed_day.bed_day FROM ( SELECT department_id, department_name, department_bed, sum(bed_day_plan) bed_day_plan FROM ( SELECT *, round(bd_key/366*month_days*department_bed) bed_day_plan FROM ( SELECT d.department_id, department_bed, d.department_name, if(d.department_id=14,310,if(d.department_id=23 or d.department_id=10,290,340)) bd_key FROM department_bed db1, department d, (SELECT max(department_bed_id) department_bed_id FROM department_bed GROUP BY department_id) db2 WHERE db1.department_bed_id=db2.department_bed_id AND d.department_id=db1.department_id) department_bed, ( SELECT max(day(daydate)) month_days FROM every_day WHERE month(daydate)  >= 1  AND month(daydate)  <= 12  AND year(daydate) = 2015 GROUP BY month(daydate)) month_days) bed_day_plan GROUP BY department_id ) d LEFT JOIN ( SELECT history_department_in, count(history_department_in) in_clinic FROM history WHERE month(history_in)  >= 1  AND month(history_in)  <= 12  AND year(history_in) = 2015  GROUP BY history_department_in) in_clinic ON in_clinic.history_department_in=d.department_id LEFT JOIN ( SELECT dh.department_id, count(dh.department_id) in_dep FROM (SELECT dh.* FROM department_history dh, history h WHERE h.history_id=dh.history_id AND h.history_department_in != dh.department_id) dh WHERE month(dh.department_history_in)  >= 1  AND month(dh.department_history_in)  <= 12  AND year(dh.department_history_in) = 2015  GROUP BY dh.department_id) in_dep ON in_dep.department_id=d.department_id LEFT JOIN ( SELECT history_department_out, count(history_department_out) out_clinic FROM history WHERE month(history_out) >= 1  AND month(history_out) <= 12  AND year(history_out) = 2015  GROUP BY history_department_out) out_clinic ON out_clinic.history_department_out=d.department_id LEFT JOIN ( SELECT dh.department_id, count(dh.department_id) out_dep FROM (SELECT dh.* FROM department_history dh, history h WHERE h.history_id=dh.history_id AND h.history_department_out != dh.department_id) dh WHERE month(dh.department_history_out) >= 1  AND month(dh.department_history_out) <= 12  AND year(dh.department_history_out) = 2015  GROUP BY dh.department_id) out_dep ON out_dep.department_id=d.department_id LEFT JOIN ( SELECT history_department_out, count(history_department_out) out_to_clinic FROM history h WHERE result_id=6 AND month(history_out) >= 1  AND month(history_out) <= 12  AND year(history_out) = 2015  GROUP BY history_department_out) out_to_clinic ON out_to_clinic.history_department_out=d.department_id LEFT JOIN ( SELECT history_department_out, count(history_department_out) dead FROM history WHERE month(history_out) >= 1  AND month(history_out) <= 12  AND year(history_out) = 2015  AND result_id=5 GROUP BY history_department_out) dead ON dead.history_department_out=d.department_id LEFT JOIN ( SELECT department_id, sum(TREAT) bed_day FROM ( SELECT department_id, daydate, count(daydate) TREAT FROM department_history dh, (SELECT * FROM every_day WHERE month(daydate)  >= 1  AND month(daydate)  <= 12  AND year(daydate) = 2015) daydate WHERE daydate>=dh.department_history_in AND daydate<=dh.department_history_out GROUP BY department_id, daydate) treat_of_day GROUP BY department_id) bed_day ON bed_day.department_id=d.department_id) d)d UNION SELECT * FROM (SELECT 0 dp_id, 'Всього:' department_name, 0 d_bed, 0 d_bed_plan, 0 max_moth_day ) all_, (SELECT count(history_department_in) _in FROM history WHERE month(history_in) >= 1  AND month(history_in) <= 12  AND year(history_in) = 2015 ) in_, (SELECT 0 in_dep) in_dep, (SELECT count(history_department_out) _out FROM history WHERE month(history_out) >= 1  AND month(history_out) <= 12  AND year(history_out) = 2015 ) out_, (SELECT 0 out_dep) out_dep, (SELECT 0 out_to_clinic) out_to_clinic, (SELECT count(history_department_out) dead, (SELECT 0 l) bed_day, (SELECT 0 l) TREAT, (SELECT 0 l) mortality, 0 bed_day_fulfil, 0     bed_occupancy, 0     treat_avg, 0     bed_turnover, 0     bed_turnover2 FROM history WHERE month(history_out) >= 1  AND month(history_out) <= 12  AND year(history_out) = 2015  AND result_id=5) dead ";
 //		= mySqlJdbcTemplate.queryForList(sql);
 		logger.debug(mmp.toString()+" SQL length "+SqlHolder.bedDayMySql.length());
-		logger.debug(SqlHolder.bedDayMySql);
+		//System.out.println(SqlHolder.bedDayMySql);
 		List<Map<String, Object>> bedDayOfMonthMySql 
-			= mySqlParamJdbcTemplate.queryForList(SqlHolder.bedDayMySql, mmp);
+			= hol1EihParamJdbcTemplate.queryForList(SqlHolder.bedDayMySql, mmp);
 		return bedDayOfMonthMySql;
 	}
 
@@ -507,19 +509,21 @@ Types.INTEGER
 	}
 
 	public AppService() throws NamingException{
-		initMySql();
+//		initMySql();
 		initK1Sql();
 	}
 	
-	private void initMySql() {
-		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-		dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
-		dataSource.setUrl(AppConfig.urlMySqlDb);
-		dataSource.setUsername("hol");
-		dataSource.setPassword("hol");
-		this.mySqlParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-		this.mySqlJdbcTemplate = new JdbcTemplate(dataSource);
-	}
+//	@Value("${config.urlMySqlDb}") public static String urlMySqlDb;
+//	private void initMySql() {
+//		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+//		dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
+////		dataSource.setUrl(urlMySqlDb);
+////		dataSource.setUrl(AppConfig.urlMySqlDb);
+//		dataSource.setUsername("hol");
+//		dataSource.setPassword("hol");
+//		this.hol1EihParamJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+//		this.hol1EihJdbcTemplate = new JdbcTemplate(dataSource);
+//	}
 
 	private void initK1Sql() {
 		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
