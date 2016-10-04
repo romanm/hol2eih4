@@ -4,6 +4,7 @@
 	class="ng-cloak">
 <head>
 <meta charset="utf-8" />
+<link rel="stylesheet" href="/v/lib/css/w3.css"></link>
 <link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
 <link rel="stylesheet" href="/v/lib/css/bootstrap-datepicker3.min.css"></link>
 <link rel='stylesheet prefetch' href='/v/lib/css/font-awesome.min.css'/>
@@ -24,8 +25,10 @@
 		</div>
 	</nav>
 <div class="container-fluid">
+<div ng-include="'ui/zwit-param-period-and-link.html'"></div>
 	<table class="table-bordered no-print">
 			<tr class="center">
+			<!-- 
 				<td>
 					<div>
 						Вибрати <label> <input type="radio" name="eqMonthType"
@@ -41,6 +44,7 @@
 						{{n>9?'':'&nbsp;'}}{{n}} </a></td>
 				<td class="btn btn-sm btn-info" ng-click="eqMonth()">Виконати
 					запит</td>
+			 -->
 				<td ng-if="param.viddilennja"><a
 					href="/r/lizhkodni.html?m1={{minMonth}}&m2={{maxMonth}}&type={{eqMonthType}}">
 						Показати всі відділення </a></td>
@@ -70,8 +74,9 @@
 							{{months.nominative[bedDay.m1]}} місяць </span> <span
 							ng-if="bedDay.m1 != bedDay.m2"> з
 							{{months.accusative[bedDay.m1]}} — по
-							{{months.nominative[bedDay.m2]}} місяці</span> {{yyyy}} року. <small>
+							{{months.nominative[bedDay.m2]}} місяці</span> {{paramYear}} року. <small>
 							Хмельницька обласна лікарня </small>
+							по районах
 					</h4>
 				</caption>
 				<thead>
@@ -100,8 +105,8 @@
 						Ліжкодні відділення <b> {{bedDay.department.department_name}}
 						</b> <span ng-if="bedDay.m1 == bedDay.m2"> за {{bedDay.m1}}
 							місяць </span> <span ng-if="bedDay.m1 != bedDay.m2"> з
-							{{bedDay.m1}} по {{bedDay.m2}} місяці</span> {{yyyy}} року
-							
+							{{bedDay.m1}} по {{bedDay.m2}} місяці</span> {{paramYear}} року
+							по районах
 					</h4>
 				</caption>
 				<thead>
@@ -132,7 +137,9 @@
 					>
 						<td>
 						{{!(bedDayOfMonthMySql.misto_raion_other>=0)?'м.':''}}
-						{{bedDayOfMonthMySql.misto_raion_other==10000?'Інші області':bedDayOfMonthMySql.region_name}}
+						{{bedDayOfMonthMySql.misto_raion_other==10000?'Інші області':
+						bedDayOfMonthMySql.order_group==0?'Всі місто':
+						bedDayOfMonthMySql.order_group==9999?'Всі район':bedDayOfMonthMySql.region_name}}
 						</td>
 						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0" title="{{bedDayH.title}}">
 							{{bedDayOfMonthMySql[bedDayH.key+'_cnt']==0?'':bedDayOfMonthMySql[bedDayH.key+'_cnt']}}

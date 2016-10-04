@@ -897,23 +897,27 @@ hol2eih3App.controller('DepartmentMonthMovementH2Ctrl', ['$scope', '$http', '$fi
 
 var initQuartal = function($scope, $http){
 	$scope.eqMonth = function(){
-		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth);
-		var url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&department_id=" + $scope.param.department_id+"&type="+$scope.eqMonthType;
+		if(!$scope.paramYear){
+			$scope.paramYear = $scope.historyYears[0].year;
+		}
+		console.log(" - "+$scope.minMonth+" - "+$scope.maxMonth+" - "+$scope.paramYear);
+		var url = "?m1="+$scope.minMonth+"&m2="+$scope.maxMonth+"&y="+$scope.paramYear+"&department_id=" + $scope.param.department_id+"&type="+$scope.eqMonthType;
 		window.location.href = url;
 	}
 eqMonth = function(){
 	var url1 = $scope.url1;
-	var url = url1 + "-" + $scope.minMonth + "-" + $scope.maxMonth + "-" + $scope.param.department_id;
+	var url = url1 + "-" + $scope.paramYear + "-" + $scope.minMonth + "-" + $scope.maxMonth + "-" + $scope.param.department_id;
 	console.log(url);
 	console.log($scope.showExpandIcd10);
 //	alert(url)
 	$http({ method : 'GET', url : url
 	}).success(function(data, status, headers, config) {
 		$scope.bedDay = data;
+		$scope.dbDuration = data.duration;
 		console.log($scope.bedDay);
 		if($scope.param.viddilennja){
 			$scope.bedDayOfMonthMySql 
-			= $scope.bedDay.bedDayOfMonthMySql[$scope.param.viddilennja]
+				= $scope.bedDay.bedDayOfMonthMySql[$scope.param.viddilennja]
 			console.log($scope.bedDayOfMonthMySql);
 			mmArray();
 		}
@@ -965,6 +969,8 @@ var initReport = function($scope, $http){
 	$scope.setParamYear = function(year){
 		$scope.paramYear = year;
 	}
+	if(!$scope.paramYear)
+		$scope.paramYear = new Date().getFullYear();
 	console.log($scope.paramYear);
 	
 	$scope.error = [];
@@ -1517,12 +1523,17 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', [ '$scope', '$http', 
 		var url1 = "/r/readBedDayMySql-";
 		if($scope.param.department_id)
 			url1 = "/r/readBedDayDepartmentMySql-";
-		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth;
+		if(!$scope.paramYear)
+			$scope.paramYear = new Date().getFullYear();
+
+		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth + "-" + $scope.paramYear;
 		console.log(url);
 		$http({ method : 'GET', url : url
 		}).success(function(data, status, headers, config) {
 			$scope.bedDay = data;
 			console.log($scope.bedDay);
+			console.log($scope.bedDay.duration);
+			$scope.dbDuration = $scope.bedDay.duration;
 			if($scope.param.department_id){
 				for (var i = 0; i < $scope.bedDay.bedDayOfMonthMySql.length; i++) {
 					if($scope.bedDay.bedDayOfMonthMySql[i].dp_id == $scope.param.department_id){
@@ -1547,7 +1558,6 @@ hol2eih3App.controller('DepartmentMonthMovementMySqlCtrl', [ '$scope', '$http', 
 	}
 
 	eqMonth();
-
 
 	mmArray();
 }]);

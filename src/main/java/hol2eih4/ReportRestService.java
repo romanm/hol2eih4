@@ -151,9 +151,9 @@ public class ReportRestService {
 		map.put("list", list);
 		map.put("m1", m1);
 		map.put("m2", m2);
+		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));
-		watch.stop();
 		return map;
 	}
 

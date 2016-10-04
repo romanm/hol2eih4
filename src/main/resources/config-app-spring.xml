@@ -10,9 +10,12 @@ mysql old DB
  -->
 	<bean id="dataSourceHol1Eih" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="${config.urlMySqlDb}" />
+		<!-- 
 		<property name="url" value="jdbc:mysql://localhost/hol?useUnicode=true&amp;characterEncoding=utf-8" />
+		 -->
 		<property name="username" value="hol" />
-		<property name="password" value="hol" />
+		<property name="password" value="${config.urlMySqlDb.password}" />
 	</bean>
 
 	<bean id="hol1EihParamJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
