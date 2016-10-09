@@ -1105,6 +1105,121 @@ hol2eih3App.controller('DepartmentMotionCtrl', [ '$scope', '$http', '$filter', '
 
 }]);
 
+hol2eih3App.controller('DbAdressCtrl', ['$scope', '$http', '$filter', '$sce'
+	, function ($scope, $http, $filter, $sce) {
+	console.log("DbAdressCtrl");
+
+	$scope.openLocality = function(c, r, d, country, panel){
+		selectPunct(panel, country, d, r, c);
+		//alert('Hello World! ' + c.locality_name)
+	}
+	
+	function adressIds(c, d, r, l){
+		var adress = [c.country_id];
+		if(l)
+			adress = [c.country_id, d.district_id,r.region_id, l.locality_id];
+		else
+		if(r)
+			adress = [c.country_id, d.district_id,r.region_id];
+		else
+		if(d)
+			adress = [c.country_id, d.district_id];
+		console.log(adress);
+		return adress;
+	}
+
+	$scope.adress1 = [];
+	$scope.adress2 = [];
+
+	function selectPunct(panel, c, d, r, l){
+		var adress = adressIds(c, d, r, l);
+		if(panel == 1){
+			$scope.panel1 = [c,d,r,l];
+			$scope.adress1 = adress;
+		}
+		if(panel == 2){
+			$scope.panel2 = [c,d,r,l]
+			$scope.adress2 = adress;
+		}
+		//adress = [c.country_id, d.district_id,r.region_id, l.locality_id]
+		$http({ method : 'POST', data : adress, url : '/v/cntPatientsOfAdress'
+		}).success(function(data, status, headers, config){
+			$scope.cntPatient = data;
+			console.log(data);
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+	}
+
+	$scope.replacePatientsAdress = function(){
+		var adress12 = {adress1:$scope.adress1, adress2:$scope.adress2};
+		$http({ method : 'POST', data : adress12, url : '/v/replacePatientsAdress'
+		}).success(function(data, status, headers, config){
+			console.log(data);
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+	}
+function openPanel(c, panel){
+	if(panel == 1)
+		c.open = !c.open;
+	if(panel == 2)
+		c.open2 = !c.open2;
+}
+	$scope.openRegion = function(c, d, country, panel){
+		selectPunct(panel, country, d, c);
+		openPanel(c, panel);
+		console.log(c);
+		if(!c.region){
+			$http({ method : 'GET', url : '/v/localityOfRegion-' + c.region_id
+			}).success(function(data, status, headers, config) {
+				c.locality = data;
+				console.log(c.locality);
+			}).error(function(data, status, headers, config) {
+				$scope.error = data;
+			});
+		}
+	}
+	$scope.openDistrict = function(c, country, panel){
+		selectPunct(panel, country, c);
+		openPanel(c, panel);
+		console.log(c);
+		if(!c.region){
+			$http({ method : 'GET', url : '/v/regionOfDistrict-' + c.district_id
+			}).success(function(data, status, headers, config) {
+				c.region = data;
+				console.log(c.region);
+			}).error(function(data, status, headers, config) {
+				$scope.error = data;
+			});
+		}
+	}
+
+	$scope.openCountry = function(c, panel){
+		selectPunct(panel, c);
+		openPanel(c, panel);
+		console.log(c);
+		if(!c.district){
+			$http({ method : 'GET', url : '/v/districtOfCountry-' + c.country_id
+			}).success(function(data, status, headers, config) {
+				c.district = data;
+				console.log(c.district);
+			}).error(function(data, status, headers, config) {
+				$scope.error = data;
+			});
+		}
+	}
+
+	$http({ method : 'GET', url : '/v/countries'
+		}).success(function(data, status, headers, config) {
+			$scope.countries = data;
+			console.log($scope.countries);
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+
+}]);
+
 //hol2eih3App.controller('DepartmentAdressCtrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 //                                                , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
 hol2eih3App.controller('DepartmentAdressCtrl', ['$scope', '$http', '$filter', '$sce'
