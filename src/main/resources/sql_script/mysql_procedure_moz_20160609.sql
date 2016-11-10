@@ -15,7 +15,9 @@ CREATE TABLE operation_history_moz(
             REFERENCES procedure_moz(procedure_moz_id)
 );
 
-INSERT INTO operation_history_moz SELECT operation_history_id, procedure_id FROM operation_history;
+ALTER TABLE operation_history_moz ALTER procedure_moz_id SET DEFAULT 'SANDNES'
+
+--INSERT INTO operation_history_moz SELECT operation_history_id, procedure_moz_id FROM operation_history;
 
 ALTER TABLE operation_history DROP FOREIGN KEY procedure_id;
 ALTER TABLE operation_history DROP COLUMN procedure_id;

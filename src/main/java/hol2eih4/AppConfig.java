@@ -1,17 +1,25 @@
 package hol2eih4;
 
 import java.text.SimpleDateFormat;
+
 import org.joda.time.DateTime;
 
+//@Component("appConfig")
 public class AppConfig {
 	//product server /home/hol2/db-h2
 //	final static String applicationFolderPfad	= "/home/hol2/server4/hol2eih4/";
 //	final static String applicationExcelFolderPfad	= "/home/hol2/db-h2/excel/";
 //	public final static String  staticUrlPrefix = "http://192.168.4.10";
+
 	//development server /home/roman/algoritmed.com/h2-server
 	final static String applicationFolderPfad = "/home/roman/dev-20160518/research_2/hol2eih4/";
 	final static String applicationExcelFolderPfad = "/home/roman/db-java/h2-server/db-hol2-eih-excel/";
 	public final static String staticUrlPrefix = "http://127.0.0.1";
+
+	//	@Value("${config.urlMySqlDb}") 
+//	public static String urlMySqlDb = "jdbc:mysql://localhost/hol?useUnicode=true&characterEncoding=utf-8";
+//	final static String urlMySqlDb = "jdbc:mysql://localhost/hol?useUnicode=true&characterEncoding=utf-8";
+	//	final static String urlMySqlDb = "jdbc:mysql://192.168.1.179/hol?useUnicode=true&characterEncoding=utf-8";
 	
 //	public final static String  staticUrlPrefix = "http://localhost";
 	public final static SimpleDateFormat yyyyMMddDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -23,7 +31,6 @@ public class AppConfig {
 	final static String jsonDbFiles	= "src/main/webapp/db/";
 	final static String urlH2Db = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";
 	final static String urlK1Db = "jdbc:hsqldb:hsql://localhost/db-hsql-dity1";
-	final static String urlMySqlDb = "jdbc:mysql://localhost/hol?useUnicode=true&characterEncoding=utf-8";
 	//development server /home/roman/algoritmed.com/h2-server
 //	final static String urlH2Db = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";
 //	final static String urlK1Db = "jdbc:hsqldb:hsql://localhost/db-hsql-dity1";

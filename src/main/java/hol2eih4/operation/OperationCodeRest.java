@@ -348,7 +348,7 @@ public class OperationCodeRest extends IxBasicRest{
 					new MapSqlParameterSource("parentId",  parentId ));
 			return seekProcedure;
 		}
-		
+
 		@Value("${sql.hol1Eih.history.id}") private String sqlHol1EihHistoryId;
 		@RequestMapping(value = "/v/ix/{historyId}", method = RequestMethod.GET)
 		public @ResponseBody Map<String, Object> ix(@PathVariable Integer historyId, HttpServletRequest request) {

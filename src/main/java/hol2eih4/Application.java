@@ -1,8 +1,13 @@
 package hol2eih4;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -18,11 +23,31 @@ public class Application {
 		AppService appService = (AppService) run.getBean("appService");
 		appService.updateDbVersion();
 //		logger.debug("------main---------"+ initComponent.getInit());
-		
+		startBrowser();
 	}
-	@Autowired private static InitComponent initComponent;
+
+	@Value("${server.port}") private String portForTomcatServer;
+	private static void startBrowser() {
+		String url = "http://localhost:8081";
+		if(Desktop.isDesktopSupported()){
+			Desktop desktop = Desktop.getDesktop();
+			try {
+				desktop.browse(new URI(url));
+			} catch (IOException | URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}else{
+			Runtime runtime = Runtime.getRuntime();
+			try {
+				runtime.exec("xdg-open " + url);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/*
+	@Autowired private static InitComponent initComponent;
  
 	@Bean
 	public TomcatEmbeddedServletContainerFactory tomcatFactory() {

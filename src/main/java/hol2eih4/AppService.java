@@ -67,10 +67,12 @@ public class AppService {
 		Map<String, Integer> mmp = new HashMap<>();
 		mmp.put("min_month", m1);
 		mmp.put("max_month", m2);
+		String icd10k1 = SqlHolder.icd10K1.replaceAll(":min_month", ""+m1).replaceAll(":max_month", ""+m2);
+		logger.debug(mmp.toString()+" SQL length \n"+icd10k1);
 		logger.debug(mmp.toString()+" SQL length "+SqlHolder.icd10K1.length());
 //		logger.debug(SqlHolder.icd10K1);
 		List<Map<String, Object>> icd10K1 
-		= k1JdbcTemplate.queryForList(SqlHolder.icd10K1,mmp);
+		= k1JdbcTemplate.queryForList(icd10k1,mmp);
 		return icd10K1;
 	}
 

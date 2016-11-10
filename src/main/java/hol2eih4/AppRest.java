@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class AppRest {
 	private static final Logger logger = LoggerFactory.getLogger(AppRest.class);
+	@Autowired private NamedParameterJdbcTemplate pgDbMaternityHolParamJdbcTemplate;
 	@Autowired private NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 //	@Autowired private Hol1DbService hol1DbService;
 	@Autowired private AppService appService;
@@ -125,6 +126,33 @@ public class AppRest {
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+	private @Value("${sql.pgDbMaternityHol.icdMonth}") String pgDbMaternityHolIcdMonth;
+	@RequestMapping(value = "/r/readIcd10K2-{m1}-{m2}", method = RequestMethod.GET)
+	public  @ResponseBody Map<String, Object> readIcd10K2(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,Principal userPrincipal) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+//		List<Map<String, Object>> icd10K1 = appService.readIcd10K1(m1,m2);
+		List<Map<String, Object>> icd10K1 
+			= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolIcdMonth,map);
+		map.put("icd10K1", icd10K1);
+		if(m1 < m2) {
+			List<Object> someMonth = new ArrayList<>();
+			for (int i = m1; i <= m2; i++) {
+				List<Map<String, Object>> icd10K1Month1 
+					= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolIcdMonth,map);
+				someMonth.add(icd10K1Month1);
+			}
+			map.put("someMonth", someMonth);
+		}
+		map.put("m1", m1);
+		map.put("m2", m2);
 		return map;
 	}
 

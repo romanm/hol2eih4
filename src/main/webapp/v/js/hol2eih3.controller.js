@@ -1341,6 +1341,21 @@ hol2eih3App.controller('F20t3600Ctrl', [ '$scope', '$http', '$filter', '$sce'
 hol2eih3App.controller('F20t3220Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		, function ( $scope, $http, $filter, $sce) {
 	console.log("F20t3220Ctrl");
+
+	var pmml1 = { "sepalLength": 6.4, "sepalWidth": 3.2, "petalLength":4.5, "petalWidth":1.5 };
+	console.log(pmml1);
+	
+	$http.get('http://localhost:8081/r/readHistoryYears').success(function (response) {
+		console.log(response);
+	});
+	
+		$http({ method : 'POST', data : pmml1, url : "http://localhost:9004"
+		}).success(function(data, status, headers, config){
+			console.log(data);
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+
 	initReport($scope, $http);
 	
 	$scope.nrrData = function(h){
