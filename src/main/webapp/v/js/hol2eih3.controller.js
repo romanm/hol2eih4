@@ -1069,13 +1069,14 @@ hol2eih3App.controller('K1Icd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	console.log("K1Icd10Ctrl");
 	initReport($scope, $http);
 	$scope.icd10Head = [
-		{"title":"","name":"МКХ-10","key":"ICD_CODE"}
-		,{"title":"","name":"Діагноз","key":"ICD_NAME"}
-		,{"title":"","name":"Кількість","key":"CNT"}
+		{"title":"","name":"МКХ-10","key":"icd_code"}
+		,{"title":"","name":"Діагноз","key":"icd_name"}
+		,{"title":"","name":"Кількість","key":"cnt"}
 	];
 
 	eqMonth = function(){
-				var url1 = "/r/readIcd10K1-";
+				var url1 = "/r/readIcd10K2-";
+//				var url1 = "/r/readIcd10K1-";
 		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth;
 		console.log(url);
 		$http({ method : 'GET', url : url

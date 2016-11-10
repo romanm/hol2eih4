@@ -139,14 +139,17 @@ public class AppRest {
 		map.put("min_month", m1);
 		map.put("max_month", m2);
 //		List<Map<String, Object>> icd10K1 = appService.readIcd10K1(m1,m2);
-		List<Map<String, Object>> icd10K1 
+		List<Map<String, Object>> icd10K1
 			= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolIcdMonth,map);
 		map.put("icd10K1", icd10K1);
 		if(m1 < m2) {
 			List<Object> someMonth = new ArrayList<>();
 			for (int i = m1; i <= m2; i++) {
+				Map<String, Integer> mmp = new HashMap<>();
+				mmp.put("min_month", i);
+				mmp.put("max_month", i);
 				List<Map<String, Object>> icd10K1Month1 
-					= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolIcdMonth,map);
+					= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolIcdMonth,mmp);
 				someMonth.add(icd10K1Month1);
 			}
 			map.put("someMonth", someMonth);

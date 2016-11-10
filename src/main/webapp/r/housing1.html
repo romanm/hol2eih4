@@ -102,7 +102,6 @@
 						</span> <span ng-if="k1.m1 != k1.m2"> з {{k1.m1}} по {{k1.m2}}
 							місяці <small>(з {{months.accusative[k1.m1]}} — по
 								{{months.nominative[k1.m2]}})</small>
-
 						</span> {{yyyy}} року
 					</h4>
 				</caption>
@@ -128,8 +127,8 @@
 						<td ng-repeat="icd10H in icd10Head" ng-if="!$last">
 							{{icd10K1[icd10H.key]==0?'':icd10K1[icd10H.key]}}</td>
 						<td ng-repeat="icd10K1Month in k1.someMonth">
-							{{icd10K1Month[icdIndex].CNT}}</td>
-						<td>{{icd10K1.CNT}}
+							{{icd10K1Month[icdIndex].cnt}}</td>
+						<td>{{icd10K1.cnt}}
 						</td>
 					</tr>
 				</tbody>
