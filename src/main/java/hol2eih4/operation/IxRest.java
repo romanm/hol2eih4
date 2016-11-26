@@ -37,7 +37,7 @@ public class IxRest extends IxBasicRest{
 //	@RequestMapping("/v/eix")
 	@RequestMapping("/eix")
 	public String ixStaart(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
-		logger.info("\n ------------------------- Start /v/eix/"+name);
+		logger.info(" \n -----------------------  Start /v/eix/"+name);
 		initModel(model);
 		model.addAttribute("name", name);
 		System.out.println(model);

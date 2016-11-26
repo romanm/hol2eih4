@@ -14,6 +14,7 @@ var initController = function($scope, $http, $filter){
 			}
 		});
 	}
+
 	initDateVariables = function(){
 		var today = new Date($scope.moveTodayPatients.today);
 //		$cookies.put('year', today.getFullYear());
@@ -25,14 +26,28 @@ var initController = function($scope, $http, $filter){
 		if(parameters.date){
 			var url = "/readMove-"+parameters.date+"-Patients"
 		}
+		console.log(url);
 		$http({ method : 'GET', url : url
 		}).success(function(data, status, headers, config) {
 			$scope.moveTodayPatients = data;
+			console.log($scope.moveTodayPatients);
 			initDateVariables();
 			isRole("ruh");
 		}).error(function(data, status, headers, config) {
 			$scope.error = data;
 		});
+		if(parameters.date){
+			/*зчитуання руху з електроники*/
+			var url2 = "/v/departmentPatientsMove-"+parameters.date;
+			console.log(url2);
+			$http({ method : 'GET', url : url2
+			}).success(function(data, status, headers, config) {
+				$scope.allDepartmentPatientsMove = data;
+				console.log($scope.departmentPatientsMove);
+			}).error(function(data, status, headers, config) {
+				$scope.error = data;
+			});
+		}
 	}
 
 	$scope.formatDateyyyyMMdd = function(d){
@@ -91,6 +106,7 @@ var initCtrl = function($scope, $http){
 	$scope.viewTab = viewTab;
 	$scope.error = [];
 	$scope.param = parameters;
+	console.log($scope.param);
 	if(!$scope.param.ix){
 		if(window['eixId'] != undefined){
 			$scope.param.ix = eixId; 

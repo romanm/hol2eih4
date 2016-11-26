@@ -129,26 +129,7 @@ td.satsanday {
 			</div>
 			<div class="col-md-9">
 				<table class="table-bordered">
-					<tr class="pm_head">
-						<th rowspan="2" class="center">Відділення</th>
-						<th rowspan="2"><img alt="Розгонтуто ліжок" src="/img/bad_is.png"> </th>
-						<th rowspan="2"> <img alt="Стан на вчора" src="/img/patient_day1.png"> </th>
-						<th rowspan="2"> <img alt="Поступило" src="/img/patient_new.png"> </th>
-						<th colspan="2">переведено</th>
-						<th rowspan="2"> <img alt="Виписано" src="/img/discharged.png"> </th>
-						<th rowspan="2"> <img alt="Померло" src="/img/dead.png"> </th>
-						<th rowspan="2"> <img alt="Стан на сьогодні" src="/img/today.png"> </th>
-						<th colspan="5" class="center">з них</th>
-					</tr>
-					<tr class="pm_head">
-						<th > <img alt="з інших відділень" src="/img/from_department.png"> </th>
-						<th > <img alt="в інші відділення" src="/img/to_department.png"> </th>
-						<th > <img alt="м. Хмельницький" src="/img/city.png"> </th>
-						<th > <img alt="діти" src="/img/child.png"> </th>
-						<th > <img alt="Лежачі" src="/img/bad_patient.png"> </th>
-						<th > <img alt="Застраховані" src="/img/insurance.png"> </th>
-						<th > ЧАЕС </th>
-					</tr>
+					<thead ng-include="'r/ui/ruh_all_dept_thead.html'"></thead>
 					<tr
 						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList">
 						<td>{{departmentHol.DEPARTMENT_NAME}}</td>
@@ -168,8 +149,7 @@ td.satsanday {
 					</tr>
 					<tr>
 						<th>ВСЬОГО</th>
-						<th class="center">{{summMinusDR('DEPARTMENT_BED')}}
-						</th>
+						<th class="center">{{summMinusDR('DEPARTMENT_BED')}}</th>
 						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_PATIENT1DAY')}}</th>
 						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_IN')}}</th>
 						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_INDEPARTMENT')}}</th>
@@ -182,6 +162,36 @@ td.satsanday {
 						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_LYING')}}</th>
 						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_INSURED')}}</th>
 						<th class="center">{{summ('MOVEDEPARTMENTPATIENT_CAES')}}</th>
+					</tr>
+				</table>
+				<table class="table-bordered">
+					<caption>Перевірка електронної історії хвороби
+						(валідність даних)</caption>
+					<thead ng-include="'r/ui/ruh_all_dept_thead.html'"></thead>
+					<tr
+						ng-repeat="departmentPatientsMove in allDepartmentPatientsMove.listDayRuhInSpital">
+						<td>{{departmentPatientsMove.department_name}}</td>
+						<td>{{departmentHol.DEPARTMENT_BED}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY}}</td>
+						<td class="center">
+							{{departmentPatientsMove.in_this_day>0?departmentPatientsMove.in_this_day:''}}
+						</td>
+						<td class="center">
+							{{departmentPatientsMove.in_inner>0?departmentPatientsMove.in_inner:''}}
+						</td>
+						<td class="center">
+							{{departmentPatientsMove.out_inner>0?departmentPatientsMove.out_inner:''}}
+						</td>
+						<td class="center">
+							{{departmentPatientsMove.out_this_day>0?departmentPatientsMove.out_this_day:''}}
+						</td>
+						<td class="center">{{departmentPatientsMove.dead_this_day>0?departmentPatientsMove.dead_this_day:''}}</td>
+						<td class="center">{{departmentPatientsMove.state_end_day}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_SITY}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CHILD}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_LYING}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_INSURED}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CAES}}</td>
 					</tr>
 				</table>
 

@@ -358,6 +358,8 @@ public class OperationCodeRest extends IxBasicRest{
 			HashMap<String, Integer> sqlParam = new HashMap<>();
 			sqlParam.put("historyId", historyId);
 			result.put("sqlParam", sqlParam);
+			logger.info("\n "+sqlParam);
+			logger.info("\n "+sqlHol1EihHistoryId);
 			result.put("historyMap", hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihHistoryId, sqlParam));
 			List<Map<String, Object>> operationHistoryList = getOperation(historyId);
 			result.put("operationHistoryList", operationHistoryList);
@@ -368,6 +370,7 @@ public class OperationCodeRest extends IxBasicRest{
 			
 			return result;
 		}
+
 		@Value("${sql.hol1Eih.operation_history.history_id}") private String sqlHol1EihOperationHistoryHistoryId;
 		@RequestMapping(value = "/v/ix-operation/{historyId}", method = RequestMethod.GET)
 		public @ResponseBody List<Map<String, Object>> getOperation(@PathVariable Integer historyId) {

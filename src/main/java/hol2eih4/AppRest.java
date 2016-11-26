@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Controller
 public class AppRest {
 	private static final Logger logger = LoggerFactory.getLogger(AppRest.class);
-	@Autowired private NamedParameterJdbcTemplate pgDbMaternityHolParamJdbcTemplate;
+	
 	@Autowired private NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 //	@Autowired private Hol1DbService hol1DbService;
 	@Autowired private AppService appService;
@@ -83,24 +83,7 @@ public class AppRest {
 		return map;
 	}
 
-	@GetMapping("/r/readBedDayMySql-{m1}-{m2}-{year}")
-	public  @ResponseBody Map<String, Object> readBedDayMySql(
-			 @PathVariable Integer m1
-			 ,@PathVariable Integer m2
-			 ,@PathVariable Integer year
-			,Principal userPrincipal) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("m1", m1);
-		map.put("m2", m2);
-		StopWatch watch = new StopWatch();
-		watch.start();
-		List<Map<String, Object>> bedDayOfMonthMySql = appService.readBedDayOfMonthMySql(m1,m2,year);
-		watch.stop();
-		map.put("duration", watch.getTotalTimeSeconds());
-		System.out.println("duration = " + map.get("duration"));
-		map.put("bedDayOfMonthMySql", bedDayOfMonthMySql);
-		return map;
-	}
+	
 
 	@GetMapping("/r/readBedDayDepartmentMySql-{m1}-{m2}-{year}")
 	public  @ResponseBody Map<String, Object> readBedDayDepartmentMySql(
@@ -129,35 +112,6 @@ public class AppRest {
 		return map;
 	}
 
-	private @Value("${sql.pgDbMaternityHol.icdMonth}") String pgDbMaternityHolIcdMonth;
-	@RequestMapping(value = "/r/readIcd10K2-{m1}-{m2}", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readIcd10K2(
-			@PathVariable Integer m1
-			,@PathVariable Integer m2
-			,Principal userPrincipal) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("min_month", m1);
-		map.put("max_month", m2);
-//		List<Map<String, Object>> icd10K1 = appService.readIcd10K1(m1,m2);
-		List<Map<String, Object>> icd10K1
-			= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolIcdMonth,map);
-		map.put("icd10K1", icd10K1);
-		if(m1 < m2) {
-			List<Object> someMonth = new ArrayList<>();
-			for (int i = m1; i <= m2; i++) {
-				Map<String, Integer> mmp = new HashMap<>();
-				mmp.put("min_month", i);
-				mmp.put("max_month", i);
-				List<Map<String, Object>> icd10K1Month1 
-					= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolIcdMonth,mmp);
-				someMonth.add(icd10K1Month1);
-			}
-			map.put("someMonth", someMonth);
-		}
-		map.put("m1", m1);
-		map.put("m2", m2);
-		return map;
-	}
 
 	@RequestMapping(value = "/r/readIcd10K1-{m1}-{m2}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readIcd10K1(
@@ -331,39 +285,8 @@ public class AppRest {
 		return readMovePatients;
 	}
 
-	@RequestMapping(value = "/readMoveTodayPatients", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readMoveTodayPatients(Principal principal, HttpServletRequest request) {
-		logger.info("\n ------------------------- Start /readMoveTodayPatients");
-		DateTime today = new DateTime();
-		Integer sessionYear = (Integer) request.getSession().getAttribute("year");
-		if(sessionYear != null)
-		{
-			today = today.withYear(sessionYear);
-		}
-		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(today);
-		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
-		moveTodayPatients.put("moveTodayPatientsList", moveTodayPatientsList);
-		moveTodayPatients.put("today", today.toDate());
-		moveTodayPatients.put("principal", principal);
-		return moveTodayPatients;
-	}
-
 	//  1.1  Зчитування надходження/виписки хворих на дату – readTodayMovePatients
-	@RequestMapping(value = "/readMove-{yyyy}-{mm}-{dd}-Patients", method = RequestMethod.GET)
-	public  @ResponseBody Map<String, Object> readMoveyyyymmddPatients(
-			@PathVariable Integer yyyy , @PathVariable Integer mm, @PathVariable Integer dd
-			,Principal principal) {
-		Map<String, Object> moveTodayPatients = new HashMap<String, Object>();
-		DateTime dateTime = new DateTime(yyyy,mm,dd,0,0);
-		logger.info("\n Start /readMove-"
-				+ AppConfig.yyyyMMddDateFormat.format(dateTime.toDate())
-				+ "-Patients ("+dateTime+") ");
-		List<Map<String, Object>> moveTodayPatientsList = appService.readMoveTodayPatients(dateTime);
-		moveTodayPatients.put("moveTodayPatientsList", moveTodayPatientsList);
-		moveTodayPatients.put("today", dateTime.toDate());
-		moveTodayPatients.put("principal", principal);
-		return moveTodayPatients;
-	}
+	
 
 	// 1.2   Запис надходження/виписки хворих на сьогодні – saveMoveTodayPatients
 	@RequestMapping(value = "/saveMoveTodayPatients", method = RequestMethod.POST)
