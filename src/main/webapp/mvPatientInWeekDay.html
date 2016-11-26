@@ -172,7 +172,7 @@ td.satsanday {
 						ng-repeat="departmentPatientsMove in allDepartmentPatientsMove.listDayRuhInSpital">
 						<td>{{departmentPatientsMove.department_name}}</td>
 						<td>{{departmentHol.DEPARTMENT_BED}}</td>
-						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY}}</td>
+						<td class="center">{{departmentPatientsMove.state_begin_day}}</td>
 						<td class="center">
 							{{departmentPatientsMove.in_this_day>0?departmentPatientsMove.in_this_day:''}}
 						</td>
