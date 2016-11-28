@@ -42,30 +42,21 @@ td.satsanday {
 	*/
 }
 </style>
-<title>Рух хворих за останні 7 днів</title>
+<title>Рух хворих лікарні за день</title>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
 			<a href="/"><span class="glyphicon glyphicon-home"></span></a>
-			Рух хворих за {{moveTodayPatients.today | date:'dd MMMM yyyy EEEE'}}</div>
+			Рух хворих лікарні за {{moveTodayPatients.today | date:'dd MMMM yyyy EEEE'}}</div>
 			<div class="collapse navbar-collapse navbar-right">.</div>
 		</div>
 	</nav>
 	<div class="container">
+		<div class="row" ng-include="'r/ui/mv/notRoleRuh.html'">
+		</div>
 		<div class="row">
-			<div class="col-md-12" ng-if="!isRoleRuh">
-				<p> <br /> <br /> <br /> <br /> <br /> </p>
-				<div class="alert alert-warning">
-					<strong> Шановний
-					<a href="/hello">
-					 {{moveTodayPatients.principal.name}}! 
-					</a></strong> У
-					Вас немає прав для редагування руху хворих.
-				</div>
-			</div>
-
 			<div class="col-md-12" ng-if="isRoleRuh">
 			<!--
 			<table class="table table-bordered">
@@ -169,34 +160,10 @@ td.satsanday {
 						(валідність даних)</caption>
 					<thead ng-include="'r/ui/ruh_all_dept_thead.html'"></thead>
 					<tr
-						ng-repeat="departmentPatientsMove in allDepartmentPatientsMove.listDayRuhInSpital">
-						<td
-						title="{{departmentPatientsMove.department_id}}"
-						>{{departmentPatientsMove.department_name}}</td>
-						<td>{{departmentHol.DEPARTMENT_BED}}</td>
-						<td class="center">{{departmentPatientsMove.state_begin_day}}</td>
-						<td class="center">
-							{{departmentPatientsMove.in_this_day>0?departmentPatientsMove.in_this_day:''}}
-						</td>
-						<td class="center">
-							{{departmentPatientsMove.in_inner>0?departmentPatientsMove.in_inner:''}}
-						</td>
-						<td class="center">
-							{{departmentPatientsMove.out_inner>0?departmentPatientsMove.out_inner:''}}
-						</td>
-						<td class="center">
-							{{departmentPatientsMove.out_this_day>0?departmentPatientsMove.out_this_day:''}}
-						</td>
-						<td class="center">{{departmentPatientsMove.dead_this_day>0?departmentPatientsMove.dead_this_day:''}}</td>
-						<td class="center">{{departmentPatientsMove.state_end_day}}</td>
-						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_SITY}}</td>
-						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CHILD}}</td>
-						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_LYING}}</td>
-						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_INSURED}}</td>
-						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CAES}}</td>
+						ng-repeat="departmentPatientsMove in allDepartmentPatientsMove.listDayRuhInSpital"
+						ng-include="'r/ui/mv/f007s1Row.html'">
 					</tr>
 				</table>
-
 			</div>
 		</div>
 	</div>

@@ -1,0 +1,25 @@
+
+<td title="{{departmentPatientsMove.department_id}}"><a
+	href="/mvDepartmentPatientDay.html?date={{param.date}}&d10t={{departmentPatientsMove.department_id}}">
+		{{departmentPatientsMove.department_name}} </a></td>
+<td>{{departmentHol.DEPARTMENT_BED}}</td>
+<td class="center">{{departmentPatientsMove.state_begin_day}}</td>
+<td class="center">
+	{{departmentPatientsMove.in_this_day>0?departmentPatientsMove.in_this_day:''}}
+</td>
+<td class="center">
+	{{departmentPatientsMove.in_inner>0?departmentPatientsMove.in_inner:''}}
+</td>
+<td class="center">
+	{{departmentPatientsMove.out_inner>0?departmentPatientsMove.out_inner:''}}
+</td>
+<td class="center">
+	{{departmentPatientsMove.out_this_day>0?departmentPatientsMove.out_this_day:''}}
+</td>
+<td class="center">{{departmentPatientsMove.dead_this_day>0?departmentPatientsMove.dead_this_day:''}}</td>
+<td class="center">{{departmentPatientsMove.state_end_day}}</td>
+<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_SITY}}</td>
+<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CHILD}}</td>
+<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_LYING}}</td>
+<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_INSURED}}</td>
+<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CAES}}</td>

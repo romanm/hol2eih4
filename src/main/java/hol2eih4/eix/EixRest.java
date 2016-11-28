@@ -24,7 +24,8 @@ public class EixRest {
 	@Autowired NamedParameterJdbcTemplate hol1EihParamJdbcTemplate;
 	@Autowired JdbcTemplate hol1EihJdbcTemplate;
 
-	@Value("${sql.hol1.ruh.f007.dayDepartmentPatients}") private String sqlHol1RuhF007dayDepartmentPatients;
+	@Value("${sql.hol1.ruh.f007s1.dayDepartmentPatients}") private String sqlHol1RuhF007s1dayDepartmentPatients;
+	@Value("${sql.hol1.ruh.f007s2.dayDepartmentPatients}") private String sqlHol1RuhF007s2dayDepartmentPatients;
 	@GetMapping(value = "/v/department-{departmentId}-PatientsMove-{yyyy}-{mm}-{dd}")
 	public  @ResponseBody Map<String, Object> department_departmentId_PatientsMove_yyyymmdd(
 			@PathVariable Integer departmentId , 
@@ -37,23 +38,31 @@ public class EixRest {
 		map.put("mm", mm);
 		map.put("dd", dd);
 		logger.info("\n ------ " + "/v/department-{departmentId}-PatientsMove-{yyyy}-{mm}-{dd}"
-				+ "\n" + map + "\n" 
-				+ sqlHol1RuhF007dayDepartmentPatients
+				+ "\n" + map 
+				+ "\n" + sqlHol1RuhF007s1dayDepartmentPatients
+				.replace(":departmentId", ""+departmentId)
+				.replace(":yyyy", ""+yyyy)
+				.replace(":mm", ""+mm).replace(":dd", ""+dd)
+				+ "\n" + sqlHol1RuhF007s2dayDepartmentPatients
 				.replace(":departmentId", ""+departmentId)
 				.replace(":yyyy", ""+yyyy)
 				.replace(":mm", ""+mm).replace(":dd", ""+dd));
 		StopWatch watch = new StopWatch();
 		watch.start();
-		List<Map<String, Object>> listDayRuhInDepartment 
-		= hol1EihParamJdbcTemplate.queryForList(sqlHol1RuhF007dayDepartmentPatients, map);
-		map.put("listDayRuhInDepartment", listDayRuhInDepartment);
+		Map<String, Object> mapDayRuhF007s1InDepartment 
+		= hol1EihParamJdbcTemplate.queryForMap(sqlHol1RuhF007s1dayDepartmentPatients, map);
+		map.put("mapDayRuhF007s1InDepartment", mapDayRuhF007s1InDepartment);
+		List<Map<String, Object>> listDayRuhF007s2InDepartment 
+		= hol1EihParamJdbcTemplate.queryForList(sqlHol1RuhF007s2dayDepartmentPatients, map);
+		map.put("listDayRuhF007s2InDepartment", listDayRuhF007s2InDepartment);
+		map.put("principal", principal);
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));
 		return map;
 	}
 
-	@Value("${sql.hol1.ruh.f007allDepartment}") private String sqlHol1RuhF007allDepartment;
+	@Value("${sql.hol1.ruh.f007Spital}") private String sqlHol1RuhF007Spital;
 	@GetMapping(value = "/v/departmentPatientsMove-{yyyy}-{mm}-{dd}")
 	public  @ResponseBody Map<String, Object> departmentPatientsMove_yyyymmdd(
 			@PathVariable Integer yyyy , @PathVariable Integer mm, @PathVariable Integer dd
@@ -63,11 +72,11 @@ public class EixRest {
 		map.put("mm", mm);
 		map.put("dd", dd);
 		logger.info("\n ------ " + "/v/departmentPatientsMove-{yyyy}-{mm}-{dd}\n" + map + "\n" 
-		+ sqlHol1RuhF007allDepartment.replace(":yyyy", ""+yyyy).replace(":mm", ""+mm).replace(":dd", ""+dd));
+		+ sqlHol1RuhF007Spital.replace(":yyyy", ""+yyyy).replace(":mm", ""+mm).replace(":dd", ""+dd));
 		StopWatch watch = new StopWatch();
 		watch.start();
 		List<Map<String, Object>> listDayRuhInSpital 
-			= hol1EihParamJdbcTemplate.queryForList(sqlHol1RuhF007allDepartment, map);
+			= hol1EihParamJdbcTemplate.queryForList(sqlHol1RuhF007Spital, map);
 		map.put("listDayRuhInSpital", listDayRuhInSpital);
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());

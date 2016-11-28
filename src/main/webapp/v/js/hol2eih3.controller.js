@@ -37,7 +37,7 @@ var initController = function($scope, $http, $filter){
 			$scope.error = data;
 		});
 		if(parameters.date){
-			/*зчитуання руху з електроники*/
+			/*зчитуання руху з електронки*/
 			var url2 = "/v/departmentPatientsMove-"+parameters.date;
 			console.log(url2);
 			$http({ method : 'GET', url : url2
