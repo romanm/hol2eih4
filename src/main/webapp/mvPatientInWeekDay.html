@@ -170,7 +170,9 @@ td.satsanday {
 					<thead ng-include="'r/ui/ruh_all_dept_thead.html'"></thead>
 					<tr
 						ng-repeat="departmentPatientsMove in allDepartmentPatientsMove.listDayRuhInSpital">
-						<td>{{departmentPatientsMove.department_name}}</td>
+						<td
+						title="{{departmentPatientsMove.department_id}}"
+						>{{departmentPatientsMove.department_name}}</td>
 						<td>{{departmentHol.DEPARTMENT_BED}}</td>
 						<td class="center">{{departmentPatientsMove.state_begin_day}}</td>
 						<td class="center">
