@@ -26,6 +26,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component("excelService")
@@ -37,7 +38,8 @@ public class ExcelService2 {
 		logger.debug("--------initExcel-----------------------------------------------");
 		String fileName = "pyx-2016-v.2.pattern.xls";
 		String fileName2 = "pyx-2016-v.2.pattern2.xls";
-		String filePath = AppConfig.applicationExcelFolderPfad+fileName;
+//		String filePath = AppConfig.applicationExcelFolderPfad+fileName;
+		String filePath = applicationExcelFolderPfad+fileName;
 		responseStrings(response, filePath);
 		HSSFWorkbook pyxPattern = readExcel(filePath);
 		for (String m : urkMonthNames) {
@@ -70,7 +72,8 @@ public class ExcelService2 {
 			}
 		}
 		logger.debug(""+pyxPattern);
-		saveExcel(pyxPattern, AppConfig.applicationExcelFolderPfad+fileName2);
+		saveExcel(pyxPattern, applicationExcelFolderPfad+fileName2);
+//		saveExcel(pyxPattern, AppConfig.applicationExcelFolderPfad+fileName2);
 	}
 	private void responseStrings(HttpServletResponse response, String string) throws IOException {
 		response.getOutputStream().write(string.getBytes());
@@ -78,7 +81,8 @@ public class ExcelService2 {
 	}
 	public void createExcel(DateTime dateTime) {
 		logger.debug("--------createExcel-----------------------------------------------");
-		String filePath = AppConfig.applicationExcelFolderPfad+AppConfig.getExcelfilename();
+		String filePath = applicationExcelFolderPfad+AppConfig.getExcelfilename();
+//		String filePath = AppConfig.applicationExcelFolderPfad+AppConfig.getExcelfilename();
 		logger.debug(filePath);
 		HSSFWorkbook pyxWorkbook = readExcel(filePath);
 		int monthOfYear = dateTime.getMonthOfYear();
@@ -234,9 +238,14 @@ public class ExcelService2 {
 		,"вересень" ,"жовтень" ,"листопад"
 		,"грудень" };
 	
+	@Value("${config.innerExcelFolderPfad}") private String innerExcelFolderPfad;
+	@Value("${config.applicationExcelFolderPfad}") private String applicationExcelFolderPfad;
+
 	private void makeBackup() {
-		String sourceFile = AppConfig.applicationExcelFolderPfad+AppConfig.getExcelfilename();
-		String targetFile = AppConfig.innerExcelFolderPfad+AppConfig.getExcelfilename();
+//		String sourceFile = AppConfig.applicationExcelFolderPfad+AppConfig.getExcelfilename();
+		String sourceFile = applicationExcelFolderPfad+AppConfig.getExcelfilename();
+		String targetFile = innerExcelFolderPfad+AppConfig.getExcelfilename();
+//		String targetFile = AppConfig.innerExcelFolderPfad+AppConfig.getExcelfilename();
 		copyFile(sourceFile, targetFile);
 	}
 	

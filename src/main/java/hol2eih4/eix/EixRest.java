@@ -27,9 +27,9 @@ public class EixRest {
 	@Value("${sql.hol1.ruh.f007s1.dayDepartmentPatients}") private String sqlHol1RuhF007s1dayDepartmentPatients;
 	@Value("${sql.hol1.ruh.f007s2.dayDepartmentPatients}") private String sqlHol1RuhF007s2dayDepartmentPatients;
 	@GetMapping(value = "/v/department-{departmentId}-PatientsMove-{yyyy}-{mm}-{dd}")
-	public  @ResponseBody Map<String, Object> department_departmentId_PatientsMove_yyyymmdd(
-			@PathVariable Integer departmentId , 
-			@PathVariable Integer yyyy , 
+	public @ResponseBody Map<String, Object> department_departmentId_PatientsMove_yyyymmdd(
+			@PathVariable Integer departmentId ,
+			@PathVariable Integer yyyy ,
 			@PathVariable Integer mm, @PathVariable Integer dd
 			,Principal principal) {
 		Map<String, Object> map =  new HashMap<>();
@@ -62,6 +62,69 @@ public class EixRest {
 		return map;
 	}
 
+	@Value("${sql.hol1.f007s1.dayDepartment}") private String sqlHol1F007s1DayDepartment;
+	@Value("${sql.hol1.f007s2.dayDepartment}") private String sqlHol1F007s2DayDepartment;
+	@GetMapping(value = "/v/hol1F007Day-{yyyy}-{mm}-{dd}-department-{departmentId}")
+	public @ResponseBody Map<String, Object> hol1F007Day_yyyymmdd_department_departmentId(
+			@PathVariable Integer departmentId ,
+			@PathVariable Integer yyyy ,
+			@PathVariable Integer mm, @PathVariable Integer dd
+			,Principal principal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map =  new HashMap<>();
+		map.put("departmentId", departmentId);
+		map.put("yyyy", yyyy);
+		map.put("mm", mm);
+		map.put("dd", dd);
+		logger.info("\n ------ " + "/v/department-{departmentId}-PatientsMove-{yyyy}-{mm}-{dd}"
+				+ "\n" + map 
+				+ "\n" + sqlHol1F007s1DayDepartment
+				.replace(":departmentId", ""+departmentId)
+				.replace(":yyyy", ""+yyyy)
+				.replace(":mm", ""+mm).replace(":dd", ""+dd)
+				+ "\n" + sqlHol1F007s2DayDepartment
+				.replace(":departmentId", ""+departmentId)
+				.replace(":yyyy", ""+yyyy)
+				.replace(":mm", ""+mm).replace(":dd", ""+dd));
+		Map<String, Object> mapHol1F007s1DayDepartment 
+		= hol1EihParamJdbcTemplate.queryForMap(sqlHol1F007s1DayDepartment, map);
+		map.put("mapHol1F007s1DayDepartment", mapHol1F007s1DayDepartment);
+		List<Map<String, Object>> listHol1F007s2DayDepartment 
+		= hol1EihParamJdbcTemplate.queryForList(sqlHol1F007s2DayDepartment, map);
+		map.put("listHol1F007s2DayDepartment", listHol1F007s2DayDepartment);
+		map.put("principal", principal);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+	@Value("${sql.hol1.f007.spital}") private String sqlHol1F007Spital;
+	@GetMapping(value = "/v/hol1F007Spital-{yyyy}-{mm}-{dd}")
+	public  @ResponseBody Map<String, Object> hol1F007Spital_yyyymmdd(
+			@PathVariable Integer yyyy , @PathVariable Integer mm, @PathVariable Integer dd
+			,Principal principal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map =  new HashMap<>();
+		map.put("yyyy", yyyy);
+		map.put("mm", mm);
+		map.put("dd", dd);
+		logger.info("\n ------ " + "/v/departmentPatientsMove-{yyyy}-{mm}-{dd}"
+				+ "\n" + map 
+				+ "\n" + sqlHol1F007Spital.replace(":yyyy", ""+yyyy).replace(":mm", ""+mm).replace(":dd", ""+dd)
+				);
+		List<Map<String, Object>> hol1F007Spital 
+		= hol1EihParamJdbcTemplate.queryForList(sqlHol1F007Spital, map);
+		map.put("hol1F007Spital", hol1F007Spital);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+	@Value("${sql.hol1.ruh.f007.departmentHistoryForDay}") private String sqlHol1RuhF007DepartmentHistoryForDay;
 	@Value("${sql.hol1.ruh.f007Spital}") private String sqlHol1RuhF007Spital;
 	@GetMapping(value = "/v/departmentPatientsMove-{yyyy}-{mm}-{dd}")
 	public  @ResponseBody Map<String, Object> departmentPatientsMove_yyyymmdd(
@@ -71,8 +134,10 @@ public class EixRest {
 		map.put("yyyy", yyyy);
 		map.put("mm", mm);
 		map.put("dd", dd);
-		logger.info("\n ------ " + "/v/departmentPatientsMove-{yyyy}-{mm}-{dd}\n" + map + "\n" 
-		+ sqlHol1RuhF007Spital.replace(":yyyy", ""+yyyy).replace(":mm", ""+mm).replace(":dd", ""+dd));
+		logger.info("\n ------ " + "/v/departmentPatientsMove-{yyyy}-{mm}-{dd}\n" + map 
+		+ "\n" + sqlHol1RuhF007DepartmentHistoryForDay.replace(":yyyy", ""+yyyy).replace(":mm", ""+mm).replace(":dd", ""+dd)
+		+ "\n" + sqlHol1RuhF007Spital.replace(":yyyy", ""+yyyy).replace(":mm", ""+mm).replace(":dd", ""+dd)
+		);
 		StopWatch watch = new StopWatch();
 		watch.start();
 		List<Map<String, Object>> listDayRuhInSpital 

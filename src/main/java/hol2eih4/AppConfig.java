@@ -12,9 +12,9 @@ public class AppConfig {
 //	public final static String  staticUrlPrefix = "http://192.168.4.10";
 
 	//development server /home/roman/algoritmed.com/h2-server
-	final static String applicationFolderPfad = "/home/roman/dev-20160518/research_2/hol2eih4/";
-	final static String applicationExcelFolderPfad = "/home/roman/db-java/h2-server/db-hol2-eih-excel/";
-	public final static String staticUrlPrefix = "http://127.0.0.1";
+//	final static String applicationFolderPfad = "/home/roman/dev-20160518/research_2/hol2eih4/";
+//	final static String applicationExcelFolderPfad = "/home/roman/db-java/h2-server/db-hol2-eih-excel/";
+//	public final static String staticUrlPrefix = "http://127.0.0.1";
 
 	//	@Value("${config.urlMySqlDb}") 
 //	public static String urlMySqlDb = "jdbc:mysql://localhost/hol?useUnicode=true&characterEncoding=utf-8";
@@ -54,7 +54,7 @@ public class AppConfig {
 		String excelWorkFileName = excelFileName.replace("2015", workYear.toString());
 		return excelWorkFileName;
 	}
-	final static String applicationResourcesFolderPfad	= applicationFolderPfad+"src/main/resources/";
-	final static String innerExcelFolderPfad	= applicationFolderPfad + "src/main/webapp/excel/";
+//	final static String applicationResourcesFolderPfad	= applicationFolderPfad+"src/main/resources/";
+//	final static String innerExcelFolderPfad	= applicationFolderPfad + "src/main/webapp/excel/";
 
 }

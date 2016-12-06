@@ -26,6 +26,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 //@Component("excelService")
 public class ExcelService {
@@ -50,11 +51,14 @@ public class ExcelService {
 		Integer rowNr = findFirstDepartmentRow(monthTemplateSheet);
 		logger.debug("rowNr = "+rowNr);
 //		rowNr = setPatientMovesDate(moveTodayPatientsList, monthTemplateSheet, rowNr);
-		saveExcel(pyx2015, AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
+		saveExcel(pyx2015, applicationExcelFolderPfad+"pyx2015.xls");
+//		saveExcel(pyx2015, AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
 
 		try {
-			Files.copy(new File(AppConfig.applicationExcelFolderPfad+"pyx2015.xls").toPath()
-			, new File(AppConfig.innerExcelFolderPfad+"pyx2015.xls").toPath()
+//			Files.copy(new File(AppConfig.applicationExcelFolderPfad+"pyx2015.xls").toPath()
+			Files.copy(new File(applicationExcelFolderPfad+"pyx2015.xls").toPath()
+			, new File(innerExcelFolderPfad+"pyx2015.xls").toPath()
+//			, new File(AppConfig.innerExcelFolderPfad+"pyx2015.xls").toPath()
 			, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -62,6 +66,9 @@ public class ExcelService {
 
 		findDate(monthTemplateSheet);
 	}
+
+	@Value("${config.applicationExcelFolderPfad}") private String applicationExcelFolderPfad;
+	@Value("${config.innerExcelFolderPfad}") private String innerExcelFolderPfad;
 
 	private Integer setPatientMovesDate(List<Map<String, Object>> moveTodayPatientsList, HSSFSheet sheet, Integer rowNr) {
 		for (Map<String, Object> map : moveTodayPatientsList) {
@@ -291,7 +298,8 @@ public class ExcelService {
 	private HSSFWorkbook readExcel() {
 		try {
 			InputStream inputStream = new FileInputStream(
-					AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
+					applicationExcelFolderPfad+"pyx2015.xls");
+//			AppConfig.applicationExcelFolderPfad+"pyx2015.xls");
 			return new HSSFWorkbook(inputStream);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -337,7 +345,8 @@ public class ExcelService {
 			Cell cell = row.createCell(0);
 			cell.setCellValue(departmentName);
 		}
-		saveExcel(workbook,AppConfig.applicationExcelFolderPfad+"excel2.xls");
+		saveExcel(workbook,applicationExcelFolderPfad+"excel2.xls");
+//		saveExcel(workbook,AppConfig.applicationExcelFolderPfad+"excel2.xls");
 	}
 
 }

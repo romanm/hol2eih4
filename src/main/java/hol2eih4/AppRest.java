@@ -325,15 +325,21 @@ public class AppRest {
 		}
 	}
 
+	@Value("${config.applicationExcelFolderPfad}") private String applicationExcelFolderPfad;
+
 	@RequestMapping(value = "/file-excel-{yyyy}", method = RequestMethod.GET)
 	public String getExcell(@PathVariable Integer yyyy){
 		logger.debug(yyyy+"/");
-		String sourceFile = AppConfig.applicationExcelFolderPfad+AppConfig.getExcelfilename();
-		String targetFile = AppConfig.innerExcelFolderPfad+AppConfig.getExcelfilename();
+//		String sourceFile = AppConfig.applicationExcelFolderPfad+AppConfig.getExcelfilename();
+		String sourceFile = applicationExcelFolderPfad+AppConfig.getExcelfilename();
+		String targetFile = innerExcelFolderPfad+AppConfig.getExcelfilename();
+//		String targetFile = AppConfig.innerExcelFolderPfad+AppConfig.getExcelfilename();
 		logger.debug("cp "+sourceFile+" "+targetFile);
 		excelService.copyFile(sourceFile, targetFile);
 		return "redirect:/excel/pyx-2016-v.2.xls";
 	}
+
+	@Value("${config.innerExcelFolderPfad}") private String innerExcelFolderPfad;
 
 	@RequestMapping(value = "/create-read-{yyyy}-{mm}-{dd}-excel", method = RequestMethod.GET)
 	public String createReadExcell(

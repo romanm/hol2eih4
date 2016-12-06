@@ -22,7 +22,19 @@ hol2eih4v1App.controller('MvDepartmentPatientDay', ['$scope', '$http', '$filter'
 				$scope.departmentPatientDay = data;
 				console.log($scope.departmentPatientDay);
 				//initDateVariables();
-				isRole("ruh", $scope.departmentPatientDay);
+//				isRole("ruh", $scope.departmentPatientDay);
+			}).error(function(data, status, headers, config) {
+				$scope.error = data;
+			});
+			// v.02
+			var url2 = '/v/hol1F007Day-'+parameters.date+'-department-'+parameters.d10t;
+			console.log(url2);
+			$http({ method : 'GET', url : url2
+			}).success(function(data, status, headers, config) {
+				$scope.hol1F007Day = data;
+				console.log($scope.hol1F007Day);
+				//initDateVariables();
+				isRole("ruh", $scope.hol1F007Day);
 			}).error(function(data, status, headers, config) {
 				$scope.error = data;
 			});

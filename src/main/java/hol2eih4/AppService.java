@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -547,6 +548,10 @@ Types.INTEGER
 	@Autowired DataSource dataSourceHol2Eih;
 	void updateDbVersion() throws FileNotFoundException, SQLException {
 		System.out.println("---updateDbVersion---------------------");
+		logger.debug(
+				" \n "+applicationResourcesFolderPfad
+				+" \n "+fileNameDbVersionUpdate
+				);
 		final Map<String, Object> dbVersionUpdate = readJsonDbFile2map(fileNameDbVersionUpdate);
 		final List<Map> sqlVersionUpdateList = (List) dbVersionUpdate.get("dbVersionUpdateList");
 		final List<String> sqls0 = (List<String>) ((Map) sqlVersionUpdateList.get(0)).get("sqls");
@@ -565,7 +570,9 @@ Types.INTEGER
 				if(containsRunScriptFile){
 					String runScriptFile = (String) map.get("run_script_file");
 					System.out.println(runScriptFile);
-					runScriptFile = AppConfig.applicationResourcesFolderPfad+"sql_script/"+runScriptFile;
+//					runScriptFile = AppConfig.applicationResourcesFolderPfad+"sql_script/"+runScriptFile;
+					runScriptFile = applicationResourcesFolderPfad+"sql_script/"+runScriptFile;
+					runScriptFile = applicationResourcesFolderPfad+"sql_script/"+runScriptFile;
 					System.out.println(runScriptFile);
 					FileReader runScriptFileReader = new FileReader(runScriptFile);
 					System.out.println(runScriptFileReader);
@@ -594,6 +601,7 @@ Types.INTEGER
 //		Map<String, Object> readMovePatients = readMovePatients();
 //		logger.debug(""+readMovePatients);
 	}
+
 	private void sqlUpdate(String sql) {
 		List<Map<String, Object>> sqlUpdateList = hol2EihH2JdbcTemplate.queryForList(sql);
 		cnt_update += sqlUpdateList.size();
@@ -613,7 +621,10 @@ Types.INTEGER
 		}
 	}
 
-	final String fileNameDbVersionUpdate = AppConfig.applicationResourcesFolderPfad + "dbVersionUpdate.sql.json.js";
+	@Value("${config.applicationResourcesFolderPfad}") private String applicationResourcesFolderPfad;
+	@Value("${config.fileNameDbVersionUpdate}") private String fileNameDbVersionUpdate;
+//	String fileNameDbVersionUpdate = applicationResourcesFolderPfad + "dbVersionUpdate.sql.json.js";
+//	final String fileNameDbVersionUpdate = AppConfig.applicationResourcesFolderPfad + "dbVersionUpdate.sql.json.js";
 	private Map<String, Object> readJsonDbFile2map(String fileNameJsonDb) {
 		logger.debug(fileNameJsonDb);
 		File file = new File(fileNameJsonDb);
@@ -633,8 +644,5 @@ Types.INTEGER
 //		logger.debug(" o - "+readJsonDbFile2map);
 		return readJsonDbFile2map;
 	}
-
-	
-
 
 }

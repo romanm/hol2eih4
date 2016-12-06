@@ -83,7 +83,7 @@ td.satsanday {
 						-->
 						<td>
 						<a href="/file-excel-{{2016}}"> <i
-								class="fa fa-file-excel-o fa-2x"></i>
+							class="fa fa-file-excel-o fa-2x"></i>
 						</a>
 						
 						</td>
@@ -157,6 +157,15 @@ td.satsanday {
 				</table>
 				<table class="table-bordered">
 					<caption>Перевірка електронної історії хвороби
+						(валідність даних)</caption>
+					<thead ng-include="'r/ui/ruh_all_dept_thead.html'"></thead>
+					<tr
+						ng-repeat="f007s1Department in hol1F007Spital.hol1F007Spital"
+						ng-include="'r/ui/mv2/f007s1RowV2.html'">
+					</tr>
+				</table>
+				<table class="table-bordered">
+					<caption>Перевірка електронної історії хвороби v.01
 						(валідність даних)</caption>
 					<thead ng-include="'r/ui/ruh_all_dept_thead.html'"></thead>
 					<tr

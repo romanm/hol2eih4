@@ -13,8 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.ui.Model;
 
-import hol2eih4.AppConfig;
-
 public class IxBasicRest {
 	
 	private static final Logger logger = LoggerFactory.getLogger(IxBasicRest.class);
@@ -26,11 +24,14 @@ public class IxBasicRest {
 		= hol1EihJdbcTemplate.queryForList(sqlHol1ShowTableColumns.replace(":tableName", tableName));
 		return tableColumns;
 	}
-	
+
+	private @Value("${config.staticUrlPrefix}") String staticUrlPrefix;
+
 	protected void initModel(Model model) {
-		model.addAttribute("staticUrlPrefix", AppConfig.staticUrlPrefix);
+		model.addAttribute("staticUrlPrefix", staticUrlPrefix);
+//		model.addAttribute("staticUrlPrefix", AppConfig.staticUrlPrefix);
 	}
-	
+
 	void useAuthorityRole(Principal principal, Map<String, Object> model) {
 		for (GrantedAuthority grantedAuthority : ((Authentication) principal).getAuthorities()) {
 			System.out.println(grantedAuthority);

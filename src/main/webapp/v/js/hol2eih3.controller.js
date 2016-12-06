@@ -37,7 +37,18 @@ var initController = function($scope, $http, $filter){
 			$scope.error = data;
 		});
 		if(parameters.date){
-			/*зчитуання руху з електронки*/
+			/*зчитуання руху з електронки 2 */
+			var url3 = "/v/hol1F007Spital-"+parameters.date;
+			console.log(url3);
+			$http({ method : 'GET', url : url3
+			}).success(function(data, status, headers, config) {
+				$scope.hol1F007Spital = data;
+				console.log($scope.hol1F007Spital);
+			}).error(function(data, status, headers, config) {
+				$scope.error = data;
+			});
+			
+			/*зчитуання руху з електронки 1 */
 			var url2 = "/v/departmentPatientsMove-"+parameters.date;
 			console.log(url2);
 			$http({ method : 'GET', url : url2

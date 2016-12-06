@@ -12,6 +12,7 @@ import java.security.Principal;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class FileUploadRest {
 	private static final Logger logger = LoggerFactory.getLogger(FileUploadRest.class);
+	@Value("${config.applicationExcelFolderPfad}") private String applicationExcelFolderPfad;
 	private String backupFileName(String fileName) {
 		DateTime today = new DateTime();
 		String timestampStr = AppConfig.yyyyMMddHHmmssDateFormat.format(today.toDate());
@@ -34,7 +36,8 @@ public class FileUploadRest {
 			, @RequestParam("fileName") String fileName
 			, Principal userPrincipal){
 
-		String dbFileViewDir = AppConfig.applicationExcelFolderPfad+ "";// propertiConfig.folderDb + propertiConfig.folderPublicFiles;
+//		String dbFileViewDir = AppConfig.applicationExcelFolderPfad+ "";// propertiConfig.folderDb + propertiConfig.folderPublicFiles;
+		String dbFileViewDir = applicationExcelFolderPfad+ "";// propertiConfig.folderDb + propertiConfig.folderPublicFiles;
 		logger.debug(dbFileViewDir);
 		File dm = openCreateFolder(dbFileViewDir);
 		logger.debug(""+dm);
@@ -43,8 +46,10 @@ public class FileUploadRest {
 		String backupFileName = backupFileName(AppConfig.getExcelfilename());
 		logger.debug(backupFileName);
 
-		copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.getExcelfilename()
-				, AppConfig.applicationExcelFolderPfad+"backup/"+ backupFileName);
+//		copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.getExcelfilename()
+//		, AppConfig.applicationExcelFolderPfad+"backup/"+ backupFileName);
+		copyFile(applicationExcelFolderPfad + AppConfig.getExcelfilename()
+				, applicationExcelFolderPfad+"backup/"+ backupFileName);
 
 		if (fileName.indexOf(AppConfig.getExcelfilename()) >= 0) {
 			if (!file.isEmpty()) {
@@ -52,11 +57,14 @@ public class FileUploadRest {
 					byte[] bytes = file.getBytes();
 					BufferedOutputStream stream = 
 							new BufferedOutputStream(new FileOutputStream(
-									new File(AppConfig.applicationExcelFolderPfad + AppConfig.getExcelfilename())));
+									new File(applicationExcelFolderPfad + AppConfig.getExcelfilename())));
+//					new File(AppConfig.applicationExcelFolderPfad + AppConfig.getExcelfilename())));
 					stream.write(bytes);
 					stream.close();
-					copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.getExcelfilename()
-							, AppConfig.innerExcelFolderPfad + AppConfig.getExcelfilename());
+//					copyFile(AppConfig.applicationExcelFolderPfad + AppConfig.getExcelfilename()
+					copyFile(applicationExcelFolderPfad + AppConfig.getExcelfilename()
+							, innerExcelFolderPfad + AppConfig.getExcelfilename());
+//					, AppConfig.innerExcelFolderPfad + AppConfig.getExcelfilename());
 					return "You successfully uploaded " + fileName + "!";
 				} catch (Exception e) {
 					return "You failed to upload " + fileName + " => " + e.getMessage();
@@ -68,7 +76,9 @@ public class FileUploadRest {
 			return "Ім’я файла не відповідає дійсності";
 		}
 	}
-	
+
+	@Value("${config.innerExcelFolderPfad}") private String innerExcelFolderPfad;
+
 	public void copyFile(String sourceFileName,String targetFileName) {
 		logger.debug("cp "+sourceFileName +" "+targetFileName);
 		try {
