@@ -52,7 +52,10 @@ td.satsanday {
 	*/
 }
 </style>
+<!-- 
 <title>Рух хворих відділення {{departmentPatientDay.mapDayRuhF007s1InDepartment.department_name}} за день</title>
+ -->
+<title>{{departmentPatientDay.mapDayRuhF007s1InDepartment.department_name}} {{param.date}} Ф.007/о </title>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -86,18 +89,24 @@ td.satsanday {
 				<table class="table table-bordered">
 					<caption style="text-align: center;">
 						<b>
-							<div style="text-transform: uppercase;">Список хворих</div>
+							<div style="text-transform: uppercase;">
+							<a ng-click="changePatientList()">
+							Список хворих
+							</a></div>
 						</b>
 					</caption>
 					<thead>
 						<tr>
-							<th>Список хворих на 9:00 {{param.date}}</th>
+							<th><a ng-click="changePatientList()">
+									Список хворих на 9:00 {{param.date}}</a></th>
 							<th>Поступили</th>
 							<th>Переведені з інших відділень</th>
 							<th>Виписані</th>
 							<th>Переведені в інші відділеня</th>
 							<th>Переведені в інші стаціонари</th>
 							<th>Померли</th>
+							<th><a ng-click="changePatientList()">
+									Список хворих на 9:00 наступного дня</a></th>
 						</tr>
 						<tr>
 							<th class="center">1</th>
@@ -110,49 +119,62 @@ td.satsanday {
 						</tr>
 					</thead>
 					<tbody>
-					<td><span
-							ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
-							ng-if="p.onBeginDay == 1"
-							>
-								<span ng-include="'r/ui/mv/patientF007s2.html'"></span>,<br />
-						</span></td>
-					<td><span
-							ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
-							ng-if="p.fromReception == 1 && p.onBeginDay == 0"
-							>
-								<span ng-include="'r/ui/mv/patientF007s2.html'"></span>,<br />
-						</span></td>
-					<td><span
-							ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
-							ng-if="p.fromReception == 0 && p.onBeginDay == 0"
-							>
-								<span ng-include="'r/ui/mv/patientF007s2.html'"></span>,<br />
-						</span></td>
-					<td><span
-							ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
-							ng-if="p.onEndDay == 0 && p.dead == 0 && p.outClinicFromDepartment == 1"
-							>
-								<span ng-include="'r/ui/mv/patientF007s2.html'"></span>,<br />
-						</span></td>
-					<td><span
-							ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
-							ng-if="p.onEndDay == 0 && p.dead == 0 && p.outClinicFromDepartment == 0"
-							>
-								<span ng-include="'r/ui/mv/patientF007s2.html'"></span>,<br />
-						</span></td>
-					<td></td>
-					<td><span
-							ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
-							ng-if="p.onEndDay == 0 && p.dead == 1"
-							>
-								<span ng-include="'r/ui/mv/patientF007s2.html'"></span>,<br />
-						</span></td>
-						<td><span
-							ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
-							ng-if="p.onEndDay == 1"
-							>
-								<span ng-include="'r/ui/mv/patientF007s2.html'"></span>,<br />
-						</span></td>
+						<tr>
+							<td>
+								<!-- на початок дня --> <span ng-if="viewPatientList"> <span
+									ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
+									ng-if="p.onBeginDay == 1"> <span
+										ng-include="'r/ui/mv/patientF007s2.html'"></span><br />
+								</span>
+							</span>
+							</td>
+							<td>
+								<!-- поступило c6 --> <span
+								ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
+								ng-if="p.fromReception == 1 && p.onBeginDay == 0"> <span
+									ng-include="'r/ui/mv/patientF007s2.html'"></span><br />
+							</span>
+							</td>
+							<td>
+								<!-- з інших відділень c9 --> <span
+								ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
+								ng-if="p.fromReception == 0 && p.onBeginDay == 0"> <a
+									href="mvDepartmentPatientDay.html?date={{param.date}}&d10t={{p.from_department_id}}">
+										{{p.from_department_id}} ⇒</a> <span
+									ng-include="'r/ui/mv/patientF007s2.html'"></span><br />
+							</span>
+							</td>
+							<td>
+								<!-- виписані c11 -->
+								<span ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
+								ng-if="p.onEndDay == 0 && p.dead == 0 && p.outClinicFromDepartment == 1">
+									<span ng-include="'r/ui/mv/patientF007s2.html'"></span><br />
+							</span>
+							</td>
+							<td>
+								<!-- в інші відділеня c10 --> <span
+								ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
+								ng-if="p.onEndDay == 0 && p.outClinicFromDepartment == 0">
+									<span ng-include="'r/ui/mv/patientF007s2.html'"></span> <a
+									href="mvDepartmentPatientDay.html?date={{param.date}}&d10t={{p.to_department_id}}">⇒
+										{{p.to_department_id}} </a> <br />
+							</span>
+							</td>
+							<td></td>
+							<td><!-- померли c13 --><span
+								ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
+								ng-if="p.onEndDay == 0 && p.outClinicFromDepartment == 1 && p.dead == 1"> <span
+									ng-include="'r/ui/mv/patientF007s2.html'"></span><br />
+							</span></td>
+							<td>
+								<!-- на кінець дня c14--> <span ng-if="viewPatientList"> <span
+									ng-repeat="p in hol1F007Day.listHol1F007s2DayDepartment"
+									ng-if="p.onEndDay == 1"> <span
+										ng-include="'r/ui/mv/patientF007s2.html'"></span><br />
+								</span>
+							</span>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -196,9 +218,11 @@ td.satsanday {
 						<th class="center">13</th>
 					</tr>
 					<tr>
-						<td><span
-							ng-repeat="p in departmentPatientDay.listDayRuhF007s2InDepartment">
-								<span ng-include="'r/ui/mv/patientF007s2.html'"></span>,<br />
+						<td>
+						<span ng-if="viewPatientList"> <span
+								ng-repeat="p in departmentPatientDay.listDayRuhF007s2InDepartment">
+									<span ng-include="'r/ui/mv/patientF007s2.html'"></span><br />
+							</span>
 						</span></td>
 						<td>
 							<div

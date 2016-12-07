@@ -13,6 +13,13 @@ hol2eih4v1App.controller('MvDepartmentPatientDay', ['$scope', '$http', '$filter'
 	console.log("/mvDepartmentPatientDay.html");
 	initController($scope, $http, $filter);
 	console.log($scope.param);
+	$scope.viewPatientList = false;
+	console.log($scope.viewPatientList);
+	$scope.changePatientList = function(){
+		console.log($scope.viewPatientList);
+		$scope.viewPatientList = !$scope.viewPatientList;
+		console.log($scope.viewPatientList);
+	}
 	$scope.readDepartmentPatientDay = function(){
 		if(parameters.date && parameters.d10t){
 			var url = '/v/department-'+parameters.d10t+'-PatientsMove-'+parameters.date;
@@ -85,4 +92,3 @@ var initController = function($scope, $http, $filter){
 	}
 
 }
-
