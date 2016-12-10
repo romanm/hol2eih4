@@ -150,6 +150,7 @@ public class ReportRestService {
 	}
 
 	private @Value("${sql.hol1Eih.f20t3500.nrr_group}") String sqlHol1EihF20t3500NrrGroup;
+	private @Value("${sql.hol1Eih.f20t3500.all}") String sqlHol1EihF20t3500All;
 	@GetMapping("/r/F20t3500-{m1}-{m2}-{year}")
 	public  @ResponseBody Map<String, Object> readF20t3500(
 			@PathVariable Integer m1
@@ -164,7 +165,7 @@ public class ReportRestService {
 		StopWatch watch = new StopWatch();
 		watch.start();
 		List<Map<String, Object>> list
-		= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihF20t3500NrrGroup,map);
+		= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihF20t3500All,map);
 		map.put("list", list);
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
