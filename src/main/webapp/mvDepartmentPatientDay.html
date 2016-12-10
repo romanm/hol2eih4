@@ -81,10 +81,49 @@ td.satsanday {
 						</b>
 					</caption>
 					<thead ng-include="'r/ui/ruh_all_dept_thead.html'"></thead>
+					<tr>
+						<td colspan="14"
+						style="text-align: right;"
+						>
+						ЕІХ 003/о
+						</td>
+					</tr>
 					<tr
 						ng-init="f007s1Department = hol1F007Day.mapHol1F007s1DayDepartment"
 						ng-include="'r/ui/mv2/f007s1RowV2.html'">
 					</tr>
+					<!-- 
+						<td>
+						{{param.d10t}}
+						{{f007s1Department.department_id==param.d10t}}
+						{{f007s1Department.department_id}}
+						</td>
+					 -->
+					<tr>
+						<td colspan="14" style="text-align: right;">рух 007/о
+						</td>
+					</tr>
+
+					<tr
+						ng-repeat="departmentHol in moveTodayPatients.moveTodayPatientsList"
+					ng-if="departmentHol.DEPARTMENT_ID==param.d10t"
+						>
+						<td>{{departmentHol.DEPARTMENT_NAME}}</td>
+						<td>{{departmentHol.DEPARTMENT_BED}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_PATIENT1DAY}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_IN}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_INDEPARTMENT}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_OUTDEPARTMENT}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_OUT}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_DEAD}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_PATIENT2DAY}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_SITY}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CHILD}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_LYING}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_INSURED}}</td>
+						<td class="center">{{departmentHol.MOVEDEPARTMENTPATIENT_CAES}}</td>
+					</tr>
+					
 				</table>
 				<table class="table table-bordered">
 					<caption style="text-align: center;">

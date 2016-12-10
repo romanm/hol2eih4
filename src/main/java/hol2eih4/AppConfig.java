@@ -29,7 +29,7 @@ public class AppConfig {
 //	public final static String hol2webHost = "http://localhost:8084";
 	//-----------forAll--------------------
 	final static String jsonDbFiles	= "src/main/webapp/db/";
-	final static String urlH2Db = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";
+//	final static String urlH2Db = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";
 	final static String urlK1Db = "jdbc:hsqldb:hsql://localhost/db-hsql-dity1";
 	//development server /home/roman/algoritmed.com/h2-server
 //	final static String urlH2Db = "jdbc:h2:tcp://localhost/db-hol2-eih/db-hol2-eih";

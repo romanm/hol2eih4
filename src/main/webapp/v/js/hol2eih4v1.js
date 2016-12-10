@@ -1,3 +1,6 @@
+/*
+ * hol2eih4v1App -- рух хворих по відділеню
+ * */
 var hol2eih4v1App = angular.module('hol2eih4v1App', ['textAngular', 'ui.bootstrap']);
 hol2eih4v1App.factory();
 var parameters = {};
@@ -45,6 +48,20 @@ hol2eih4v1App.controller('MvDepartmentPatientDay', ['$scope', '$http', '$filter'
 			}).error(function(data, status, headers, config) {
 				$scope.error = data;
 			});
+
+			/*зчитування руху з 007 паперових */
+			var url = "/readMove-"+parameters.date+"-Patients"
+			console.log(url);
+			$http({ method : 'GET', url : url
+			}).success(function(data, status, headers, config) {
+				$scope.moveTodayPatients = data;
+				console.log($scope.moveTodayPatients);
+				//initDateVariables();
+				//isRole("ruh");
+			}).error(function(data, status, headers, config) {
+				$scope.error = data;
+			});
+
 		}else{
 			console.error('false parameters, use data and d10t');
 		}
