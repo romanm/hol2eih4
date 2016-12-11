@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -169,6 +171,50 @@ public class EixRest {
 		System.out.println("duration = " + map.get("duration"));
 		map.put("bedDayAllDepartment", bedDayAllDepartment);
 		return map;
+	}
+	
+	
+	@Value("${sql.hol1.eix.historyPatient}") private String sqlHol1EixHistoryPatient;
+	@Value("${sql.hol1.eix.history_diagnose}") private String sqlHol1EixHistoryDiagnose;
+	@Value("${sql.hol1.eix.operation_history}") private String sqlHol1EixOperationHistory;
+	@GetMapping("/r/eix-{eixId}")
+	public  @ResponseBody Map<String, Object> readEix(
+			@PathVariable Integer eixId
+			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("eixId", eixId);
+		logger.info(" ------------------------- \n"
+				+ "/r/eix-{eixId}"+ map);
+		Map<String, Object> historyPatient = 
+				hol1EihParamJdbcTemplate.queryForMap(sqlHol1EixHistoryPatient, map);
+		map.put("historyPatient", historyPatient);
+		List<Map<String, Object>> historyDiagnose = 
+				hol1EihParamJdbcTemplate.queryForList(sqlHol1EixHistoryDiagnose, map);
+		map.put("historyDiagnose", historyDiagnose);
+		List<Map<String, Object>> operationHistory = 
+				hol1EihParamJdbcTemplate.queryForList(sqlHol1EixOperationHistory, map);
+		map.put("operationHistory", operationHistory);
+		
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		
+		return map;
+	}
+	
+	@RequestMapping("/v/eix/{id}")
+	public String ixWithId(@PathVariable Integer id, Model model) {
+		logger.info("------------------------- \n"
+				+ " /v/eix/"+id);
+		model.addAttribute("quotes", "'");
+		model.addAttribute("ng_template", "viewEix");
+		model.addAttribute("ng_controller", "Eix2Ctrl as eixCtrl");
+		model.addAttribute("ix", id);
+		System.out.println(model);
+		return "ix2";
 	}
 
 	@Value("${sql.hol1.countries}") private String sqlHol1EihCountries;

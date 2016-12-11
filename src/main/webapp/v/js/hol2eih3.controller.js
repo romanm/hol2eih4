@@ -207,6 +207,65 @@ var initCtrl = function($scope, $http){
 		});
 	}
 }
+
+var definitionScope = function($scope){
+	$scope.opDuration = function(op){
+		var diffMs = op.operation_history_end - op.operation_history_start;
+		console.log(diffMs);
+		var hh = Math.floor(diffMs / 1000 / 60 / 60);
+		var hhInMs = hh * 1000 * 60 * 60;
+		var mm = Math.floor((diffMs-hhInMs)/ 1000 / 60);
+		console.log(hh+':'+mm);
+		var opDuration = '';
+		if(hh>0)
+			opDuration += hh + 'г.';
+		opDuration += mm + 'хв.';
+		return opDuration;
+	}
+};
+// ------------Ix2Ctrl
+hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $interval) {
+	//$interval(frameCtrl, 3000);
+	console.log("Eix2Ctrl");
+	definitionScope($scope);
+	$scope.pageTitle = 'EІХ ' + eixId;
+	var url = '/r/eix-'+eixId;
+	console.log(url);
+	$http({ method : 'GET', url : url
+	}).success(function(model, status, headers, config) {
+		$scope.eix = model;
+		console.log($scope.eix);
+		initEix();
+	}).error(function(model, status, headers, config) {
+		$scope.error.push(model);
+	});
+	function initEix(){
+		//індекс клінічного діагнозу
+		angular.forEach($scope.eix.historyDiagnose, function(historyDiagnose, key) {
+			if(historyDiagnose.diagnos_id == 4){
+				$scope.eix.clinDiagnosIndex = key;
+			}
+		});
+		console.log('--------------' + $scope.eix.clinDiagnosIndex)
+		console.log($scope.eix.clinDiagnosIndex)
+	};
+	$scope.eixField = {
+		'Address':'Адреса'
+		,'history_in':'Поступив'
+		,'history_out':'Виписаний'
+		,'op_in':'Початок'
+		,'op_out':'Кінець'
+		,'operazii':'Операції'
+		,'operazia':'Операція'
+		,'clin_dz':'Клін.Д/З'
+		,'patient_dob_narodjenya':'н.'
+		,'patient_dob_rn':'р.н.'
+		,'patient_street':'вул.'
+		,'patient_house':'буд.'
+	}
+});
+// ------------Ix2Ctrl END
+
 // ------------IxCtrl
 hol2eih3App.controller('IxCtrl', function ($scope, $http, $filter, $sce, $interval) {
 	console.log("IxCtrl");

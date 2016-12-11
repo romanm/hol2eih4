@@ -46,7 +46,7 @@ public class IxRest extends IxBasicRest{
 //	@RequestMapping("/v/eix/{id}")
 	@RequestMapping("/eix/{id}")
 	public String ixWithId(@PathVariable Integer id, Model model) {
-		logger.info("\n ------------------------- Start /v/eix/"+id);
+		logger.info("\n ------------------------- Start /eix/"+id);
 		initModel(model);
 		model.addAttribute("ix", id);
 		System.out.println(model);
