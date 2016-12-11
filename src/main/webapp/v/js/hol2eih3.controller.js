@@ -1318,6 +1318,10 @@ hol2eih3App.controller('F20t3500Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	var urlM1M2Year = '-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
 
 	var urlF20t3500 = '/r/F20t3500' + urlM1M2Year;
+	if(parameters.nrr){
+		var urlF20t3500 = '/r/F20t3500NrrPatienten' + urlM1M2Year + '-' + parameters.nrr;
+	}
+
 	$http({ method : 'GET', url : urlF20t3500
 	}).success(function(data, status, headers, config) {
 		$scope.f20t3500 = data;

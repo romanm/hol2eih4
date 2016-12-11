@@ -27,12 +27,14 @@ public class ReportRestService {
 	@Autowired private JdbcTemplate hol1EihJdbcTemplate;
 	@Autowired private PropertyHolder propertyHolder;
 	
+	private @Value("${sql.hol1Eih.f20t3500.list}") String sqlHol1EihF20t3500List;
+	
 	@GetMapping("/r/F20t3500NrrPatienten-{m1}-{m2}-{year}-{nrr}")
 	public  @ResponseBody Map<String, Object> readF20t3500NrrPatienten(
 			@PathVariable Integer m1
 			,@PathVariable Integer m2
 			,@PathVariable Integer year
-			,@PathVariable String nrr
+			,@PathVariable Integer nrr
 			,Principal userPrincipal) {
 		
 		StopWatch watch = new StopWatch();
@@ -41,6 +43,27 @@ public class ReportRestService {
 		map.put("min_month", m1);
 		map.put("max_month", m2);
 		map.put("year", year);
+		logger.info(" ------------------------- \n"
+				+ "/r/F20t3500NrrPatienten-{m1}-{m2}-{year}-{nrr}"+nrr + map);
+		int operationSubgroupId = nrr%100;
+		String sqlListOfPatient;
+		if(operationSubgroupId > 0){
+			//читити підгрупу операцій
+			sqlListOfPatient = sqlHol1EihF20t3500List + " AND operation_subgroup_id = " + operationSubgroupId;
+		}else{
+			//читити групу операцій
+			sqlListOfPatient = sqlHol1EihF20t3500List + " AND operation_group_id = " + nrr/100;
+		}
+		logger.info(" ------------------------- \n"
+				+ sqlListOfPatient
+				+ "\n"
+				+ operationSubgroupId);
+		List<Map<String, Object>> listOfPatient
+			= hol1EihParamJdbcTemplate.queryForList(sqlListOfPatient,map);
+		map.put("listOfPatient", listOfPatient);
+		Map<String, Object> map2 = readF20t3500(m1,m2,year,userPrincipal);
+		map.put("list", map2.get("list"));
+		
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));
