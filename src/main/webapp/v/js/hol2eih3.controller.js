@@ -209,6 +209,19 @@ var initCtrl = function($scope, $http){
 }
 
 var definitionScope = function($scope){
+	$scope.ageToHospitalization = function() {
+		var dob = new Date($scope.eix.historyPatient.patient_dob);
+		var currentDate = new Date($scope.eix.historyPatient.history_in);
+		var currentYear = currentDate.getFullYear();
+		var birthdayThisYear = new Date(currentYear, dob.getMonth(), dob.getDate());
+		var age = currentYear - dob.getFullYear();
+
+		if(birthdayThisYear > currentDate) {
+			age--;
+		}
+
+		return age;
+	}
 	$scope.opDuration = function(op){
 		var diffMs = op.operation_history_end - op.operation_history_start;
 		console.log(diffMs);
@@ -242,6 +255,9 @@ hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $inte
 	function initEix(){
 		//індекс клінічного діагнозу
 		angular.forEach($scope.eix.historyDiagnose, function(historyDiagnose, key) {
+			if(historyDiagnose.diagnos_id == 2){
+				$scope.eix.hospitalizationDiagnosIndex = key;
+			}else
 			if(historyDiagnose.diagnos_id == 4){
 				$scope.eix.clinDiagnosIndex = key;
 			}
@@ -249,8 +265,49 @@ hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $inte
 		console.log('--------------' + $scope.eix.clinDiagnosIndex)
 		console.log($scope.eix.clinDiagnosIndex)
 	};
+	$scope.pageDesign = {
+		'elements':[
+			{'bs_row':[
+				{'bs_col_nr':6
+				,'elements':[
+					{'type':'fieldset','inc':'/v/eix1/fieldset-info_person.html'}
+					,{'type':'fieldset','inc':'/v/eix1/fieldset-info_med.html'}
+				]
+				}
+				,{'bs_col_nr':6
+				,'elements':[
+					{'type':'fieldset','inc':'/v/eix1/fieldset-hospitalization.html'}
+					,{'type':'fieldset','inc':'/v/eix1/fieldset-ruh.html'}
+				]
+				}
+			]}
+			,{'type':'div'}
+		]
+	};
 	$scope.eixField = {
 		'Address':'Адреса'
+		,'patient':'Хворий'
+		,'born':'народився'
+		,'direct':'Хворий поступив по направленю'
+		,'history_urgent_yes':'в ургентному порядку'
+		,'history_urgent_no':'в плановому порядку'
+		,'hospitalized_to_department':'Госпіталізований в відділеня'
+		,'with_diagnose':'з діагнозом'
+		,'fieldset':{
+			'info_person':'Особиста інформація'
+			,'info_med':'Медична інформація'
+			,'hospitalization':'Госпіталізація'
+			,'ruh':'Рух'
+			,'diagnoses':'Діагнози'
+			,'operations':'Операції'
+		}
+		,'blood_group':'Група крові'
+		,'blood_group_symbol':{
+			'I':'(0)'
+			,'II':'(A)'
+			,'III':'(B)'
+			,'IV':'(AB)'
+		}
 		,'history_in':'Поступив'
 		,'history_out':'Виписаний'
 		,'op_in':'Початок'

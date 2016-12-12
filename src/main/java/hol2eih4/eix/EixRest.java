@@ -177,6 +177,7 @@ public class EixRest {
 	@Value("${sql.hol1.eix.historyPatient}") private String sqlHol1EixHistoryPatient;
 	@Value("${sql.hol1.eix.history_diagnose}") private String sqlHol1EixHistoryDiagnose;
 	@Value("${sql.hol1.eix.operation_history}") private String sqlHol1EixOperationHistory;
+	@Value("${sql.hol1.eix.history_treatment_analysis}") private String sqlHol1EixHistoryTreatmentAnalysis;
 	@GetMapping("/r/eix-{eixId}")
 	public  @ResponseBody Map<String, Object> readEix(
 			@PathVariable Integer eixId
@@ -197,6 +198,9 @@ public class EixRest {
 		List<Map<String, Object>> operationHistory = 
 				hol1EihParamJdbcTemplate.queryForList(sqlHol1EixOperationHistory, map);
 		map.put("operationHistory", operationHistory);
+		List<Map<String, Object>> historyTreatmentAnalysis = 
+				hol1EihParamJdbcTemplate.queryForList(sqlHol1EixHistoryTreatmentAnalysis, map);
+		map.put("historyTreatmentAnalysis", historyTreatmentAnalysis);
 		
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());

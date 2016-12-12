@@ -1,0 +1,8 @@
+<legend>{{eixField.fieldset.hospitalization}}</legend>
+{{eixField.direct}} "{{eix.historyPatient.direct_name}}"
+{{eix.historyPatient.history_urgent==1?eixField.history_urgent_yes:eixField.history_urgent_no}}.
+{{eixField.hospitalized_to_department}}
+"{{eix.historyPatient.department_name}}" {{eix.historyPatient.history_in
+| date:'dd-MMM-yyyy в HH:mm'}} {{eixField.with_diagnose}}
+{{eix.historyDiagnose[eix.hospitalizationDiagnosIndex].icd_code}}
+{{eix.historyDiagnose[eix.hospitalizationDiagnosIndex].icd_name}}

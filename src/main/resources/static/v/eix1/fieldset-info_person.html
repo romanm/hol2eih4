@@ -1,0 +1,12 @@
+<legend>{{eixField.fieldset.info_person}}</legend>
+<small> ІХ-№: {{eix.historyPatient.history_no}} </small>
+{{eixField.patient}} {{eix.historyPatient.patient_surname}},
+{{eix.historyPatient.patient_name}}
+{{eix.historyPatient.patient_patronnymic}}
+<small>, {{ageToHospitalization()}} р. {{eixField.born}}
+	{{eix.historyPatient.patient_dob |
+	date}}{{eixField.patient_dob_narodjenya}}</small>
+<div>{{eixField.Address}}: {{eixField.patient_street}}
+	{{eix.historyPatient.patient_street}}
+	{{eix.historyPatient.patient_street.length==0?'____________________________':''}}
+	{{eix.historyPatient.patient_house}}</div>

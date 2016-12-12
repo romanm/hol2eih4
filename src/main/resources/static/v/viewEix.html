@@ -1,37 +1,41 @@
-<h4>
-	<small> ІХ-№: {{eix.historyPatient.history_no}} </small><br />
-	{{eix.historyPatient.patient_surname}},
-	{{eix.historyPatient.patient_name}}
-	{{eix.historyPatient.patient_patronnymic}} <small>
-		{{eix.historyPatient.patient_dob |
-		date}}{{eixField.patient_dob_narodjenya}}</small>
-</h4>
-
-<div>{{eixField.history_in}}: {{eix.historyPatient.history_in |
-	date}}, {{eixField.history_out}}: {{eix.historyPatient.history_out |
-	date}}</div>
-
-<div>{{eixField.Address}}: {{eixField.patient_street}}
-	{{eix.historyPatient.patient_street}}
-	{{eix.historyPatient.patient_street.length==0?'____________________________':''}}
-	{{eix.historyPatient.patient_house}}</div>
-<div>
-	<b> {{eixField.clin_dz}}: </b>
-	{{eix.historyDiagnose[eix.clinDiagnosIndex].icd_code}}
-	{{eix.historyDiagnose[eix.clinDiagnosIndex].icd_name}}
-</div>
-<div ng-if="eix.operationHistory.length > 0">
-	{{eixField.operazii}}:
-	<ul>
-		<li ng-repeat="oh in eix.operationHistory">{{eixField.op_in}}:
-			{{oh.operation_history_start | date:'dd-MMM HH:mm'}} --
-			{{eixField.op_out}}: {{oh.operation_history_end | date:' HH:mm'}}.
-			({{opDuration(oh)}})
-			<div>
-				<b> {{eixField.operazia}}: </b> {{oh.operation_name}}.
-				{{oh.operation_additional}}
+<div class="container">
+	<div ng-repeat="el in pageDesign.elements">
+		<div ng-if="el.bs_row" class="row">
+			<div ng-repeat="bs_row in el.bs_row track by $index"
+				class="col-sm-{{bs_row.bs_col_nr}}">
+				<div ng-if="bs_row.elements">
+					<div ng-repeat="el2 in bs_row.elements">
+						<fieldset ng-if="el2.type=='fieldset'" ng-include="el2.inc">
+						</fieldset>
+					</div>
+				</div>
 			</div>
-		</li>
-	</ul>
-</div>
+		</div>
+	</div>
+	<!-- 
+	<div ng-include="'/v/test1Eix.html'"></div>
+	 -->
+	<fieldset>
+		<legend>{{eixField.fieldset.diagnoses}}</legend>
+		<b> {{eixField.clin_dz}}: </b>
+		{{eix.historyDiagnose[eix.clinDiagnosIndex].icd_code}}
+		{{eix.historyDiagnose[eix.clinDiagnosIndex].icd_name}}
+	</fieldset>
+	<fieldset>
+		<legend>{{eixField.fieldset.operations}}</legend>
+		<div ng-if="eix.operationHistory.length > 0">
+			<ul>
+				<li ng-repeat="oh in eix.operationHistory">{{eixField.op_in}}:
+					{{oh.operation_history_start | date:'dd-MMM HH:mm'}} --
+					{{eixField.op_out}}: {{oh.operation_history_end | date:' HH:mm'}}.
+					({{opDuration(oh)}})
+					<div>
+						<b> {{eixField.operazia}}: </b> {{oh.operation_name}}.
+						{{oh.operation_additional}}
+					</div>
+				</li>
+			</ul>
+		</div>
+	</fieldset>
 
+</div>
