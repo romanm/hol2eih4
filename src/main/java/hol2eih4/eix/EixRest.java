@@ -28,6 +28,7 @@ public class EixRest {
 
 	@Value("${sql.hol1.ruh.f007s1.dayDepartmentPatients}") private String sqlHol1RuhF007s1dayDepartmentPatients;
 	@Value("${sql.hol1.ruh.f007s2.dayDepartmentPatients}") private String sqlHol1RuhF007s2dayDepartmentPatients;
+
 	@GetMapping(value = "/v/department-{departmentId}-PatientsMove-{yyyy}-{mm}-{dd}")
 	public @ResponseBody Map<String, Object> department_departmentId_PatientsMove_yyyymmdd(
 			@PathVariable Integer departmentId ,
@@ -176,6 +177,7 @@ public class EixRest {
 	
 	@Value("${sql.hol1.eix.historyPatient}") private String sqlHol1EixHistoryPatient;
 	@Value("${sql.hol1.eix.history_diagnose}") private String sqlHol1EixHistoryDiagnose;
+	@Value("${sql.hol1.eix.department_history}") private String sqlHol1EixDepartmentHistory;
 	@Value("${sql.hol1.eix.operation_history}") private String sqlHol1EixOperationHistory;
 	@Value("${sql.hol1.eix.history_treatment_analysis}") private String sqlHol1EixHistoryTreatmentAnalysis;
 	@GetMapping("/r/eix-{eixId}")
@@ -195,6 +197,9 @@ public class EixRest {
 		List<Map<String, Object>> historyDiagnose = 
 				hol1EihParamJdbcTemplate.queryForList(sqlHol1EixHistoryDiagnose, map);
 		map.put("historyDiagnose", historyDiagnose);
+		List<Map<String, Object>> departmentHistory = 
+				hol1EihParamJdbcTemplate.queryForList(sqlHol1EixDepartmentHistory, map);
+		map.put("departmentHistory", departmentHistory);
 		List<Map<String, Object>> operationHistory = 
 				hol1EihParamJdbcTemplate.queryForList(sqlHol1EixOperationHistory, map);
 		map.put("operationHistory", operationHistory);

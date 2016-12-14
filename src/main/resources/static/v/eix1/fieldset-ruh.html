@@ -1,3 +1,12 @@
 <legend>{{eixField.fieldset.ruh}}</legend>
+{{eix.historyPatient.department_name}} {{(eix.historyPatient.history_out
+- eix.historyPatient.history_in)/(1000*60*60*24) + 1}}, з:
+{{eix.historyPatient.history_in | date}}, по:
+{{eix.historyPatient.history_out | date}}
+<div ng-repeat="dh in eix.departmentHistory">
+	{{dh}}
+</div>
+<!-- 
 {{eixField.history_in}}: {{eix.historyPatient.history_in | date}},
 {{eixField.history_out}}: {{eix.historyPatient.history_out | date}}
+ -->

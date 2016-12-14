@@ -209,6 +209,7 @@ var initCtrl = function($scope, $http){
 }
 
 var definitionScope = function($scope){
+	
 	$scope.ageToHospitalization = function() {
 		var dob = new Date($scope.eix.historyPatient.patient_dob);
 		var currentDate = new Date($scope.eix.historyPatient.history_in);
@@ -222,6 +223,10 @@ var definitionScope = function($scope){
 
 		return age;
 	}
+	
+	$scope.bedDay= function(){
+	}
+	
 	$scope.opDuration = function(op){
 		var diffMs = op.operation_history_end - op.operation_history_start;
 		console.log(diffMs);
@@ -235,15 +240,19 @@ var definitionScope = function($scope){
 		opDuration += mm + 'хв.';
 		return opDuration;
 	}
+	
 };
 // ------------Ix2Ctrl
 hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $interval) {
 	//$interval(frameCtrl, 3000);
+	
 	console.log("Eix2Ctrl");
 	definitionScope($scope);
 	$scope.pageTitle = 'EІХ ' + eixId;
 	var url = '/r/eix-'+eixId;
+	
 	console.log(url);
+	
 	$http({ method : 'GET', url : url
 	}).success(function(model, status, headers, config) {
 		$scope.eix = model;
@@ -252,6 +261,7 @@ hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $inte
 	}).error(function(model, status, headers, config) {
 		$scope.error.push(model);
 	});
+	
 	function initEix(){
 		//індекс клінічного діагнозу
 		angular.forEach($scope.eix.historyDiagnose, function(historyDiagnose, key) {
@@ -265,6 +275,7 @@ hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $inte
 		console.log('--------------' + $scope.eix.clinDiagnosIndex)
 		console.log($scope.eix.clinDiagnosIndex)
 	};
+	
 	$scope.pageDesign = {
 		'elements':[
 			{'bs_row':[
@@ -284,6 +295,7 @@ hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $inte
 			,{'type':'div'}
 		]
 	};
+	
 	$scope.eixField = {
 		'Address':'Адреса'
 		,'patient':'Хворий'
@@ -320,6 +332,7 @@ hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $inte
 		,'patient_street':'вул.'
 		,'patient_house':'буд.'
 	}
+	
 });
 // ------------Ix2Ctrl END
 

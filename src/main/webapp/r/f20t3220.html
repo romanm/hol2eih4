@@ -80,9 +80,12 @@
 					<th colspan="11">Пацієнти</th>
 				</tr>
 				<tr ng-repeat="h in f20t3220NrrPatienten.list">
-					<td colspan="4">{{h.patient_surname}}, {{h.patient_name}}
+					<td colspan="4">
+					<a href="/v/eix/{{h.history_id}}">
+					{{h.patient_surname}}, {{h.patient_name}}
 						{{h.patient_patronnymic}}, {{h.patient_gender?'Ч':'Ж'}},
 						{{h.patient_dob}}, <b> {{h.icd_code}} </b> ІХ-№-{{h.history_no}}
+					</a>
 					</td>
 					<td>{{h.bedday}}</td>
 					<td>{{h.dead}}</td>
