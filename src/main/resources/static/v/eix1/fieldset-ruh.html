@@ -1,10 +1,18 @@
 <legend>{{eixField.fieldset.ruh}}</legend>
 {{eix.historyPatient.department_name}} {{(eix.historyPatient.history_out
-- eix.historyPatient.history_in)/(1000*60*60*24) + 1}}, з:
-{{eix.historyPatient.history_in | date}}, по:
-{{eix.historyPatient.history_out | date}}
-<div ng-repeat="dh in eix.departmentHistory">
-	{{dh}}
+- eix.historyPatient.history_in)/(1000*60*60*24) + 1}}
+, з:{{eix.historyPatient.history_in | date}}
+{{eix.historyPatient.history_in | date:'hh:mm'}}
+, по:{{eix.historyPatient.history_out | date}}
+{{eix.historyPatient.history_out | date:'hh:mm'}}
+{{eix.historyPatient.history_out?'':'__/__/__'}}
+<!-- 
+ng-if="dh.department_history_in != eix.historyPatient.history_in"
+ -->
+<div ng-repeat="dh in eix.departmentHistory"
+>
+	{{dh.department_history_in}}
+	-{{dh.department_history_out}}
 </div>
 <!-- 
 {{eixField.history_in}}: {{eix.historyPatient.history_in | date}},

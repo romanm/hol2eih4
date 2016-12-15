@@ -1,0 +1,13 @@
+.ix_record{
+	border-color: white ;
+	border-style: solid;
+}
+.ix_record:hover {
+	/*
+	*/
+	background-color: GhostWhite;
+	border-color: Gainsboro ;
+}
+.littlespacing p{
+	margin-bottom: 0px;
+}

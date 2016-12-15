@@ -210,6 +210,7 @@ var initCtrl = function($scope, $http){
 
 var definitionScope = function($scope){
 	
+	// порахувати вік на день поступлення
 	$scope.ageToHospitalization = function() {
 		var dob = new Date($scope.eix.historyPatient.patient_dob);
 		var currentDate = new Date($scope.eix.historyPatient.history_in);
@@ -223,10 +224,11 @@ var definitionScope = function($scope){
 
 		return age;
 	}
-	
+	// порахувати ліжко-день
 	$scope.bedDay= function(){
 	}
 	
+	// порахувати тривалість операції в годинах і хвилинах
 	$scope.opDuration = function(op){
 		var diffMs = op.operation_history_end - op.operation_history_start;
 		console.log(diffMs);
@@ -240,7 +242,43 @@ var definitionScope = function($scope){
 		opDuration += mm + 'хв.';
 		return opDuration;
 	}
-	
+
+	hol1HtmlToJson = function(){
+		console.log($scope.eix.historyTreatmentAnalysis);
+		angular.forEach($scope.eix.historyTreatmentAnalysis, function(historyTreatmentAnalysis, key) {
+			console.log(historyTreatmentAnalysis.history_treatment_analysis_id);
+			historyTreatmentAnalysis.history_treatment_analysis_json = {};
+			convertTableToJson(historyTreatmentAnalysis.history_treatment_analysis_json, historyTreatmentAnalysis.history_treatment_analysis_text);
+		});
+	}
+
+	// перетворити таблицю аналізів в JSON
+	var convertTableToJson = function(jsonObj, tableAsLaborAnalis){
+		var element = angular.element(tableAsLaborAnalis);
+		var trs = element.find("td.name");
+		if(trs.length > 0){
+			var laborValues = {};
+			for(i = 0; i < trs.length; i++){
+				var nameTd = angular.element(trs[i]);
+				var valueTd = nameTd.next();
+				var unitTd = valueTd.next();
+				if(valueTd.text().trim().length > 0){
+					laborValues[nameTd.text()] = {value:valueTd.text(), unit:unitTd.text()};
+				}
+			}
+			jsonObj.laborValues = laborValues;
+		}else{
+			return;
+			if(!jsonObj.textHtml || jsonObj.textHtml.trim().length == 0){
+				jsonObj.textHtml = tableAsLaborAnalis;
+				if(tableAsLaborAnalis == "") {
+					jsonObj.textHtml = " &nbsp; ";
+				}
+			}
+			jsonObj.textHtml1 = tableAsLaborAnalis;
+		}
+	}
+
 };
 // ------------Ix2Ctrl
 hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $interval) {
@@ -253,8 +291,9 @@ hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $inte
 	
 	console.log(url);
 	
-	$http({ method : 'GET', url : url
-	}).success(function(model, status, headers, config) {
+//	$http({ method : 'GET', url : url})
+	$http.get(url)
+	.success(function(model, status, headers, config) {
 		$scope.eix = model;
 		console.log($scope.eix);
 		initEix();
@@ -263,7 +302,8 @@ hol2eih3App.controller('Eix2Ctrl', function ($scope, $http, $filter, $sce, $inte
 	});
 	
 	function initEix(){
-		//індекс клінічного діагнозу
+		hol1HtmlToJson();
+		//індекс клінічного/при поступлені діагнозу
 		angular.forEach($scope.eix.historyDiagnose, function(historyDiagnose, key) {
 			if(historyDiagnose.diagnos_id == 2){
 				$scope.eix.hospitalizationDiagnosIndex = key;

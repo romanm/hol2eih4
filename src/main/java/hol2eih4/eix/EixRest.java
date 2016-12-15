@@ -220,10 +220,11 @@ public class EixRest {
 				+ " /v/eix/"+id);
 		model.addAttribute("quotes", "'");
 		model.addAttribute("ng_template", "viewEix");
-		model.addAttribute("ng_controller", "Eix2Ctrl as eixCtrl");
+//		model.addAttribute("ng_controller", "Eix2Ctrl as eixCtrl");
+		model.addAttribute("ng_controller", "Ix3Ctrl as ix3Ctrl");
 		model.addAttribute("ix", id);
 		System.out.println(model);
-		return "ix2";
+		return "ix3";
 	}
 
 	@Value("${sql.hol1.countries}") private String sqlHol1EihCountries;

@@ -1,4 +1,5 @@
 <div class="container">
+
 	<div ng-repeat="el in pageDesign.elements">
 		<div ng-if="el.bs_row" class="row">
 			<div ng-repeat="bs_row in el.bs_row track by $index"
@@ -37,4 +38,35 @@
 			</ul>
 		</div>
 	</fieldset>
+	-------------------------------
+	<div class="ix_record"
+		ng-repeat="historyTreatmentAnalysis in eix.historyTreatmentAnalysis"
+		>
+		<u>
+		{{historyTreatmentAnalysis.history_treatment_analysis_datetime|date:'dd/MMM/yyyy_hh:mm'}}
+		<b> {{historyTreatmentAnalysis.treatment_analysis_name}}</b>:</u> <span
+			ng-if="keys(historyTreatmentAnalysis.history_treatment_analysis_json).length == 0">
+			<div class="littlespacing"
+		ng-click="openBlockToEdit(historyTreatmentAnalysis.history_treatment_analysis_id)"
+				ng-bind-html="historyTreatmentAnalysis.history_treatment_analysis_text">
+			</div>
+			<div
+				ng-if="editBlocById == historyTreatmentAnalysis.history_treatment_analysis_id">
+				<div text-angular ng-model="historyTreatmentAnalysis.history_treatment_analysis_text" name="editor-{{editBlocById}}"
+					ta-text-editor-class="clearfix border-around container"
+					ta-html-editor-class="border-around"
+					ta-toolbar="[['bold','italics', 'underline', 'ul', 'ol', 'redo', 'undo', 'clear']]"></div>
+				<!-- 
+				<textarea rows="2" col="100"
+					ng-model="historyTreatmentAnalysis.history_treatment_analysis_text">
+				</textarea>
+			 -->
+			</div>
+		</span> <span ng-if="keys(historyTreatmentAnalysis.history_treatment_analysis_json).length > 0">
+			<span
+			ng-repeat="(keyLabor, valueLabor) in historyTreatmentAnalysis.history_treatment_analysis_json.laborValues">
+				{{keyLabor}} {{valueLabor.value}}
+				{{valueLabor.unit}}{{$last?'.':','}} </span>
+		</span>
+	</div>
 </div>
