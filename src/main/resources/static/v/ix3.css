@@ -1,13 +1,54 @@
-.ix_record{
+.ix-record{
 	border-color: white ;
 	border-style: solid;
 }
-.ix_record:hover {
-	/*
-	*/
+.ix-record:hover {
+	border-color: Gainsboro ;
+}
+.ix-record-edit:hover {
 	background-color: GhostWhite;
 	border-color: Gainsboro ;
 }
+.ix-record:hover > :first-child {
+	/*
+	background-color: blue;
+	copy from hol1:Aleksey Rybitskiy
+	*/
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #00002b),
+		color-stop(100%, #0060a2));
+	padding-right: 40px;
+	color: #CCCCCC;
+	padding: 5px;
+	font-size: 13px;
+	line-height: 15px;
+	cursor: default;
+	font-weight: bold;
+	text-shadow: 1px 1px 1px #000;
+	border: 1px solid #32596b;
+	border-width: 0 1px 1px 1px;
+	border-radius: 5px 5px 0 0;
+	box-shadow: 1px 1px 1px #32596b
+}
 .littlespacing p{
 	margin-bottom: 0px;
+}
+
+/*
+	copy from hol1:Aleksey Rybitskiy
+	*/
+.f-block .f-block-title {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #00002b),
+		color-stop(100%, #0060a2));
+	padding-right: 40px;
+	color: #CCCCCC;
+	padding: 5px;
+	font-size: 13px;
+	line-height: 15px;
+	cursor: default;
+	font-weight: bold;
+	text-shadow: 1px 1px 1px #000;
+	border: 1px solid #32596b;
+	border-width: 0 1px 1px 1px;
+	border-radius: 5px 5px 0 0;
+	box-shadow: 1px 1px 1px #32596b
 }
