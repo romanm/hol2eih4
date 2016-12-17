@@ -1,3 +1,13 @@
+body {
+	padding-top: 30px;
+	padding-bottom: 60px;
+}
+
+.navbar, .navbar ol {
+	margin-bottom: 1px;
+	min-height: 2px;
+}
+
 .ix-record{
 	border-color: white ;
 	border-style: solid;
@@ -9,11 +19,17 @@
 	background-color: GhostWhite;
 	border-color: Gainsboro ;
 }
-.ix-record:hover > :first-child {
+.littlespacing p{
+	margin-bottom: 0px;
+}
+legend {
+	margin-bottom: 5px;
+}
 	/*
 	background-color: blue;
 	copy from hol1:Aleksey Rybitskiy
 	*/
+.ix-record:hover > :first-child {
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #00002b),
 		color-stop(100%, #0060a2));
 	padding-right: 40px;
@@ -28,9 +44,6 @@
 	border-width: 0 1px 1px 1px;
 	border-radius: 5px 5px 0 0;
 	box-shadow: 1px 1px 1px #32596b
-}
-.littlespacing p{
-	margin-bottom: 0px;
 }
 
 /*

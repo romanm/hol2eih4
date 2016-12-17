@@ -1,5 +1,21 @@
-<div class="container">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<a href="/"><i class="fa fa-home" aria-hidden="true"></i></a> / <a>
+				{{eix.historyPatient.department_name}} </a> / 
+				<a href="/v/eix/{{eix.historyPatient.history_id}}"> <small>№:{{eix.historyPatient.history_no}}
+			</small> <b> {{eix.historyPatient.patient_surname}}
+					{{eix.historyPatient.patient_name.substr(0,1).toUpperCase()}}.
+					{{eix.historyPatient.patient_patronnymic.substr(0,1).toUpperCase()}}.</b> <small>
+					{{ageToHospitalization()}} р.</small>
+			</a>
+		</div>
+		<div class="collapse navbar-collapse navbar-right">.</div>
+	</div>
+</nav>
 
+
+<div class="container">
 	<div ng-repeat="el in pageDesign.elements">
 		<div ng-if="el.bs_row" class="row">
 			<div ng-repeat="bs_row in el.bs_row track by $index"
@@ -22,6 +38,7 @@
 		{{eix.historyDiagnose[eix.clinDiagnosIndex].icd_code}}
 		{{eix.historyDiagnose[eix.clinDiagnosIndex].icd_name}}
 	</fieldset>
+
 	<fieldset>
 		<legend>{{eixField.fieldset.operations}}</legend>
 		<div ng-if="eix.operationHistory.length > 0">
@@ -39,29 +56,44 @@
 		</div>
 	</fieldset>
 	-------------------------------
+	<!-- 
+				ng-if="editBlockById == historyTreatmentAnalysis.history_treatment_analysis_id"
+	 -->
+	 
+	-------------------------------
+
 	<div class="ix-record"
 		ng-repeat="historyTreatmentAnalysis in eix.historyTreatmentAnalysis">
 		<div
-			ng-click="openBlockToEdit(historyTreatmentAnalysis.history_treatment_analysis_id)"
-		>
-		<u>
-			{{historyTreatmentAnalysis.history_treatment_analysis_datetime|date:'dd/MMM/yyyy_hh:mm'}}
-			<b> {{historyTreatmentAnalysis.treatment_analysis_name}}</b>:
-		</u>
+			ng-click="openBlockToEdit(historyTreatmentAnalysis)">
+			<u>
+				{{historyTreatmentAnalysis.history_treatment_analysis_datetime|date:'dd/MMM/yyyy_hh:mm'}}
+				<b> {{historyTreatmentAnalysis.treatment_analysis_name}}</b>:
+			</u>
 		</div>
-		 <span
+		<span
 			ng-if="keys(historyTreatmentAnalysis.history_treatment_analysis_json).length == 0">
 			<div class="littlespacing ix-record-edit"
-				ng-if="editBlocById != historyTreatmentAnalysis.history_treatment_analysis_id"
-				ng-click="openBlockToEdit(historyTreatmentAnalysis.history_treatment_analysis_id)"
+				ng-if="editBlockById != historyTreatmentAnalysis.history_treatment_analysis_id"
+				ng-click="openBlockToEdit(historyTreatmentAnalysis)"
 				ng-bind-html="historyTreatmentAnalysis.history_treatment_analysis_text">
 			</div>
 			<div
-				ng-if="editBlocById == historyTreatmentAnalysis.history_treatment_analysis_id"
-				>
+				ng-if="editBlockById == historyTreatmentAnalysis.history_treatment_analysis_id">
+
+				<span> <label>дата: <input
+						type="text" style="width: 100px;" ui-date="dateOptions"
+						ng-model="historyTreatmentAnalysis.date" ng-change="ddmmyyChange(historyTreatmentAnalysis)" />
+				</label> <input type="number" min="0" max="23" size="2" maxlength="2"
+					style="width: 50px;" ng-model="historyTreatmentAnalysis.hh" ng-change="hhChange(historyTreatmentAnalysis)" />:
+					<input type="number" min="0" max="59" step="5" size="2"
+					maxlength="2" style="width: 50px;" ng-model="historyTreatmentAnalysis.mm"
+					ng-change="mmChange(historyTreatmentAnalysis)" />
+				</span>
+
 				<div text-angular
 					ng-model="historyTreatmentAnalysis.history_treatment_analysis_text"
-					name="editor-{{editBlocById}}"
+					name="editor-{{editBlockById}}"
 					ta-text-editor-class="clearfix border-around container"
 					ta-html-editor-class="border-around"
 					ta-toolbar="[['bold','italics', 'underline', 'ul', 'ol', 'redo', 'undo', 'clear']]"></div>
@@ -69,7 +101,7 @@
 				<textarea rows="2" col="100"
 					ng-model="historyTreatmentAnalysis.history_treatment_analysis_text">
 				</textarea>
-			 -->
+				 -->
 			</div>
 		</span> <span
 			ng-if="keys(historyTreatmentAnalysis.history_treatment_analysis_json).length > 0">

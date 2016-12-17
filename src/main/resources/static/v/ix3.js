@@ -88,30 +88,53 @@ var definitionScope = function($scope){
 		}
 	}
 
-	$scope.openBlockToEdit = function(blockId){
-		if($scope.editBlocById == blockId){
-			$scope.editBlocById = 0;
-		}else{
-			$scope.editBlocById = blockId;
+	// діалог дати jquery
+	$scope.dateOptions = {
+		dateFormat: 'dd/mm/yy'
+	}
+
+	$scope.openBlockToEdit = function(historyTreatmentAnalysis){
+		$scope.editBlockById = 
+			$scope.editBlockById == historyTreatmentAnalysis.history_treatment_analysis_id
+				? 0 : historyTreatmentAnalysis.history_treatment_analysis_id;
+
+		historyTreatmentAnalysis.date = new Date(historyTreatmentAnalysis.history_treatment_analysis_datetime);
+		historyTreatmentAnalysis.hh = historyTreatmentAnalysis.date.getHours();
+		historyTreatmentAnalysis.mm = historyTreatmentAnalysis.date.getMinutes();
+	}
+
+	$scope.ddmmyyChange = function(ta){
+		ta.history_treatment_analysis_datetime = ta.date.getTime();
+	}
+
+	$scope.hhChange = function(ta){
+		if(ta.hh>=0||ta.hh<24){
+			ta.date.setHours(ta.hh)
+			$scope.ddmmyyChange(ta);
+		}
+	}
+
+	$scope.mmChange = function(ta){
+		if(ta.mm>=0||ta.mm<60){
+			ta.date.setMinutes(ta.mm)
+			$scope.ddmmyyChange(ta);
 		}
 	}
 
 };
 
-angular.module('ix3App', ['ngSanitize','textAngular'])
+angular.module('ix3App', ['ngSanitize','textAngular','ui.date'])
 .controller('Ix3Ctrl', function($scope, $http, $sce) {
+	console.log("Ix2Ctrl");
 	//$interval(frameCtrl, 3000);
-	
-	$scope.htmlContent = '<h2>Try me!</h2><p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p><p><b>Features:</b></p><ol><li>Automatic Seamless Two-Way-Binding</li><li style="color: blue;">Super Easy <b>Theming</b> Options</li><li>Simple Editor Instance Creation</li><li>Safely Parses Html for Custom Toolbar Icons</li><li>Doesn&apos;t Use an iFrame</li><li>Works with Firefox, Chrome, and IE9+</li></ol><p><b>Code at GitHub:</b> <a href="https://github.com/fraywing/textAngular">Here</a> </p>';
 
-	console.log("Eix2Ctrl");
 	definitionScope($scope);
 	$scope.pageTitle = 'EІХ ' + eixId;
 	var url = '/r/eix-'+eixId;
 
 	console.log(url);
 
-	$http.get("/r/eix-92")
+	$http.get(url)
 	.then(function(response) {
 		$scope.eix = response.data;
 		console.log($scope.eix);
