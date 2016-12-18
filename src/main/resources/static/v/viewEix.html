@@ -63,6 +63,7 @@
 	-------------------------------
 
 	<div class="ix-record"
+		ng-class="{'ix-record-opened':editBlockById == historyTreatmentAnalysis.history_treatment_analysis_id}"
 		ng-repeat="historyTreatmentAnalysis in eix.historyTreatmentAnalysis">
 		<div
 			ng-click="openBlockToEdit(historyTreatmentAnalysis)">

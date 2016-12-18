@@ -12,10 +12,10 @@ body {
 	border-color: white ;
 	border-style: solid;
 }
-.ix-record:hover {
+.ix-record:hover, .ix-record-opened{
 	border-color: Gainsboro ;
 }
-.ix-record-edit:hover {
+.ix-record-edit:hover{
 	background-color: GhostWhite;
 	border-color: Gainsboro ;
 }
@@ -25,11 +25,12 @@ body {
 legend {
 	margin-bottom: 5px;
 }
-	/*
-	background-color: blue;
-	copy from hol1:Aleksey Rybitskiy
-	*/
-.ix-record:hover > :first-child {
+
+/*
+background-color: blue;
+copy from hol1:Aleksey Rybitskiy
+*/
+.ix-record:hover > :first-child, .ix-record-opened > :first-child{
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #00002b),
 		color-stop(100%, #0060a2));
 	padding-right: 40px;
