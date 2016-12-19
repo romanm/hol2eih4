@@ -1,4 +1,4 @@
-var definitionScope = function($scope){
+var definitionScope = function($scope, $http, $interval){
 	
 	// порахувати вік на день поступлення
 	$scope.ageToHospitalization = function() {
@@ -89,18 +89,19 @@ var definitionScope = function($scope){
 	}
 
 	// діалог дати jquery
-	$scope.dateOptions = {
-		dateFormat: 'dd/mm/yy'
-	}
+	$scope.dateOptions = { dateFormat: 'dd/mm/yy' };
 
 	$scope.openBlockToEdit = function(historyTreatmentAnalysis){
 		$scope.editBlockById = 
 			$scope.editBlockById == historyTreatmentAnalysis.history_treatment_analysis_id
 				? 0 : historyTreatmentAnalysis.history_treatment_analysis_id;
-
+console.log('$scope.editBlockById = ' + $scope.editBlockById);
 		historyTreatmentAnalysis.date = new Date(historyTreatmentAnalysis.history_treatment_analysis_datetime);
 		historyTreatmentAnalysis.hh = historyTreatmentAnalysis.date.getHours();
 		historyTreatmentAnalysis.mm = historyTreatmentAnalysis.date.getMinutes();
+		//індекс HTA елементу, що відкритий для редагування
+		$scope.editHTAIndex = $scope.eix.historyTreatmentAnalysis.indexOf(historyTreatmentAnalysis);
+		openChangeSaveControll();
 	}
 
 	$scope.ddmmyyChange = function(ta){
@@ -121,14 +122,83 @@ var definitionScope = function($scope){
 		}
 	}
 
+	//interval контроль змін та запису.
+	var changeHTAControllElementId;
+	var changeHTAControllElementIndex;
+	var changeHTAControllElementLength = 0;
+	$scope.autoSaveCount = 0;
+
+	var changeSaveControll;
+
+	var stopChangeSaveControll = function() {
+		
+		console.log('stopChangeSaveControll');
+		
+		if (angular.isDefined(changeSaveControll)) {
+			$interval.cancel(changeSaveControll);
+			changeSaveControll = undefined;
+			changeHTAControllElementId = undefined;
+		}
+	};
+
+	var openChangeSaveControll = function(){
+
+		if(angular.isDefined(changeSaveControll) ) return;
+
+		changeSaveControll = $interval(function(){
+			console.log('changeSaveControll = ' + new Date());
+			if($scope.editBlockById){
+				console.log($scope.editBlockById + '/' + changeHTAControllElementId);
+				if($scope.editBlockById == changeHTAControllElementId){
+					if(changeHTAControllElementLength
+							!= $scope.eix.historyTreatmentAnalysis[changeHTAControllElementIndex].history_treatment_analysis_text.length){
+						var textChange = $scope.eix.historyTreatmentAnalysis[changeHTAControllElementIndex].history_treatment_analysis_text.length
+							- changeHTAControllElementLength;
+						console.log('Підстави для запису / ' + textChange);
+						save('/v/updateHistoryTreatmentAnalysis' ,$scope.eix.historyTreatmentAnalysis[changeHTAControllElementIndex]);
+						changeHTAControllElementLength
+							= $scope.eix.historyTreatmentAnalysis[changeHTAControllElementIndex].history_treatment_analysis_text.length;
+					}
+				}else{//перехід до редагування нового поля
+					$scope.editState = 'відкрито редакцію';
+					changeHTAControllElementId = $scope.editBlockById;
+					changeHTAControllElementIndex = $scope.editHTAIndex;
+					changeHTAControllElementLength 
+						= $scope.eix.historyTreatmentAnalysis[changeHTAControllElementIndex].history_treatment_analysis_text.length;
+					console.log('перехід до редагування нового поля \n / ' + changeHTAControllElementId 
+							+' / ' + changeHTAControllElementIndex
+							+' / ' + changeHTAControllElementLength
+							);
+				}
+			}else if($scope.editBlockById == 0){//поле для редагування закривається
+				console.log('поле для редагування закривається');
+				$scope.editState = 'закрито редакцію';
+				stopChangeSaveControll();
+			}
+		}, 2000);
+	};
+	
+	function save(url, obj){
+		console.log('save ' + url);
+		console.log(obj);
+		$http.post(url, obj)
+		.then(function(response) {
+			console.log(response.data);
+			$scope.autoSaveCount++;
+			$scope.editState = 'автозбереженя ' + $scope.autoSaveCount;
+		}, function errorCallback(response) {
+			$scope.error.push(response.data);
+		});
+	}
+	//interval контроль змін та запису. END
 };
 
 angular.module('ix3App', ['ngSanitize','textAngular','ui.date'])
-.controller('Ix3Ctrl', function($scope, $http, $sce) {
+.controller('Ix3Ctrl', function($scope, $http, $sce, $interval) {
 	console.log("Ix2Ctrl");
 	//$interval(frameCtrl, 3000);
 
-	definitionScope($scope);
+	definitionScope($scope, $http, $interval);
 	$scope.pageTitle = 'EІХ ' + eixId;
 	var url = '/r/eix-'+eixId;
 

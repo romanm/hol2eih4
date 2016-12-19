@@ -1,5 +1,24 @@
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container">
+		<div class="btn-group btn-group-sm">
+		<!-- 
+			<button type="button" class="btn btn-default"
+				title="стартова сторінка">
+				<i class="fa fa-home" aria-hidden="true"></i>
+			</button>
+		 -->
+			<button type="button" class="btn btn-default" title="Список хворих відділення">
+				{{eix.historyPatient.department_name}}</button>
+			<button type="button" class="btn btn-default"
+				title="{{eix.historyPatient.patient_surname}} {{eix.historyPatient.patient_name}} {{eix.historyPatient.patient_patronnymic}}">
+				<small>№:{{eix.historyPatient.history_no}} </small> <b>
+					{{eix.historyPatient.patient_surname}}
+					{{eix.historyPatient.patient_name.substr(0,1).toUpperCase()}}.
+					{{eix.historyPatient.patient_patronnymic.substr(0,1).toUpperCase()}}.</b>
+				<small> {{ageToHospitalization()}} р.</small>
+			</button>
+		</div>
+		<!-- 
 		<div class="navbar-header">
 			<a href="/"><i class="fa fa-home" aria-hidden="true"></i></a> / <a>
 				{{eix.historyPatient.department_name}} </a> / 
@@ -10,7 +29,10 @@
 					{{ageToHospitalization()}} р.</small>
 			</a>
 		</div>
-		<div class="collapse navbar-collapse navbar-right">.</div>
+		 -->
+		<div class="collapse navbar-collapse navbar-right">
+		{{editState}}
+		.</div>
 	</div>
 </nav>
 
@@ -59,18 +81,21 @@
 	<!-- 
 				ng-if="editBlockById == historyTreatmentAnalysis.history_treatment_analysis_id"
 	 -->
-	 
 	-------------------------------
 
 	<div class="ix-record"
 		ng-class="{'ix-record-opened':editBlockById == historyTreatmentAnalysis.history_treatment_analysis_id}"
 		ng-repeat="historyTreatmentAnalysis in eix.historyTreatmentAnalysis">
-		<div
-			ng-click="openBlockToEdit(historyTreatmentAnalysis)">
-			<u>
-				{{historyTreatmentAnalysis.history_treatment_analysis_datetime|date:'dd/MMM/yyyy_hh:mm'}}
-				<b> {{historyTreatmentAnalysis.treatment_analysis_name}}</b>:
-			</u>
+		<div>
+			<div class="inline" style="width:90%;"
+				ng-click="openBlockToEdit(historyTreatmentAnalysis)">
+				<u>
+					{{historyTreatmentAnalysis.history_treatment_analysis_datetime|date:'dd/MMM/yyyy_HH:mm'}}
+					<b> {{historyTreatmentAnalysis.treatment_analysis_name}}</b>:
+				</u>
+			</div>
+			<div class="inline" style="float:right;"
+				ng-if="editBlockById == historyTreatmentAnalysis.history_treatment_analysis_id">!</div>
 		</div>
 		<span
 			ng-if="keys(historyTreatmentAnalysis.history_treatment_analysis_json).length == 0">
@@ -113,3 +138,47 @@
 		</span>
 	</div>
 </div>
+
+<!--
+<nav class="navbar navbar-sm navbar-default navbar-fixed-bottom" role="navigation" aria-label="...">
+	<ul class="pager">
+		<li class="previous"><a href="#"><span
+				aria-hidden="true">&larr;</span> Older</a></li>
+		<li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+	</ul>
+</nav>
+-->
+
+<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+	<div class="container">
+		<span><span class="glyphicon glyphicon-console"></span> &nbsp;
+			&nbsp; </span>
+		<div class="btn-group btn-group-sm">
+			<button type="button" class="btn btn-default" aria-label="Left Align" title="Титулка">Стр.1-2</button>
+			<button type="button" class="btn btn-default" aria-label="Left Align">
+				Все</button>
+			<button type="button" class="btn btn-default"
+				aria-label="Center Align">Операції</button>
+			<button type="button" class="btn btn-default"
+				aria-label="Center Align">Епікриз</button>
+			<div class="btn-group dropup btn-group-sm" role="group">
+				<button type="button" class="btn btn-default dropdown-toggle"
+					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ще...<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#">ще щось</a></li>
+					<li><a href="#">і ще щось</a></li>
+				</ul>
+			</div>
+		</div>
+		<ol class="list-inline navbar-right">
+			<li>| {{eix.principal.name}}</li>
+			<li data-ng-if="!eix.principal"><span
+				class="glyphicon glyphicon-log-in"></span> <a
+				href="{{loginToThisPage()}}"> Ввійти </a></li>
+			<li data-ng-show="eix.principal" class="ng-binding ng-hide"><span
+				class="glyphicon glyphicon-log-out"></span> : <a href="/logout">
+					Вийти </a></li>
+		</ol>
+	</div>
+</nav>

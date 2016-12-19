@@ -1,13 +1,15 @@
 body {
 	padding-top: 30px;
-	padding-bottom: 60px;
+	padding-bottom: 80px;
 }
 
 .navbar, .navbar ol {
 	margin-bottom: 1px;
 	min-height: 2px;
 }
-
+.inline {
+	display: inline-block;
+}
 .ix-record{
 	border-color: white ;
 	border-style: solid;
