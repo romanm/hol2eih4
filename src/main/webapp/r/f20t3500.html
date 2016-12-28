@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html ng-app="hol2eih3App" ng-controller="F20t3500Ctrl" ng-cloak
+	class="ng-cloak">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="/v/lib/css/w3.css"></link>
+<link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
+<link rel="stylesheet" href="/v/lib/css/bootstrap-datepicker3.min.css"></link>
+<link rel='stylesheet prefetch' href='/v/lib/css/font-awesome.min.css' />
+<link rel="stylesheet" href="/v/css/hol2eih3.css"></link>
+<link rel="stylesheet" href="/v/css/lizhkodni.css"></link>
+<link rel="stylesheet" href="/v/css/navbar_horizontal_gray.css" />
+<link rel="stylesheet" href="/v/css/ui.css" />
+
+<title>Ф20-т3500 {{minMonth}}-{{maxMonth}}/{{paramYear}}</title>
+
+</head>
+<body>
+	<div id="menu-fix-top" class="no-print"
+		ng-include="'ui/menu-fix-hol-zwit.html'"></div>
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="/"><i class="fa fa-home" aria-hidden="true"></i></a> / <a
+					href="forma20.html"> Форма.20 </a> / таблиця.3500
+			</div>
+			<div class="collapse navbar-collapse navbar-right">.</div>
+		</div>
+	</nav>
+	<div class="container-fluid">
+		<div ng-include="'ui/zwit-param-period-and-link.html'"></div>
+		Таблиця 3500 — {{minMonth}}-{{maxMonth}}/{{paramYear}}
+		<h1>Хірургічна робота стаціонару</h1>
+		<div ng-if="param.nrr">
+			<a
+				href="?m1={{param.m1}}&m2={{param.m2}}&y={{param.y}}&type={{param.type}}">Показати
+				всю таблицю </a>
+		</div>
+		<table class="table table-striped">
+			<thead ng-include="'ui/f20t3500tHead.html'"></thead>
+			<tbody>
+				<tr ng-repeat="h in f20t3500Head"
+					ng-if="$index > 0 && !param.nrr?true:param.nrr==h.groupById"
+					style="font-weight: {{h.nrr.split('.')[1]==0?'bold':'normal'}}">
+					<td><a
+						href="?m1={{param.m1}}&m2={{param.m2}}&y={{param.y}}&nrr={{h.groupById}}">
+							<div ng-bind-html="h.name"></div>
+					</a> <span ng-if="$index == 1" style="font-weight: normal;">у
+							тому числі:</span></td>
+					<td>{{h.nrr}}</td>
+					<td>{{f20t3500.list[f20t3500.nrrIndexes['groupById_' +
+						h.groupById]].cnt}}</td>
+					<td>{{f20t3500.list[f20t3500.nrrIndexes['groupById_' +
+						h.groupById]].age17}}</td>
+					<td>{{f20t3500.list[f20t3500.nrrIndexes['groupById_' +
+						h.groupById]].dead}}</td>
+					<td>{{f20t3500.list[f20t3500.nrrIndexes['groupById_' +
+						h.groupById]].dead17}}</td>
+					<td>{{f20t3500.list[f20t3500.nrrIndexes['groupById_' +
+						h.groupById]].selo}}</td>
+				</tr>
+			</tbody>
+			<tbody ng-if="param.nrr">
+				<tr ng-repeat="p in f20t3500.listOfPatient">
+					<td colspan="3"><a href="/v/eix/{{p.history_id}}">
+						{{p.patient_surname}} ІХ: {{p.history_no}} д.н. {{p.patient_dob}}
+					</a></td>
+					<td><span ng-if="p.age17 == 1" title="{{p.patient_dob}}">
+							☑ </span></td>
+					<td><span ng-if="p.dead == 1"> ☑ </span></td>
+					<td><span ng-if="p.dead17 == 1"> ☑ </span></td>
+					<td><span ng-if="p.selo == 1"> ☑ </span></td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+
+</body>
+
+<script src="/v/lib/js/jquery-2.2.4.min.js"></script>
+<script src="/v/lib/js/bootstrap.min.js"></script>
+<script src="/v/lib/js/angular.min.js"></script>
+<script src="/v/lib/js/angular-locale_uk.js"></script>
+<script src="/v/lib/js/ui-bootstrap-tpls-1.3.3.min.js"></script>
+<script src="/v/lib/js/bootstrap-datepicker.min.js"></script>
+<script src='/v/lib/js/textAngular.min.js'></script>
+<script src='/v/lib/js/textAngular-sanitize.min.js'></script>
+<script src='/v/lib/js/textAngular-rangy.min.js'></script>
+<script src='/v/js/hol2eih3.declare.js'></script>
+<script src='/v/js/hol2eih3.controller.js'></script>
+
+</html>

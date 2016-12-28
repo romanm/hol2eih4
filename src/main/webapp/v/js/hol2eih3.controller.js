@@ -1258,11 +1258,73 @@ var initReport = function($scope, $http){
 	};
 }
 
+hol2eih3App.controller('PologoveIcd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
+	, function ( $scope, $http, $filter, $sce) {
+	console.log("PologoveIcd10Ctrl");
+	$scope.icdCodePologove = icdCodePologove;
+	initReport($scope, $http);
+	$scope.icd10Head = [
+		{"title":"","name":"Кількість хворих","key":"cnt"}
+		,{"title":"","name":"МКХ-10 код","key":"icd_code"}
+		,{"title":"","name":"Діагноз","key":"icd_name"}
+		];
+	
+	eqMonth = function(){
+		$scope.year = 2016;
+		var url1 = '/r/pologove/icd10-';
+//				var url1 = "/r/readIcd10K1-";
+		var url = url1 + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.year;
+		console.log(url);
+		$http({ method : 'GET', url : url
+		}).success(function(data, status, headers, config) {
+			$scope.k1 = data;
+			console.log($scope.k1);
+		}).error(function(data, status, headers, config) {
+			$scope.error.push(data);
+			console.log($scope.error);
+		});
+	}
+	
+	eqMonth();
+	
+}]);
+
+
+hol2eih3App.controller('PologoveOpCtrl', [ '$scope', '$http', '$filter', '$sce'
+	, function ( $scope, $http, $filter, $sce) {
+	console.log('PologoveOpCtrl');
+	initReport($scope, $http);
+	$scope.opHead = [
+		{"title":"","name":"Назва операції","key":"icd_code"}
+		,{"title":"","name":"код операції","key":"icd_name"}
+		,{"title":"","name":"Число операцій","key":"cnt"}
+	];
+
+	eqMonth = function(){
+		$scope.year = '2016';
+			var url1 = '/r/pologove/operation-';
+//			var url1 = "/r/readIcd10K1-";
+		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth + '-' + $scope.year;
+		console.log(url);
+		$http({ method : 'GET', url : url
+		}).success(function(data, status, headers, config) {
+			$scope.k1 = data;
+			console.log($scope.k1);
+		}).error(function(data, status, headers, config) {
+			$scope.error.push(data);
+			console.log($scope.error);
+		});
+	}
+
+	eqMonth();
+	
+}]);
+
 //hol2eih3App.controller('K1Icd10Ctrl', ['$cookies', '$cookieStore', '$scope', '$http', '$filter', '$sce'
 //                                       , function ($cookies, $cookieStore, $scope, $http, $filter, $sce) {
-hol2eih3App.controller('K1Icd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
+hol2eih3App.controller('K1Icd10OldCtrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {
-	console.log("K1Icd10Ctrl");
+	console.log("K1Icd10OldCtrl");
 	initReport($scope, $http);
 	$scope.icd10Head = [
 		{"title":"","name":"МКХ-10","key":"icd_code"}
@@ -1272,6 +1334,7 @@ hol2eih3App.controller('K1Icd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
 
 	eqMonth = function(){
 				var url1 = "/r/readIcd10K2-";
+				
 //				var url1 = "/r/readIcd10K1-";
 		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth;
 		console.log(url);

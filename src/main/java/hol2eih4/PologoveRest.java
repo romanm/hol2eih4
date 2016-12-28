@@ -22,7 +22,31 @@ public class PologoveRest {
 	private static final Logger logger = LoggerFactory.getLogger(PologoveRest.class);
 	@Autowired private NamedParameterJdbcTemplate pgDbMaternityHolParamJdbcTemplate;
 
-	private @Value("${sql.pgDbMaternityHol.icdMonth2}") String pgDbMaternityHolIcdMonth2;
+	private @Value("${sql.pgDbMaternityHol.monthYear.operation}") String pgDbMaternityHolMonthYearOperation;
+	@GetMapping("/r/pologove/operation-{m1}-{m2}-{year}")
+	public  @ResponseBody Map<String, Object> readPologoveOperation(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("year", year);
+		logger.info(" ------------------------- \n"
+				+ "/r/pologove/operation-{m1}-{m2}-{year}" + map);
+		List<Map<String, Object>> maternityHolMonthYearOperation
+		= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolMonthYearOperation,map);
+		map.put("maternityHolMonthYearOperation", maternityHolMonthYearOperation);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+	private @Value("${sql.pgDbMaternityHol.monthYear.diagnose}") String pgDbMaternityHolMonthYearDiagnose;
 	@GetMapping("/r/pologove/icd10-{m1}-{m2}-{year}")
 	public  @ResponseBody Map<String, Object> readPologoveIcd10(
 			@PathVariable Integer m1
@@ -38,7 +62,7 @@ public class PologoveRest {
 		logger.info(" ------------------------- \n"
 				+ "/r/pologove/icd10-{m1}-{m2}-{year}" + map);
 		List<Map<String, Object>> maternityHolIcdMonth
-			= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolIcdMonth2,map);
+			= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolMonthYearDiagnose,map);
 		map.put("maternityHolIcdMonth", maternityHolIcdMonth);
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());

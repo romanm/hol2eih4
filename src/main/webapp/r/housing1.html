@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html ng-app="hol2eih3App"
-	ng-controller="K1Icd10Ctrl" ng-cloak
+	ng-controller="PologoveIcd10Ctrl as pologoveIcd10Ctrl" ng-cloak
 	class="ng-cloak">
 <head>
 <meta charset="utf-8" />
@@ -96,12 +96,12 @@
 			<table class="table-bordered">
 				<caption>
 					<h4>
-						Проліковано хворих за нозологіями <span ng-if="k1.m1 == k1.m2">
+						Проліковано хворих за нозологіями <span ng-if="k1.min_month == k1.max_month">
 							за {{k1.m1}} місяць <small>
-								({{months.nominative[k1.m1]}}) </small>
-						</span> <span ng-if="k1.m1 != k1.m2"> з {{k1.m1}} по {{k1.m2}}
-							місяці <small>(з {{months.accusative[k1.m1]}} — по
-								{{months.nominative[k1.m2]}})</small>
+								({{months.nominative[k1.min_month]}}) </small>
+						</span> <span ng-if="k1.min_month != k1.max_month"> з {{k1.m1}} по {{k1.m2}}
+							місяці <small>(з {{months.accusative[k1.min_month]}} — по
+								{{months.nominative[k1.max_month]}})</small>
 						</span> {{yyyy}} року
 					</h4>
 				</caption>
@@ -123,18 +123,16 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="icd10K1 in k1.icd10K1" ng-init="icdIndex=$index">
-						<td ng-repeat="icd10H in icd10Head" ng-if="!$last">
-							{{icd10K1[icd10H.key]==0?'':icd10K1[icd10H.key]}}</td>
-						<td ng-repeat="icd10K1Month in k1.someMonth">
-							{{icd10K1Month[icdIndex].cnt}}</td>
-						<td>{{icd10K1.cnt}} </td>
+					<tr ng-repeat="icd10K1 in k1.maternityHolIcdMonth"
+						ng-init="icdIndex=$index">
+						<td>{{icd10K1.cnt_icd_code}}</td>
+						<td>{{icd10K1.history_diagnose_icd_code}}</td>
+						<td>{{icdCodePologove[icd10K1.history_diagnose_icd_code]}}</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
-
 
 </body>
 
@@ -147,6 +145,7 @@
 <script src='/v/lib/js/textAngular.min.js'></script>
 <script src='/v/lib/js/textAngular-sanitize.min.js'></script>
 <script src='/v/lib/js/textAngular-rangy.min.js'></script>
+<script src='/v/js/icd_code_o_group.js'></script>
 <script src='/v/js/hol2eih3.declare.js'></script>
 <script src='/v/js/hol2eih3.controller.js'></script>
 
