@@ -9,7 +9,8 @@ buildscript {
 //        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.6.RELEASE")
 //        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE")
 //        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.2.RELEASE")
+//        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.2.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE")
     }
 }
 
@@ -52,6 +53,8 @@ dependencies {
     testCompile("junit:junit")
 }
 
+/*
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }
+*/

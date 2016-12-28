@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -154,6 +155,31 @@ public class EixRest {
 		return map;
 	}
 
+	@Value("${sql.hol1.seekIcd10}") private String sqlHol1SeekIcd10;
+	@GetMapping("/r/seekIcd10")
+	public  @ResponseBody Map<String, Object> seekIcd10(
+			@RequestParam String seekIcd10
+			) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("seekIcd10", "%" + seekIcd10 + "%");
+		map.put("seekIcd10Code", "" + seekIcd10 + "%");
+		logger.info("\n ------\n" + "/r/seekIcd10" + map 
+				+ "\n" + sqlHol1SeekIcd10.replace(":seekIcd10", seekIcd10)
+				);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		List<Map<String, Object>> listHol1SeekIdc10
+		= hol1EihParamJdbcTemplate.queryForList(sqlHol1SeekIcd10, map);
+		logger.info("\n ------\n" 
+				 + listHol1SeekIdc10
+				);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		map.put("listHol1SeekIdc10", listHol1SeekIdc10);
+		return map;
+	}
+
 	@Value("${sql.hol1.bed_day_all_department}") private String sqlHol1BedDayAllDepartment;
 	@GetMapping("/r/readBedDayAllDepartment-{m1}-{m2}-{year}")
 	public  @ResponseBody Map<String, Object> readBedDayAllDepartment(
@@ -177,12 +203,16 @@ public class EixRest {
 	}
 	
 	
+	@Value("${sql.hol1.update.history_treatment_analysis_text}") private String sqlHol1UpdateHistoryTreatmentAnalysisText;
 	@PostMapping("/v/updateHistoryTreatmentAnalysis")
 	public  @ResponseBody Map<String, Object> updateHistoryTreatmentAnalysis(
 			@RequestBody Map<String, Object> historyTreatmentAnalysis
 			, Principal userPrincipal) {
 		logger.info(" ------------------------- \n"
 				+ "/v/updateHistoryTreatmentAnalysis \n "+ historyTreatmentAnalysis);
+		int update = hol1EihParamJdbcTemplate.update(sqlHol1UpdateHistoryTreatmentAnalysisText, historyTreatmentAnalysis);
+		logger.info(" ------------------------- \n"
+				+ "update = "+ update);
 		return historyTreatmentAnalysis;
 	}
 	

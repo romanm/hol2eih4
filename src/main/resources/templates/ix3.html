@@ -4,8 +4,12 @@
 	class="ng-cloak"
 	>
 <head>
-<meta charset="utf-8" />
+<!-- 
+<title>{{pageTitle}}</title>
+ -->
+<title>IX №:{{eix.historyPatient.history_no}} {{eix.historyPatient.patient_surname}} {{eix.historyPatient.patient_name.substr(0,1).toUpperCase()}}. {{eix.historyPatient.patient_patronnymic.substr(0,1).toUpperCase()}}. {{ageToHospitalization()}}р.</title>
 
+<meta charset="utf-8" />
 <!-- jq -->
 <script src="/v/lib2/js/jquery-3.1.1.min.js"></script>
 <!-- bs -->
@@ -47,8 +51,6 @@ console.log(ng_template + ' ' + eixId)
 </script>
 <script src="/v/ix3.js"></script>
 <link rel="stylesheet" href="/v/ix3.css" />
-
-<title>{{pageTitle}}</title>
 </head>
 <body th:attr="ng-include=${quotes + '/v/' + ng_template + '.html' + quotes}"></body>
 </html>

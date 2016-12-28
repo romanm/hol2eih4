@@ -63,7 +63,7 @@ public class ReportRestService {
 		map.put("listOfPatient", listOfPatient);
 		Map<String, Object> map2 = readF20t3500(m1,m2,year,userPrincipal);
 		map.put("list", map2.get("list"));
-		
+
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));
