@@ -2,6 +2,7 @@
 <html ng-app="hol2eih3App" ng-controller="MvPatientInWeekDayCtrl" ng-cloak class="ng-cloak">
 <head>
 <meta charset="utf-8" />
+<link rel="stylesheet" href="/v/lib/css/w3.css"></link>
 <link rel="stylesheet" href="/v/lib/css/bootstrap.min.css"></link>
 <link rel="stylesheet" href="/v/lib/css/bootstrap-datepicker3.min.css"></link>
 <link rel='stylesheet prefetch' href='/v/lib/css/font-awesome.min.css' />
@@ -50,7 +51,8 @@ td.satsanday {
 			<div class="navbar-header">
 			<a href="/"><span class="glyphicon glyphicon-home"></span></a>
 			Рух хворих лікарні за {{moveTodayPatients.today | date:'dd MMMM yyyy EEEE'}}</div>
-			<div class="collapse navbar-collapse navbar-right">.</div>
+			<div class="collapse navbar-collapse navbar-right">.2016
+			</div>
 		</div>
 	</nav>
 	<div class="container">
@@ -64,7 +66,20 @@ td.satsanday {
 				<table class="table-bordered" width="100%">
 					<tr>
 						<td><h4>
+						<!-- 
 								<b><u>{{moveTodayPatients.today | date:'dd MMMM yyyy'}}</u></i></b>
+						 -->
+								<b><u>{{moveTodayPatients.today | date:'dd MMMM '}}</u></i></b>
+
+								<div class="w3-dropdown-hover">
+									<button class="w3-btn w3-padding w3-light-grey">{{paramYear}}
+										р.</button>
+									<div class="w3-dropdown-content w3-border">
+										<a ng-repeat="y in historyYears" href="#"
+											ng-click="setParamYear(y)"> {{y}} </a>
+									</div>
+								</div>
+
 								<small>{{moveTodayPatients.today | date:'EEEE'}}. <b>
 										Рух хворих Хмельницька обласна лікарня. </b>
 								</small>

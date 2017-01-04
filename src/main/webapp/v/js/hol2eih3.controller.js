@@ -1290,6 +1290,11 @@ hol2eih3App.controller('PologoveIcd10Ctrl', [ '$scope', '$http', '$filter', '$sc
 }]);
 
 
+hol2eih3App.controller('Housing1HomeCtrl', [ '$scope', '$http', '$filter', '$sce'
+	, function ( $scope, $http, $filter, $sce) {
+	console.log('Housing1HomeCtrl');
+}]);
+
 hol2eih3App.controller('PologoveOpCtrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {
 	console.log('PologoveOpCtrl');
@@ -2075,9 +2080,19 @@ hol2eih3App.controller('MvPatientInWeekDayCtrl', ['$scope', '$http', '$filter', 
 		}
 		return false;
 	}
+	var year = new Date().getFullYear(); 
+	$scope.historyYears =[year, year-1];
+	$scope.paramYear = year;
+	if(parameters.date){
+		$scope.paramYear =  new Date(parameters.date).getFullYear();
+	}
+	$scope.setParamYear = function(y){
+		$scope.paramYear = y;
+	}
 	$scope.monthDayDate = function(month, day){
 //		var d2 = new Date($cookies.get('year'), month - 1, day);
-		var d2 = new Date(2016, month - 1, day);
+//		var d2 = new Date(2016, month - 1, day);
+		var d2 = new Date($scope.paramYear, month - 1, day);
 		return d2;
 //		return new Date(new Date().getFullYear(), month - 1, day);
 	}
