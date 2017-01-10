@@ -29,7 +29,14 @@
 	</nav>
 	<div class="container-fluid">
 		<div ng-include="'ui/zwit-param-period-and-link.html'"></div>
-		Таблиця 3500 — {{minMonth}}-{{maxMonth}}/{{paramYear}}
+		<div class="row">
+			<div class="col-xs-7 col-sm-6 col-lg-8">Таблиця 3500 —
+				{{minMonth}}-{{maxMonth}}/{{paramYear}}</div>
+			<div class="col-xs-5 col-sm-6 col-lg-4 no-print">
+				<b> {{f20t3500.countOperationHistory.count}} </b> - Контрольна сума - Кількість
+				операцій за період в БД
+			</div>
+		</div>
 		<h1>Хірургічна робота стаціонару</h1>
 		<div ng-if="param.nrr">
 			<a
@@ -41,7 +48,7 @@
 			<tbody>
 				<tr ng-repeat="h in f20t3500Head"
 					ng-if="$index > 0 && !param.nrr?true:param.nrr==h.groupById"
-					style="font-weight: {{h.nrr.split('.')[1]==0?'bold':'normal'}}">
+					style="font-weight: {{h.nrr.split('.')[1]==0?'bold':'normal'">
 					<td><a
 						href="?m1={{param.m1}}&m2={{param.m2}}&y={{param.y}}&nrr={{h.groupById}}">
 							<div ng-bind-html="h.name"></div>
@@ -63,7 +70,7 @@
 			<tbody ng-if="param.nrr">
 				<tr ng-repeat="p in f20t3500.listOfPatient">
 					<td colspan="3"><a href="/v/eix/{{p.history_id}}">
-						{{p.patient_surname}} ІХ: {{p.history_no}} д.н. {{p.patient_dob}}
+							{{p.patient_surname}} ІХ: {{p.history_no}} д.н. {{p.patient_dob}}
 					</a></td>
 					<td><span ng-if="p.age17 == 1" title="{{p.patient_dob}}">
 							☑ </span></td>

@@ -174,6 +174,9 @@ public class ReportRestService {
 
 	private @Value("${sql.hol1Eih.f20t3500.nrr_group}") String sqlHol1EihF20t3500NrrGroup;
 	private @Value("${sql.hol1Eih.f20t3500.all}") String sqlHol1EihF20t3500All;
+	private @Value("${sql.hol1Eih.operationHistory.countOfMonthYearPerion}")
+		String sqlHol1EihOperationHistoryCountOfMonthYearPerion;
+
 	@GetMapping("/r/F20t3500-{m1}-{m2}-{year}")
 	public  @ResponseBody Map<String, Object> readF20t3500(
 			@PathVariable Integer m1
@@ -184,12 +187,21 @@ public class ReportRestService {
 		map.put("min_month", m1);
 		map.put("max_month", m2);
 		map.put("year", year);
-		logger.info("\n -------------------------  /r/F20t3500-"+ map);
+		logger.info(" ------------------------- "
+				+ "\n /r/F20t3500-"+ map +""
+				+ "\n " + sqlHol1EihF20t3500All
+				.replaceAll(":min_month", map.get("min_month").toString())
+				.replaceAll(":max_month", map.get("max_month").toString())
+				.replaceAll(":year", map.get("year").toString())
+			);
 		StopWatch watch = new StopWatch();
 		watch.start();
 		List<Map<String, Object>> list
-		= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihF20t3500All,map);
+			= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihF20t3500All, map);
 		map.put("list", list);
+		Map<String, Object> countOperationHistory
+			= hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihOperationHistoryCountOfMonthYearPerion, map);
+		map.put("countOperationHistory", countOperationHistory);
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));

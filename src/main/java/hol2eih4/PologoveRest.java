@@ -35,8 +35,13 @@ public class PologoveRest {
 		map.put("min_month", m1);
 		map.put("max_month", m2);
 		map.put("year", year);
-		logger.info(" ------------------------- \n"
-				+ "/r/pologove/operation-{m1}-{m2}-{year}" + map);
+		logger.info(" ------------ \n"
+				+ "/r/pologove/operation-{m1}-{m2}-{year}" + map + ""
+						+ "\n " + pgDbMaternityHolMonthYearOperation
+						.replaceAll(":min_month", map.get("min_month").toString())
+						.replaceAll(":max_month", map.get("max_month").toString())
+						.replaceAll(":year", map.get("year").toString())
+						);
 		List<Map<String, Object>> maternityHolMonthYearOperation
 		= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolMonthYearOperation,map);
 		map.put("maternityHolMonthYearOperation", maternityHolMonthYearOperation);

@@ -256,7 +256,7 @@ public class EixRest {
 		
 		return map;
 	}
-	
+
 	@GetMapping("/v/eix/{id}")
 	public String ixWithId(@PathVariable Integer id, Model model) {
 		logger.info("------------------------- \n"
