@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/v/css/navbar_horizontal_gray.css"/>
 <link rel="stylesheet" href="/v/css/ui.css"/>
 
-<title>Проліковано хворих за нозологіями</title>
+<title>{{icd10Titles.title}}</title>
 </head>
 <body>
 	<div id="menu-fix-top" class="no-print">
@@ -61,17 +61,18 @@
 				<div class="tooltiptext">{{e.status}}: {{e.message}}</div>
 			</div>
 		</div>
-		<h1>Пологове нозології</h1>
+		<h1>{{icd10Titles.title}}</h1>
 		<div ng-if="param.viddilennja">
 			<table class="table table-bordered">
 				<caption>
 					<h4>
 						Ліжкодні Відділення <b> {{bedDayOfMonthMySql.department_name}}
 						</b> <span ng-if="bedDay.m1 == bedDay.m2"> за
-							{{months.nominative[bedDay.m1]}} місяць </span> <span
+							{{months.nominative[bedDay.m1]}} місяць </span> 
+							<span
 							ng-if="bedDay.m1 != bedDay.m2"> з
 							{{months.accusative[bedDay.m1]}} — по
-							{{months.nominative[bedDay.m2]}} місяці</span> {{yyyy}} року. <small>
+							{{months.nominative[bedDay.m2]}} місяці</span> {{param.y}} року. <small>
 							Хмельницька обласна лікарня </small>
 					</h4>
 				</caption>
@@ -101,10 +102,10 @@
 						Проліковано хворих за нозологіями <span ng-if="k1.min_month == k1.max_month">
 							за {{k1.m1}} місяць <small>
 								({{months.nominative[k1.min_month]}}) </small>
-						</span> <span ng-if="k1.min_month != k1.max_month"> з {{k1.m1}} по {{k1.m2}}
-							місяці <small>(з {{months.accusative[k1.min_month]}} — по
+						</span> <span ng-if="k1.min_month != k1.max_month">  по 
+							місяцям <small>(з {{months.accusative[k1.min_month]}} — по
 								{{months.nominative[k1.max_month]}})</small>
-						</span> {{yyyy}} року
+						</span> {{param.y}} року
 					</h4>
 				</caption>
 				<thead>

@@ -1264,6 +1264,9 @@ hol2eih3App.controller('PologoveIcd10Ctrl', [ '$scope', '$http', '$filter', '$sc
 //	$scope.icdCodePologove = icdCodePologove;
 	$scope.icdCodePologove = icdCodePologove2;
 	initReport($scope, $http);
+	$scope.icd10Titles = {
+		'title':'Звіт по нозологіям перінотального центру ХОЛ'
+	};
 	$scope.icd10Head = [
 		{"title":"","name":"Кількість хворих","key":"cnt"}
 		,{"title":"","name":"МКХ-10 код","key":"icd_code"}
@@ -1302,6 +1305,13 @@ hol2eih3App.controller('PologoveOpCtrl', [ '$scope', '$http', '$filter', '$sce'
 	$scope.opCodePologove = opCodePologove;
 	console.log($scope.opCodePologove);
 	initReport($scope, $http);
+	$scope.year = '2016';
+	var m1m2Year = $scope.minMonth + "-" + $scope.maxMonth + '-' + $scope.year;
+	$scope.opTitles = {
+			'titleHead':'Перінотальний - операції '+ m1m2Year
+			,'title':'Звіт по операціям перінотального центру ХОЛ '
+		};
+
 	$scope.opHead = [
 		{"title":"","name":"Назва операції","key":"icd_code"}
 		,{"title":"","name":"код операції","key":"icd_name"}
@@ -1309,10 +1319,9 @@ hol2eih3App.controller('PologoveOpCtrl', [ '$scope', '$http', '$filter', '$sce'
 	];
 
 	eqMonth = function(){
-		$scope.year = '2016';
 		var url1 = '/r/pologove/operation-';
 //			var url1 = "/r/readIcd10K1-";
-		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth + '-' + $scope.year;
+		var url = url1 + m1m2Year;
 		console.log(url);
 		$http({ method : 'GET', url : url
 		}).success(function(data, status, headers, config) {
