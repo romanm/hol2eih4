@@ -195,7 +195,7 @@ console.log('$scope.editBlockById = ' + $scope.editBlockById);
 
 angular.module('ix3App', ['ngSanitize','textAngular','ui.date'])
 .controller('Ix3Ctrl', function($scope, $http, $sce, $interval) {
-	console.log("Ix2Ctrl");
+	console.log("--ix3App---------Ix3Ctrl---------");
 	//$interval(frameCtrl, 3000);
 
 	definitionScope($scope, $http, $interval);

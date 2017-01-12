@@ -59,10 +59,34 @@ public class ReportRestService {
 				+ "\n"
 				+ operationSubgroupId);
 		List<Map<String, Object>> listOfPatient
-			= hol1EihParamJdbcTemplate.queryForList(sqlListOfPatient,map);
+		= hol1EihParamJdbcTemplate.queryForList(sqlListOfPatient,map);
 		map.put("listOfPatient", listOfPatient);
 		Map<String, Object> map2 = readF20t3500(m1,m2,year,userPrincipal);
 		map.put("list", map2.get("list"));
+		
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+
+	@GetMapping("/r/F20t3100NrrPatienten-{m1}-{m2}-{year}-{nrr}")
+	public  @ResponseBody Map<String, Object> readF20t3100NrrPatienten(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,@PathVariable Integer nrr
+			,Principal userPrincipal) {
+		
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("year", year);
+		logger.info(" ------------------------- \n"
+				+ "/r/F20t3500NrrPatienten-{m1}-{m2}-{year}-{nrr}"+nrr + map);
 
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
@@ -202,6 +226,33 @@ public class ReportRestService {
 		Map<String, Object> countOperationHistory
 			= hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihOperationHistoryCountOfMonthYearPerion, map);
 		map.put("countOperationHistory", countOperationHistory);
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+	@GetMapping("/r/F20t3100-{m1}-{m2}-{year}")
+	public  @ResponseBody Map<String, Object> readF20t3100(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,Principal userPrincipal) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("year", year);
+		logger.info(" ------------------------- "
+				+ "\n /r/F20t3500-"+ map +""
+				+ "\n " + sqlHol1EihF20t3500All
+				.replaceAll(":min_month", map.get("min_month").toString())
+				.replaceAll(":max_month", map.get("max_month").toString())
+				.replaceAll(":year", map.get("year").toString())
+				);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		
+		
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));

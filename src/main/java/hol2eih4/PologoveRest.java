@@ -22,6 +22,8 @@ public class PologoveRest {
 	private static final Logger logger = LoggerFactory.getLogger(PologoveRest.class);
 	@Autowired private NamedParameterJdbcTemplate pgDbMaternityHolParamJdbcTemplate;
 
+	private @Value("${sql.pgDbMaternityHol.operation.groupCodenumber}") 
+		String pgDbMaternityHolOperationGroupCodenumber;
 	private @Value("${sql.pgDbMaternityHol.monthYear.operation}") String pgDbMaternityHolMonthYearOperation;
 	@GetMapping("/r/pologove/operation-{m1}-{m2}-{year}")
 	public  @ResponseBody Map<String, Object> readPologoveOperation(
@@ -37,12 +39,14 @@ public class PologoveRest {
 		map.put("year", year);
 		logger.info(" ------------ \n"
 				+ "/r/pologove/operation-{m1}-{m2}-{year}" + map + ""
+//						+ "\n " + pgDbMaternityHolOperationGroupCodenumber
 						+ "\n " + pgDbMaternityHolMonthYearOperation
 						.replaceAll(":min_month", map.get("min_month").toString())
 						.replaceAll(":max_month", map.get("max_month").toString())
 						.replaceAll(":year", map.get("year").toString())
 						);
 		List<Map<String, Object>> maternityHolMonthYearOperation
+//		= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolOperationGroupCodenumber, map);
 		= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolMonthYearOperation,map);
 		map.put("maternityHolMonthYearOperation", maternityHolMonthYearOperation);
 		watch.stop();

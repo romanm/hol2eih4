@@ -1261,7 +1261,8 @@ var initReport = function($scope, $http){
 hol2eih3App.controller('PologoveIcd10Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {
 	console.log("PologoveIcd10Ctrl");
-	$scope.icdCodePologove = icdCodePologove;
+//	$scope.icdCodePologove = icdCodePologove;
+	$scope.icdCodePologove = icdCodePologove2;
 	initReport($scope, $http);
 	$scope.icd10Head = [
 		{"title":"","name":"Кількість хворих","key":"cnt"}
@@ -1298,6 +1299,8 @@ hol2eih3App.controller('Housing1HomeCtrl', [ '$scope', '$http', '$filter', '$sce
 hol2eih3App.controller('PologoveOpCtrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {
 	console.log('PologoveOpCtrl');
+	$scope.opCodePologove = opCodePologove;
+	console.log($scope.opCodePologove);
 	initReport($scope, $http);
 	$scope.opHead = [
 		{"title":"","name":"Назва операції","key":"icd_code"}
@@ -1307,7 +1310,7 @@ hol2eih3App.controller('PologoveOpCtrl', [ '$scope', '$http', '$filter', '$sce'
 
 	eqMonth = function(){
 		$scope.year = '2016';
-			var url1 = '/r/pologove/operation-';
+		var url1 = '/r/pologove/operation-';
 //			var url1 = "/r/readIcd10K1-";
 		var url = url1 + $scope.minMonth + "-" + $scope.maxMonth + '-' + $scope.year;
 		console.log(url);
@@ -1545,6 +1548,57 @@ eqMonth();
 
 }]);
 
+//F20t3100
+hol2eih3App.controller('F20t3100Ctrl', [ '$scope', '$http', '$filter', '$sce'
+	, function ( $scope, $http, $filter, $sce) {
+	
+	console.log("F20t3100Ctrl");
+	initReport($scope, $http);
+	
+	var urlM1M2Year = '-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
+	
+	var urlF20t3100 = '/r/F20t3100' + urlM1M2Year;
+	if(parameters.nrr){
+		var urlF20t3100 = '/r/F20t3100NrrPatienten' + urlM1M2Year + '-' + parameters.nrr;
+	}
+
+	$http({ method : 'GET', url : urlF20t3100
+	}).success(function(data, status, headers, config) {
+		$scope.f20t3100 = data;
+		console.log($scope.f20t3100);
+		$scope.dbDuration = data.duration;
+		/*
+		$scope.f20t3500.nrrIndexes = {};
+		$scope.f20t3500.list.forEach(function(f20t3500, i){
+			$scope.f20t3500.nrrIndexes['groupById_' + f20t3500.groupById] = i;
+		});
+		 * */
+		console.log($scope.f20t3100.nrrIndexes);
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+
+	$scope.f20t3100Head = [
+		{'name':'Профіль ліжок',
+			'nrr':'Номер рядка'
+			,'head12':'Кількість ліжок, фактично розгорнутих та згорнутих на ремонт'
+			,'bedEndYear':'на кінець звітного року'
+			,'bedAVG':'середньорічних'
+			,'head3456':'У звітному році (кількість)'
+			,'patientAll':'надійшло хворих, усього'
+			,'patient017':'у тому числі дітей віком 0-17 років влючно'
+			,'patientDismissed':'виписано хворих'
+			,'patientDead':'померло'
+			,'bedDay':'Проведено хворими ліжкоднів'
+			,'bedDayRenovierung':'Кількість ліжко-днів згортання у зв´язку з ремонтом та іншими причинами'
+		}
+		,{'nrr':'78','name':'Профіль ліжок'}
+		,{'nrr':'','name':'у тому числі:'}
+	];
+
+}]);
+
+
 //F20t3500
 hol2eih3App.controller('F20t3500Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {
@@ -1572,7 +1626,7 @@ hol2eih3App.controller('F20t3500Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	}).error(function(data, status, headers, config) {
 		$scope.error = data;
 	});
-
+		
 	$scope.f20t3500Head = [
 		{'key':'', 'nrr':'Номер рядка', 'name':'Наіменування операцій'
 			, 'all':'Кількість операцій, проведених у стаціонарі, усього'

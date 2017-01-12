@@ -13,7 +13,11 @@
 <link rel="stylesheet" href="/v/css/ui.css" />
 
 <title>Пологове операції {{minMonth}}-{{maxMonth}}/{{paramYear}}</title>
-
+<style type="text/css">
+.bold {
+	font-weight: bold;
+}
+</style>
 </head>
 <body>
 	<div id="menu-fix-top" class="no-print"
@@ -39,24 +43,36 @@
 		Пологове операції — {{minMonth}}-{{maxMonth}}/{{paramYear}}
 		<h1>Пологове операції</h1>
 		<table class="table">
-		<caption>
-					<h4>
-						Проведено операцій <span ng-if="k1.min_month == k1.max_month">
-							за {{k1.m1}} місяць <small>
-								({{months.nominative[k1.min_month]}}) </small>
-						</span> <span ng-if="k1.min_month != k1.max_month"> з {{k1.m1}} по {{k1.m2}}
-							місяці <small>(з {{months.accusative[k1.min_month]}} — по
-								{{months.nominative[k1.max_month]}})</small>
-						</span> {{yyyy}} року
-					</h4>
-				</caption>
+			<caption>
+				<h4>
+					Проведено операцій <span ng-if="k1.min_month == k1.max_month">
+						за {{k1.m1}} місяць <small>
+							({{months.nominative[k1.min_month]}}) </small>
+					</span> <span ng-if="k1.min_month != k1.max_month"> з {{k1.m1}} по {{k1.m2}}
+						місяці <small>(з {{months.accusative[k1.min_month]}} — по
+							{{months.nominative[k1.max_month]}})</small>
+					</span> 
+					{{param.y}} року
+					<!-- 
+					{{yyyy}} року
+					 -->
+				</h4>
+			</caption>
 			<tr>
 				<th ng-repeat="op in opHead">{{op.name}}</th>
 			</tr>
-			<tr ng-repeat="op in k1.maternityHolMonthYearOperation">
-				<td>--</td>
+			<tr ng-repeat="op in k1.maternityHolMonthYearOperation"
+			ng-class="{bold: op.history_operation_code.length == 3 }"
+			>
 				<td>
+				{{opCodePologove[op.history_operation_code.substring(1)]}}
+				</td>
+				<td>
+				{{op.history_operation_code.substring(1)}} 
+				<!-- 
+				{{op.history_operation_code}} 
 					{{op.history_operation_group}}.{{op.history_operation_codenumber==99999?'Всі':op.history_operation_codenumber}}
+				 -->
 				</td>
 				<td>{{op.count}}</td>
 			</tr>
@@ -73,6 +89,7 @@
 <script src='/v/lib/js/textAngular.min.js'></script>
 <script src='/v/lib/js/textAngular-sanitize.min.js'></script>
 <script src='/v/lib/js/textAngular-rangy.min.js'></script>
+<script src='/v/js/opCodePologove.js'></script>
 <script src='/v/js/hol2eih3.declare.js'></script>
 <script src='/v/js/hol2eih3.controller.js'></script>
 
