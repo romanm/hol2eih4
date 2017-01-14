@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -183,9 +184,12 @@ public class ReportRestService {
 		map.put("min_month", m1);
 		map.put("max_month", m2);
 		map.put("year", year);
-		logger.info("\n -------------------------  /r/F20t3220- " + map);
-		System.out.println(sqlHol1Eih_TO_F20t3220YearMonth);
-		System.out.println(sqlHol1Eih_TO_F20t3220YearMonth.length());
+		logger.info("\n -------------------------  /r/F20t3220- " + map + ""
+				+ "\n" + sqlHol1Eih_TO_F20t3220YearMonth
+				.replaceAll(":min_month", map.get("min_month").toString())
+				.replaceAll(":max_month", map.get("max_month").toString())
+				.replaceAll(":year", map.get("year").toString())
+				);
 		List<Map<String, Object>> queryForList = hol1EihParamJdbcTemplate.queryForList(sqlHol1Eih_TO_F20t3220YearMonth,map);
 		map.put("list", queryForList);
 		map.put("m1", m1);
@@ -232,6 +236,7 @@ public class ReportRestService {
 		return map;
 	}
 
+	private @Value("${sql.hol1Eih.f20t3100.department}") String sqlHol1EihF20t3100Department;
 	@GetMapping("/r/F20t3100-{m1}-{m2}-{year}")
 	public  @ResponseBody Map<String, Object> readF20t3100(
 			@PathVariable Integer m1
@@ -243,8 +248,8 @@ public class ReportRestService {
 		map.put("max_month", m2);
 		map.put("year", year);
 		logger.info(" ------------------------- "
-				+ "\n /r/F20t3500-"+ map +""
-				+ "\n " + sqlHol1EihF20t3500All
+				+ "\n /r/F20t3100-"+ map +""
+				+ "\n " + sqlHol1EihF20t3100Department
 				.replaceAll(":min_month", map.get("min_month").toString())
 				.replaceAll(":max_month", map.get("max_month").toString())
 				.replaceAll(":year", map.get("year").toString())
@@ -252,10 +257,105 @@ public class ReportRestService {
 		StopWatch watch = new StopWatch();
 		watch.start();
 		
+		List<Map<String, Object>> listOfDepartment
+			= hol1EihParamJdbcTemplate.queryForList(sqlHol1EihF20t3100Department,map);
+		map.put("listOfDepartment", listOfDepartment);
 		
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+	@Autowired private Environment env;
+
+	@GetMapping("/r/history-{column}-department-{departmentId}-F20t3100-{m1}-{m2}-{year}")
+	public @ResponseBody Map<String, Object> readF20t3100HistoryDepartment(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,@PathVariable Integer departmentId
+			,@PathVariable String column
+			,Principal userPrincipal) {
+		Map<String, Object> map = m1m2YearDepartment(m1, m2, year, departmentId);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		String sqlColumn = env.getProperty("sql.hol1Eih.f20t3100.history." + column);
+
+		logger.info(" ------------------------- \n"
+				+ "/r/history-{column}-department-{departmentId}-F20t3100-{m1}-{m2}-{year}"+ map +""
+//				+ "\n " + sqlHol1EihF20t3100DepartmentId
+				+ "\n " + sqlColumn
+				.replaceAll(":departmentId", map.get("departmentId").toString())
+				.replaceAll(":min_month", map.get("min_month").toString())
+				.replaceAll(":max_month", map.get("max_month").toString())
+				.replaceAll(":year", map.get("year").toString())
+				);
+
+		List<Map<String, Object>> columnHistory
+			= hol1EihParamJdbcTemplate.queryForList(sqlColumn, map);
+
+		map.put("columnHistory", columnHistory);
+
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+	private @Value("${sql.hol1Eih.f20t3100.departmentOut}") String sqlHol1EihF20t3100DepartmentOut;
+	private @Value("${sql.hol1Eih.f20t3100.departmentIn}") String sqlHol1EihF20t3100DepartmentId;
+	private @Value("${sql.hol1Eih.f20t3100.departmentIn017}") String sqlHol1EihF20t3100DepartmentId017;
+	private @Value("${sql.hol1Eih.f20t3100.departmentDead}") String sqlHol1EihF20t3100DepartmentDead;
+	@GetMapping("/r/department-{departmentId}-F20t3100-{m1}-{m2}-{year}")
+	public @ResponseBody Map<String, Object> readF20t3100Department(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,@PathVariable Integer departmentId
+			,Principal userPrincipal) {
+		Map<String, Object> map = m1m2YearDepartment(m1, m2, year, departmentId);
+		logger.info(" ------------------------- "
+				+ "\n /r/F20t3100-"+ map +""
+//				+ "\n " + sqlHol1EihF20t3100DepartmentId
+				+ "\n " + sqlHol1EihF20t3100DepartmentDead
+				.replaceAll(":departmentId", map.get("departmentId").toString())
+				.replaceAll(":min_month", map.get("min_month").toString())
+				.replaceAll(":max_month", map.get("max_month").toString())
+				.replaceAll(":year", map.get("year").toString())
+				);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		
+		Map<String, Object> departmentDead
+		= hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihF20t3100DepartmentDead, map);
+		map.put("departmentDead", departmentDead);
+
+		Map<String, Object> departmentOut
+		= hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihF20t3100DepartmentOut, map);
+		map.put("departmentOut", departmentOut);
+
+		Map<String, Object> departmentIn
+			= hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihF20t3100DepartmentId, map);
+		map.put("departmentIn", departmentIn);
+
+		Map<String, Object> departmentIn017
+		= hol1EihParamJdbcTemplate.queryForMap(sqlHol1EihF20t3100DepartmentId017, map);
+		map.put("departmentIn017", departmentIn017);
+
+		watch.stop();
+		map.put("duration", watch.getTotalTimeSeconds());
+		System.out.println("duration = " + map.get("duration"));
+		return map;
+	}
+
+
+	private Map<String, Object> m1m2YearDepartment(Integer m1, Integer m2, Integer year, Integer departmentId) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("year", year);
+		map.put("departmentId", departmentId);
 		return map;
 	}
 

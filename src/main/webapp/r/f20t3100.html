@@ -30,16 +30,67 @@
 	<div class="container-fluid">
 		<div ng-include="'ui/zwit-param-period-and-link.html'"></div>
 		<h1>Ліжковий фонд та його використання</h1>
-		<table class="table table-striped">
-			<thead ng-include="'ui/f20t3100tHead.html'"></thead>
-			<tbody>
-				<tr ng-repeat="h in f20t3100Head" ng-if="$index > 0">
-					<td>{{h.name}}</td>
-					<td>{{h.nrr}}</td>
-					<td></td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="no-print">
+			<span ng-repeat="(d_key, d_value) in readDepartment">
+				{{d_value.read}} </span>
+		</div>
+		<div class="row">
+			<div class="col-xs-9 col-sm-6 col-lg-9">
+				<table class="table table-striped">
+					<thead ng-include="'ui/f20t3100tHead.html'"></thead>
+					<tbody>
+						<tr ng-repeat="h in f20t3100Head" ng-if="$index > 0">
+							<td>{{h.name}}</td>
+							<td>{{h.nrr}}</td>
+							<td></td>
+						</tr>
+						<tr ng-repeat="department in f20t3100.listOfDepartment">
+							<td>{{department.department_name}}</td>
+							<td>{{department.department_id}}</td>
+							<td>{{department.department_bed}}</td>
+							<td></td>
+							<td>{{readDepartment[department.department_id].data.departmentIn.cntAll
+								> 0
+								?readDepartment[department.department_id].data.departmentIn.cntAll
+								:''}}</td>
+							<td>{{readDepartment[department.department_id].data.departmentIn017.cntAll
+								> 0
+								?readDepartment[department.department_id].data.departmentIn017.cntAll
+								:''}}</td>
+							<td>{{readDepartment[department.department_id].data.departmentOut.cntAll
+								> 0
+								?readDepartment[department.department_id].data.departmentOut.cntAll
+								:''}}</td>
+							<td><span
+								ng-if="readDepartment[department.department_id].data.departmentDead.cntAll > 0">
+									<a ng-click="showHistory({column:'patientDead'
+									, departmentId:department.department_id})">
+										{{readDepartment[department.department_id].data.departmentDead.cntAll}}
+								</a>
+							</span></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-xs-3 col-sm-6 col-lg-3 no-print">
+				<div ng-if="showHistoryParam">
+					<b> {{f20t3100Head[0].name}}: </b>
+					{{f20t3100.listOfDepartment[readDepartment[showHistoryParam.departmentId].i].department_name}}
+					<div>{{f20t3100Head[0][showHistoryParam.column]}}</div>
+					<div ng-repeat="history in departmentColumnHistory.columnHistory">
+						{{$index}}
+					<a href="{{history.history_id}}" target="_blank">
+							{{history.history_no}} 
+							{{history.patient_surname}} 
+							{{history.patient_name}} 
+							{{history.patient_patronnymic}} 
+							
+							</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 	</div>
 </body>
 

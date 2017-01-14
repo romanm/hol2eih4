@@ -1265,7 +1265,7 @@ hol2eih3App.controller('PologoveIcd10Ctrl', [ '$scope', '$http', '$filter', '$sc
 	$scope.icdCodePologove = icdCodePologove2;
 	initReport($scope, $http);
 	$scope.icd10Titles = {
-		'title':'Звіт по нозологіям перінотального центру ХОЛ'
+		'title':'Звіт по нозологіям перинатального центру ХОЛ'
 	};
 	$scope.icd10Head = [
 		{"title":"","name":"Кількість хворих","key":"cnt"}
@@ -1283,16 +1283,19 @@ hol2eih3App.controller('PologoveIcd10Ctrl', [ '$scope', '$http', '$filter', '$sc
 		}).success(function(data, status, headers, config) {
 			$scope.k1 = data;
 			console.log($scope.k1);
+			$scope.sumIcd10 = 0;
+			$scope.k1.maternityHolIcdMonth.forEach(function(icd10, i){
+				$scope.sumIcd10 += icd10.cnt_icd_code;
+			});
 		}).error(function(data, status, headers, config) {
 			$scope.error.push(data);
 			console.log($scope.error);
 		});
 	}
-	
-	eqMonth();
-	
-}]);
 
+	eqMonth();
+
+}]);
 
 hol2eih3App.controller('Housing1HomeCtrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {
@@ -1308,8 +1311,8 @@ hol2eih3App.controller('PologoveOpCtrl', [ '$scope', '$http', '$filter', '$sce'
 	$scope.year = '2016';
 	var m1m2Year = $scope.minMonth + "-" + $scope.maxMonth + '-' + $scope.year;
 	$scope.opTitles = {
-			'titleHead':'Перінотальний - операції '+ m1m2Year
-			,'title':'Звіт по операціям перінотального центру ХОЛ '
+			'titleHead':'Перинатальний - операції '+ m1m2Year
+			,'title':'Звіт по операціям перинатального центру ХОЛ '
 		};
 
 	$scope.opHead = [
@@ -1571,11 +1574,17 @@ hol2eih3App.controller('F20t3100Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		var urlF20t3100 = '/r/F20t3100NrrPatienten' + urlM1M2Year + '-' + parameters.nrr;
 	}
 
+	console.log(urlF20t3100);
+
 	$http({ method : 'GET', url : urlF20t3100
 	}).success(function(data, status, headers, config) {
 		$scope.f20t3100 = data;
 		console.log($scope.f20t3100);
 		$scope.dbDuration = data.duration;
+		$scope.readDepartment = {};
+		$scope.f20t3100.listOfDepartment.forEach(function(department, i){
+			$scope.readDepartment[department.department_id] = {read:'-',i:i};
+		});
 		/*
 		$scope.f20t3500.nrrIndexes = {};
 		$scope.f20t3500.list.forEach(function(f20t3500, i){
@@ -1583,23 +1592,53 @@ hol2eih3App.controller('F20t3100Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		});
 		 * */
 		console.log($scope.f20t3100.nrrIndexes);
+		readAllDepartment()
 	}).error(function(data, status, headers, config) {
 		$scope.error = data;
 	});
 
+	$scope.showHistory = function(historyParameter){
+		$scope.showHistoryParam = historyParameter;
+		console.log(historyParameter);
+		var url =  '/r/history-' + historyParameter.column
+		+ '-department-' + historyParameter.departmentId + '-F20t3100' + urlM1M2Year;
+		console.log(url)
+		$http({ method : 'GET', url : url
+		}).success(function(data, status, headers, config) {
+			$scope.departmentColumnHistory = data;
+			console.log($scope.departmentColumnHistory)
+		}).error(function(data, status, headers, config) {
+			$scope.error = data;
+		});
+	}
+
+	var readAllDepartment = function(){
+		$scope.f20t3100.listOfDepartment.forEach(function(department, i){
+			var url =  '/r/department-' + department.department_id + '-F20t3100' + urlM1M2Year;
+			console.log(url)
+			$http({ method : 'GET', url : url
+			}).success(function(data, status, headers, config) {
+				$scope.readDepartment[department.department_id] = {read:'+',i:i, data:data};
+				console.log($scope.readDepartment)
+			}).error(function(data, status, headers, config) {
+				$scope.error = data;
+			});
+		});
+	}
+
 	$scope.f20t3100Head = [
-		{'name':'Профіль ліжок',
-			'nrr':'Номер рядка'
-			,'head12':'Кількість ліжок, фактично розгорнутих та згорнутих на ремонт'
-			,'bedEndYear':'на кінець звітного року'
-			,'bedAVG':'середньорічних'
-			,'head3456':'У звітному році (кількість)'
-			,'patientAll':'надійшло хворих, усього'
-			,'patient017':'у тому числі дітей віком 0-17 років влючно'
-			,'patientDismissed':'виписано хворих'
-			,'patientDead':'померло'
-			,'bedDay':'Проведено хворими ліжкоднів'
-			,'bedDayRenovierung':'Кількість ліжко-днів згортання у зв´язку з ремонтом та іншими причинами'
+		{'name':'Профіль ліжок'
+		,'nrr':'Номер рядка'
+		,'head12':'Кількість ліжок, фактично розгорнутих та згорнутих на ремонт'
+		,'bedEndYear':'на кінець звітного року'
+		,'bedAVG':'середньорічних'
+		,'head3456':'У звітному році (кількість)'
+		,'patientAll':'надійшло хворих, усього'
+		,'patient017':'у тому числі дітей віком 0-17 років влючно'
+		,'patientDismissed':'виписано хворих'
+		,'patientDead':'померло'
+		,'bedDay':'Проведено хворими ліжкоднів'
+		,'bedDayRenovierung':'Кількість ліжко-днів згортання у зв´язку з ремонтом та іншими причинами'
 		}
 		,{'nrr':'78','name':'Профіль ліжок'}
 		,{'nrr':'','name':'у тому числі:'}

@@ -26,8 +26,8 @@
 		<div class="container">
 			<div class="navbar-header">
 				<a href="/"><i class="fa fa-home" aria-hidden="true"></i></a> / <a
-					href="/r/housing1home.html"> Звіти корпус №1 </a> / Пологове
-				операції
+					href="/r/housing1home.html"> Звіти корпус №1 </a> / 
+				{{opTitles.titleHead}}
 			</div>
 			<div class="collapse navbar-collapse navbar-right">.</div>
 		</div>
@@ -40,7 +40,6 @@
 				<div class="tooltiptext">{{e.status}}: {{e.message}}</div>
 			</div>
 		</div>
-		Пологове операції — {{minMonth}}-{{maxMonth}}/{{paramYear}}
 		<h1> {{opTitles.title}}</h1>
 		<table class="table">
 			<caption>
@@ -48,8 +47,8 @@
 					Проведено операцій <span ng-if="k1.min_month == k1.max_month">
 						за {{k1.m1}} місяць <small>
 							({{months.nominative[k1.min_month]}}) </small>
-					</span> <span ng-if="k1.min_month != k1.max_month"> з {{k1.m1}} по {{k1.m2}}
-						місяці <small>(з {{months.accusative[k1.min_month]}} — по
+					</span> <span ng-if="k1.min_month != k1.max_month">  по 
+						місяцям <small>(з {{months.accusative[k1.min_month]}} — по
 							{{months.nominative[k1.max_month]}})</small>
 					</span> 
 					{{param.y}} року
@@ -68,7 +67,7 @@
 				{{opCodePologove[op.history_operation_code.substring(1)]}}
 				</td>
 				<td>
-				{{op.history_operation_code.substring(1)}} 
+				{{op.history_operation_code.substring(1) == 11?'':op.history_operation_code.substring(1)}} 
 				<!-- 
 				{{op.history_operation_code}} 
 					{{op.history_operation_group}}.{{op.history_operation_codenumber==99999?'Всі':op.history_operation_codenumber}}
