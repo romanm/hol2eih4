@@ -1,0 +1,43 @@
+<tr style="font-size:x-small;">
+	<td colspan="1"></td>
+	<td colspan="2">
+		<div>1 {{f20t3100Head[0].bedEndYear}}</div>
+		<div>2 {{f20t3100Head[0].bedAVG}}</div>
+	</td>
+	<td colspan="5">
+		<div>3 {{f20t3100Head[0].patientAll}}</div>
+		<div>4 {{f20t3100Head[0].patient017}}</div>
+		<div>5 {{f20t3100Head[0].patientDismissed}}</div>
+		<div>6 {{f20t3100Head[0].patientDead}}</div>
+	</td>
+	<td colspan="2">
+		<div>7 {{f20t3100Head[0].bedDay}}</div>
+		<div>8 {{f20t3100Head[0].bedDayRenovierung}}</div>
+	</td>
+</tr>
+<tr>
+	<th rowspan="1">{{f20t3100Head[0].name}}</th>
+	<th rowspan="1">{{f20t3100Head[0].nrr}}</th>
+	<th colspan="2">{{f20t3100Head[0].head12}}</th>
+	<th colspan="4">{{f20t3100Head[0].head3456}}</th>
+<th></th>
+<th></th>
+<!-- 
+	<th rowspan="1">{{f20t3100Head[0].bedDay}}</th>
+	<th rowspan="1">{{f20t3100Head[0].bedDayRenovierung}}</th>
+ -->
+</tr>
+<!-- 
+<tr>
+<th></th>
+<th></th>
+	<th>{{f20t3100Head[0].bedEndYear}}</th>
+	<th>{{f20t3100Head[0].bedAVG}}</th>
+	<th>{{f20t3100Head[0].patientAll}}</th>
+	<th>{{f20t3100Head[0].patient017}}</th>
+	<th>{{f20t3100Head[0].patientDismissed}}</th>
+	<th>{{f20t3100Head[0].patientDead}}</th>
+</tr>
+ -->
+<tr ng-include="'ui/f20t3100tHeadNumber.html'">
+</tr>

@@ -14,8 +14,5 @@
 	<th>{{f20t3100Head[0].patientDismissed}}</th>
 	<th>{{f20t3100Head[0].patientDead}}</th>
 </tr>
-<tr>
-	<th>А</th>
-	<th>Б</th>
-	<th ng-repeat="n in [1,2,3,4,5,6,7,8]">{{n}}</th>
+<tr ng-include="'ui/f20t3100tHeadNumber.html'">
 </tr>

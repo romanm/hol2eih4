@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="/v/css/ui.css" />
 
 <title>Ф20-т3100 {{minMonth}}-{{maxMonth}}/{{paramYear}}</title>
-
+<style type="text/css"></style>
 </head>
 <body>
 	<div id="menu-fix-top" class="no-print"
@@ -37,7 +37,7 @@
 		<div class="row">
 			<div class="col-xs-9 col-sm-6 col-lg-9">
 				<table class="table table-striped">
-					<thead ng-include="'ui/f20t3100tHead.html'"></thead>
+					<thead ng-include="'ui/f20t3100tHead3.html'"></thead>
 					<tbody>
 						<tr ng-repeat="h in f20t3100Head" ng-if="$index > 0">
 							<td>{{h.name}}</td>
@@ -68,6 +68,12 @@
 										{{readDepartment[department.department_id].data.departmentDead.cntAll}}
 								</a>
 							</span></td>
+							<td><span
+								ng-if="readDepartment[department.department_id].data2.bedDay.cntAll > 0">
+									{{readDepartment[department.department_id].data2.bedDay.cntAll}}
+							</span></td>
+						</tr>
+						<tr ng-include="'ui/f20t3100tHeadNumber.html'" class="no-print">
 						</tr>
 					</tbody>
 				</table>
@@ -84,7 +90,6 @@
 							{{history.patient_surname}} 
 							{{history.patient_name}} 
 							{{history.patient_patronnymic}} 
-							
 							</a>
 					</div>
 				</div>

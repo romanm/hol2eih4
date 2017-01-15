@@ -1,0 +1,35 @@
+<tr style="font-size: x-small;">
+	<td colspan="10"><span
+		ng-repeat="k in ['bedEndYear', 'bedAVG', 'patientAll', 'patient017', 'patientDismissed', 'patientDead', 'bedDay', 'bedDayRenovierung']">
+			<b> {{$index + 1 }} </b> - {{f20t3100Head[0][k]}},
+	</span>
+		<div>
+			<b> 1-2 </b> -- {{f20t3100Head[0].head12}}
+		</div></td>
+</tr>
+<tr>
+	<th rowspan="1">{{f20t3100Head[0].name}}</th>
+	<th rowspan="1">{{f20t3100Head[0].nrr}}</th>
+	<th colspan="2" style="font-size: small;">1-2</th>
+	<th colspan="4">{{f20t3100Head[0].head3456}}</th>
+<th></th>
+<th></th>
+<!-- 
+	<th rowspan="1">{{f20t3100Head[0].bedDay}}</th>
+	<th rowspan="1">{{f20t3100Head[0].bedDayRenovierung}}</th>
+ -->
+</tr>
+<!-- 
+<tr>
+<th></th>
+<th></th>
+	<th>{{f20t3100Head[0].bedEndYear}}</th>
+	<th>{{f20t3100Head[0].bedAVG}}</th>
+	<th>{{f20t3100Head[0].patientAll}}</th>
+	<th>{{f20t3100Head[0].patient017}}</th>
+	<th>{{f20t3100Head[0].patientDismissed}}</th>
+	<th>{{f20t3100Head[0].patientDead}}</th>
+</tr>
+ -->
+<tr ng-include="'ui/f20t3100tHeadNumber.html'">
+</tr>

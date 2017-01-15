@@ -1576,27 +1576,6 @@ hol2eih3App.controller('F20t3100Ctrl', [ '$scope', '$http', '$filter', '$sce'
 
 	console.log(urlF20t3100);
 
-	$http({ method : 'GET', url : urlF20t3100
-	}).success(function(data, status, headers, config) {
-		$scope.f20t3100 = data;
-		console.log($scope.f20t3100);
-		$scope.dbDuration = data.duration;
-		$scope.readDepartment = {};
-		$scope.f20t3100.listOfDepartment.forEach(function(department, i){
-			$scope.readDepartment[department.department_id] = {read:'-',i:i};
-		});
-		/*
-		$scope.f20t3500.nrrIndexes = {};
-		$scope.f20t3500.list.forEach(function(f20t3500, i){
-			$scope.f20t3500.nrrIndexes['groupById_' + f20t3500.groupById] = i;
-		});
-		 * */
-		console.log($scope.f20t3100.nrrIndexes);
-		readAllDepartment()
-	}).error(function(data, status, headers, config) {
-		$scope.error = data;
-	});
-
 	$scope.showHistory = function(historyParameter){
 		$scope.showHistoryParam = historyParameter;
 		console.log(historyParameter);
@@ -1612,18 +1591,51 @@ hol2eih3App.controller('F20t3100Ctrl', [ '$scope', '$http', '$filter', '$sce'
 		});
 	}
 
+	$http({ method : 'GET', url : urlF20t3100
+	}).success(function(data, status, headers, config) {
+		$scope.f20t3100 = data;
+		console.log($scope.f20t3100);
+		$scope.dbDuration = data.duration;
+		$scope.readDepartment = {};
+		$scope.f20t3100.listOfDepartment.forEach(function(department, i){
+			$scope.readDepartment[department.department_id] = {read:'-',i:i};
+		});
+		console.log($scope.f20t3100.nrrIndexes);
+		readAllDepartment()
+		readAllBedDay()
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+
+	var readAllBedDay = function(){
+		$scope.f20t3100.listOfDepartment.forEach(function(department, i){
+			var url =  '/r/bedDay-' + department.department_id + '-F20t3100' + urlM1M2Year;
+			console.log(url)
+			$http({ method : 'GET', url : url
+			}).success(function(data, status, headers, config) {
+				$scope.readDepartment[department.department_id].read='*';
+				$scope.readDepartment[department.department_id].data2=data;
+			}).error(function(data, status, headers, config) {
+				console.log(data)
+				$scope.error = data;
+			});
+		});
+		console.log($scope.readDepartment)
+	}
+
 	var readAllDepartment = function(){
 		$scope.f20t3100.listOfDepartment.forEach(function(department, i){
 			var url =  '/r/department-' + department.department_id + '-F20t3100' + urlM1M2Year;
 			console.log(url)
 			$http({ method : 'GET', url : url
 			}).success(function(data, status, headers, config) {
-				$scope.readDepartment[department.department_id] = {read:'+',i:i, data:data};
-				console.log($scope.readDepartment)
+				$scope.readDepartment[department.department_id].read='+';
+				$scope.readDepartment[department.department_id].data=data;
 			}).error(function(data, status, headers, config) {
 				$scope.error = data;
 			});
 		});
+		console.log($scope.readDepartment)
 	}
 
 	$scope.f20t3100Head = [
