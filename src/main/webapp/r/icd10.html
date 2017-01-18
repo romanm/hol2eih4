@@ -133,14 +133,14 @@
 					</tr>
 					<tr>
 						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}">{{bedDayH.name}}</th>
-						<th></th>
+						
 						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}"
 						ng-if="$index > 0"
 						>{{bedDayH.name}}</th>
 					</tr>
 					<tr class="center">
 						<th ng-repeat="n in bedDayHead">{{$index + 1}}</th>
-						<th></th>
+					
 						<th ng-repeat="n in bedDayHead"
 						ng-if="$index > 0"
 						>{{$index + bedDayHead.length}}</th>
@@ -158,7 +158,7 @@
 						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0" title="{{bedDayH.title}}">
 							{{bedDayOfMonthMySql[bedDayH.key+'_cnt']==0?'':bedDayOfMonthMySql[bedDayH.key+'_cnt']}}
 						</td>
-						<td></td>
+					
 						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0" title="{{bedDayH.title}}">
 							{{bedDayOfMonthMySql[bedDayH.key+'_bed_day']==0?'':bedDayOfMonthMySql[bedDayH.key+'_bed_day']}}
 						</td>

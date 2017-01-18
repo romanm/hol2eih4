@@ -1560,6 +1560,56 @@ eqMonth();
 
 }]);
 
+//ValidateDb
+hol2eih3App.controller('ValidateDbCtrl', [ '$scope', '$http', '$filter', '$sce'
+	, function ( $scope, $http, $filter, $sce) {
+	console.log("ValidateDbCtrl");
+	initReport($scope, $http);
+	var urlM1M2Year = '-' + $scope.minMonth + '-' + $scope.maxMonth + '-' + $scope.paramYear;
+
+	var url = 'basicClinicalDs-validateDb' + urlM1M2Year;
+	console.log(url);
+
+	$http({ method : 'GET', url : url
+	}).success(function(data, status, headers, config) {
+		$scope.basicClinicalDs = data;
+		console.log($scope.basicClinicalDs)
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+	
+	var urlPatients = 'basicClinicalDsPatients-validateDb' + urlM1M2Year;
+	console.log(urlPatients);
+	$http({ method : 'GET', url : urlPatients
+	}).success(function(data, status, headers, config) {
+		$scope.basicClinicalDsPatients = {};
+		data.basicClinicalDsPatients.forEach(function(h, i){
+			$scope.basicClinicalDsPatients[h.history_id] = h;
+		});
+		console.log($scope.basicClinicalDsPatients)
+
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+
+	var urlDiagnose4 = 'basicClinicalDsDiagnose4-validateDb' + urlM1M2Year;
+	console.log(urlDiagnose4);
+	$scope.basicClinicalDsDiagnose4 = {};
+	$http({ method : 'GET', url : urlDiagnose4
+	}).success(function(data, status, headers, config) {
+		data.basicClinicalDsDiagnose4.forEach(function(h, i){
+			if(!$scope.basicClinicalDsDiagnose4[h.history_id])
+				$scope.basicClinicalDsDiagnose4[h.history_id] = [];
+			$scope.basicClinicalDsDiagnose4[h.history_id].push(h);
+		});
+		console.log($scope.basicClinicalDsDiagnose4)
+		
+	}).error(function(data, status, headers, config) {
+		$scope.error = data;
+	});
+
+}]);
+
 //F20t3100
 hol2eih3App.controller('F20t3100Ctrl', [ '$scope', '$http', '$filter', '$sce'
 	, function ( $scope, $http, $filter, $sce) {

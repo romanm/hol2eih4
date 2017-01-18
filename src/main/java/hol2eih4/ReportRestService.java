@@ -28,6 +28,80 @@ public class ReportRestService {
 	@Autowired private JdbcTemplate hol1EihJdbcTemplate;
 	@Autowired private PropertyHolder propertyHolder;
 	
+	private @Value("${sql.hol1Eih.validateDb.basicClinicalDs.diagnose4}") String sqlHol1ValidateDbBasicClinicalDsDiagnose4;
+	@GetMapping("/r/basicClinicalDsDiagnose4-validateDb-{m1}-{m2}-{year}")
+	public  @ResponseBody Map<String, Object> basicClinicalDsValidateDiagnose4(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("year", year);
+		logger.info(" ------------------------- \n"
+				+ "/r/basicClinicalDs-validateDb-{m1}-{m2}-{year}" + map + "\n"
+				+sqlHol1ValidateDbBasicClinicalDsDiagnose4
+				.replaceAll(":min_month", map.get("min_month").toString())
+				.replaceAll(":max_month", map.get("max_month").toString())
+				.replaceAll(":year", map.get("year").toString()));
+		List<Map<String, Object>> basicClinicalDsDiagnose4
+		= hol1EihParamJdbcTemplate.queryForList(sqlHol1ValidateDbBasicClinicalDsDiagnose4, map);
+		map.put("basicClinicalDsDiagnose4", basicClinicalDsDiagnose4);
+		return map;
+	}
+	private @Value("${sql.hol1Eih.validateDb.basicClinicalDs.patients}") String sqlHol1ValidateDbBasicClinicalDsPatients;
+	@GetMapping("/r/basicClinicalDsPatients-validateDb-{m1}-{m2}-{year}")
+	public  @ResponseBody Map<String, Object> basicClinicalDsValidatePatients(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("year", year);
+		logger.info(" ------------------------- \n"
+				+ "/r/basicClinicalDs-validateDb-{m1}-{m2}-{year}" + map + "\n"
+				+sqlHol1ValidateDbBasicClinicalDsPatients
+				.replaceAll(":min_month", map.get("min_month").toString())
+				.replaceAll(":max_month", map.get("max_month").toString())
+				.replaceAll(":year", map.get("year").toString()));
+		List<Map<String, Object>> basicClinicalDsPatients
+		= hol1EihParamJdbcTemplate.queryForList(sqlHol1ValidateDbBasicClinicalDsPatients, map);
+		map.put("basicClinicalDsPatients", basicClinicalDsPatients);
+		return map;
+	}
+
+	private @Value("${sql.hol1Eih.validateDb.basicClinicalDs}") String sqlHol1ValidateDbBasicClinicalDs;
+	@GetMapping("/r/basicClinicalDs-validateDb-{m1}-{m2}-{year}")
+	public  @ResponseBody Map<String, Object> basicClinicalDsValidate(
+			@PathVariable Integer m1
+			,@PathVariable Integer m2
+			,@PathVariable Integer year
+			,Principal userPrincipal) {
+		StopWatch watch = new StopWatch();
+		watch.start();
+		Map<String, Object> map = new HashMap<>();
+		map.put("min_month", m1);
+		map.put("max_month", m2);
+		map.put("year", year);
+		logger.info(" ------------------------- \n"
+				+ "/r/basicClinicalDs-validateDb-{m1}-{m2}-{year}" + map + "\n"
+				+sqlHol1ValidateDbBasicClinicalDs
+				.replaceAll(":min_month", map.get("min_month").toString())
+				.replaceAll(":max_month", map.get("max_month").toString())
+				.replaceAll(":year", map.get("year").toString()));
+		List<Map<String, Object>> basicClinicalDs
+		= hol1EihParamJdbcTemplate.queryForList(sqlHol1ValidateDbBasicClinicalDs, map);
+		map.put("basicClinicalDs", basicClinicalDs);
+		return map;
+	}
+	
 	private @Value("${sql.hol1Eih.f20t3500.list}") String sqlHol1EihF20t3500List;
 	
 	@GetMapping("/r/F20t3500NrrPatienten-{m1}-{m2}-{year}-{nrr}")
@@ -87,7 +161,8 @@ public class ReportRestService {
 		map.put("max_month", m2);
 		map.put("year", year);
 		logger.info(" ------------------------- \n"
-				+ "/r/F20t3500NrrPatienten-{m1}-{m2}-{year}-{nrr}"+nrr + map);
+				+ "/r/F20t3500NrrPatienten-{m1}-{m2}-{year}-{nrr}"+nrr + map + "\n"
+						);
 
 		watch.stop();
 		map.put("duration", watch.getTotalTimeSeconds());
@@ -178,12 +253,12 @@ public class ReportRestService {
 			,@PathVariable Integer year
 			,Principal userPrincipal) {
 		logger.info(" ------------------------- \n"
-				+ "/r/F20t3220-{m1}-{m2}-{year} " 
+				+ "/r/F20t3220-{m1}-{m2}-{year} \n" 
 				+ sqlHol1EihF20t3220YearMonth
 		.replaceAll(":min_month", m1.toString())
 		.replaceAll(":max_month", m2.toString())
 		.replaceAll(":year", year.toString())
-				);
+			);
 		return readSQL_FOR_F20t3220(m1, m2, year, sqlHol1EihF20t3220YearMonth);
 	}
 

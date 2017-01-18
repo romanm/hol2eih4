@@ -217,7 +217,14 @@ public class AppRest {
 		map.put("min_month", m1);
 		map.put("max_month", m2);
 		map.put("department_id", departmentId);
-		logger.info("/r/readDepartmentAdress-{year}-{m1}-{m2}-{departmentId} \n " + map);
+		logger.info("------------------ \n"
+				+ "/r/readDepartmentAdress-{year}-{m1}-{m2}-{departmentId} " + map+""
+						+ departmentIcd10Group
+						.replaceAll(":min_month", map.get("min_month").toString())
+						.replaceAll(":max_month", map.get("max_month").toString())
+						.replaceAll(":year", map.get("year").toString())
+						.replaceAll(":department_id", map.get("department_id").toString())
+						);
 		List<Map<String, Object>> bedDayOfMonthMySql 
 		= hol1EihParamJdbcTemplate.queryForList(departmentIcd10Group, map);
 //		List<Map<String, Object>> bedDayOfMonthMySql = appService.readDepartmentIcd10Group(m1,m2, departmentId);

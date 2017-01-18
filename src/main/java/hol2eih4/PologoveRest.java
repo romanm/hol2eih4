@@ -40,10 +40,7 @@ public class PologoveRest {
 		logger.info(" ------------ \n"
 				+ "/r/pologove/operation-{m1}-{m2}-{year}" + map + ""
 //						+ "\n " + pgDbMaternityHolOperationGroupCodenumber
-						+ "\n " + pgDbMaternityHolMonthYearOperation
-						.replaceAll(":min_month", map.get("min_month").toString())
-						.replaceAll(":max_month", map.get("max_month").toString())
-						.replaceAll(":year", map.get("year").toString())
+						+ "\n " + executableSelect(pgDbMaternityHolMonthYearOperation,map)
 						);
 		List<Map<String, Object>> maternityHolMonthYearOperation
 //		= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolOperationGroupCodenumber, map);
@@ -53,6 +50,12 @@ public class PologoveRest {
 		map.put("duration", watch.getTotalTimeSeconds());
 		System.out.println("duration = " + map.get("duration"));
 		return map;
+	}
+	private String executableSelect(String sqlSelect,Map<String, Object> map) {
+		return sqlSelect
+		.replaceAll(":min_month", map.get("min_month").toString())
+		.replaceAll(":max_month", map.get("max_month").toString())
+		.replaceAll(":year", map.get("year").toString());
 	}
 
 	private @Value("${sql.pgDbMaternityHol.monthYear.diagnose}") String pgDbMaternityHolMonthYearDiagnose;
@@ -69,7 +72,9 @@ public class PologoveRest {
 		map.put("max_month", m2);
 		map.put("year", year);
 		logger.info(" ------------------------- \n"
-				+ "/r/pologove/icd10-{m1}-{m2}-{year}" + map);
+				+ "/r/pologove/icd10-{m1}-{m2}-{year}" + map
+				+ "\n " + executableSelect(pgDbMaternityHolMonthYearDiagnose,map)
+				);
 		List<Map<String, Object>> maternityHolIcdMonth
 			= pgDbMaternityHolParamJdbcTemplate.queryForList(pgDbMaternityHolMonthYearDiagnose,map);
 		map.put("maternityHolIcdMonth", maternityHolIcdMonth);

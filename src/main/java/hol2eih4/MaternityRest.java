@@ -1,17 +1,21 @@
 package hol2eih4;
 
 import java.security.Principal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,8 +25,46 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MaternityRest {
 	private static final Logger logger = LoggerFactory.getLogger(MaternityRest.class);
 
+	@Autowired private JdbcTemplate pgDbMaternityHolJdbcTemplate;
 	@Autowired private NamedParameterJdbcTemplate pgDbMaternityHolParamJdbcTemplate;
 	private @Value("${sql.pgDbMaternityHol.icdMonth}") String pgDbMaternityHolIcdMonth;
+
+	@GetMapping(value = "/r/doSomething")
+	public  @ResponseBody Map<String, Object> doSomething() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("i", 1);
+		x1(map);
+		return map;
+	}
+
+	private @Value("${sql.pgDbMaternityHol.insertRuhTimestamp}") String pgDbMaternityHolInsertRuhTimestamp;
+	private void x1(Map<String, Object> map) {
+		DateTime dateTimeFrom = new DateTime(2016,1,1,9,0);
+		DateTime dateTimeTo = dateTimeFrom.plusYears(20);
+		map.put("dateTimeFrom", dateTimeFrom);
+		map.put("dateTimeTo", dateTimeTo);
+		logger.info("-----------------\n"
+				+ "/r/doSomething "
+				+ dateTimeFrom + "\n"
+				+ dateTimeTo);
+		while (dateTimeFrom.isBefore(dateTimeTo)) {
+			map.put("daybegin", new Timestamp(dateTimeFrom.getMillis()) );
+			System.out.println(map.get("daybegin"));
+			pgDbMaternityHolParamJdbcTemplate.update(pgDbMaternityHolInsertRuhTimestamp, map);
+			/*
+			String sqlInsertRuhTimestamp = "insert into ruhtimestamp values("
+					+ i
+					+ ","
+					+ "'"
+					+ dateTimeFrom
+					+ "'"
+					+ ")";
+			System.out.println(sqlInsertRuhTimestamp);
+			System.out.println(i+"/"+dateTimeFrom);
+			 * */
+			dateTimeFrom = dateTimeFrom.plusDays(1);
+		}
+	}
 
 	@RequestMapping(value = "/r/readIcd10K2-{m1}-{m2}", method = RequestMethod.GET)
 	public  @ResponseBody Map<String, Object> readIcd10K2(
