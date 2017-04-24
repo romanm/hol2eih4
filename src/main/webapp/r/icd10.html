@@ -128,10 +128,12 @@
 				<thead>
 					<tr>
 						<th></th>
+						<th></th>
 						<th colspan="{{bedDayHead.length - 1}}">Кількість хворих</th>
 						<th colspan="{{bedDayHead.length}} - 1">Ліжкодні</th>
 					</tr>
 					<tr>
+						<th title="Група">Гр.</th>
 						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}">{{bedDayH.name}}</th>
 						
 						<th ng-repeat="bedDayH in bedDayHead" title="{{bedDayH.title}}"
@@ -150,7 +152,10 @@
 					<tr ng-repeat="bedDayOfMonthMySql in bedDay.bedDayOfMonthMySql"
 					ng-if="showIcd10(bedDayOfMonthMySql)"
 					>
-						<td title="З 2012 проліковано {{bedDayOfMonthMySql.cnt_all_icd}} хворих {{bedDayOfMonthMySql.icd_code}}">
+					<td>{{bedDayOfMonthMySql.group_nr}}</td>
+						<td title="З 2012 проліковано {{bedDayOfMonthMySql.cnt_all_icd}} хворих {{bedDayOfMonthMySql.icd_code}}"
+						style="text-align: left;"
+						>
 						{{bedDayOfMonthMySql.icd_code}}
 						-
 						{{bedDayOfMonthMySql.icd_name}}

@@ -147,7 +147,9 @@
 								{{bedDayOfMonthMySql.department_name}}</a>
 								</td>
 						<td ng-repeat="bedDayH in bedDayHead" ng-if="$index>0">
-							{{bedDayOfMonthMySql[bedDayH.key]==0?'':bedDayOfMonthMySql[bedDayH.key]}}
+							<span ng-if="!((bedDayH.key=='bed_day_plan' || bedDayH.key=='bed_day_fulfil') && bedDayOfMonthMySql.dp_id==22)">
+								{{bedDayOfMonthMySql[bedDayH.key]==0?'':bedDayOfMonthMySql[bedDayH.key]}}
+							</span>
 						</td>
 					</tr>
 				</tbody>

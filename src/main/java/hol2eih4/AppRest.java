@@ -218,7 +218,9 @@ public class AppRest {
 		map.put("max_month", m2);
 		map.put("department_id", departmentId);
 		logger.info("------------------ \n"
-				+ "/r/readDepartmentAdress-{year}-{m1}-{m2}-{departmentId} " + map+""
+				+ "/r/readDepartmentAdress-{year}-{m1}-{m2}-{departmentId} "
+				+ "\n" + map+""
+						+ "\n"
 						+ departmentIcd10Group
 						.replaceAll(":min_month", map.get("min_month").toString())
 						.replaceAll(":max_month", map.get("max_month").toString())
